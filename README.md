@@ -32,6 +32,7 @@ works well on a phone at the practice table. Setup notes in
 
 | If you want to… | Go to |
 | --- | --- |
+| **Run the first meeting** | [`docs/day-1.md`](docs/day-1.md) |
 | See the whole season plan and deadlines | [`docs/season-plan.md`](docs/season-plan.md) |
 | Work on a robot mission | [`robot-game/missions/`](robot-game/missions/) |
 | Plan or tune a robot run | [`robot-game/runs/`](robot-game/runs/) |
