@@ -99,6 +99,7 @@ not_in_nav: |
 
 nav:
   - Home: README.md
+  - What is BIOGLOW?: docs/what-is-bioglow.md
   - Meeting Plan:
       - docs/meeting-plan.md
       - Block 1 · Setup:

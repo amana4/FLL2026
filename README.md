@@ -34,6 +34,7 @@ works well on a phone at the practice table. Setup notes in
 
 | If you want to… | Go to |
 | --- | --- |
+| **Explain BIOGLOW to the team** | [`docs/what-is-bioglow.md`](docs/what-is-bioglow.md) |
 | **Run today's meeting** | [`docs/meeting-plan.md`](docs/meeting-plan.md) → pick the date. Starting out? [Meeting 1](meetings/plan/m01.md). |
 | See the whole season plan and deadlines | [`docs/season-plan.md`](docs/season-plan.md) |
 | Work on a robot mission | [`robot-game/missions/`](robot-game/missions/) |
