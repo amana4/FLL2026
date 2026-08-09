@@ -24,14 +24,27 @@ desktop.ini
 # Presentation exports that can be regenerated
 *.pptx.tmp
 
-# FIRST's copyrighted season materials. This repo is public (GitHub Pages
-# requires it on the free tier), so NONE of it may be committed.
+# FIRST's season materials.
 #
-# Allowlist, not blocklist: ignore everything in that folder except our own
-# README. Listing extensions to block is fragile — the download included
-# .pptx, .mp4, .llsp3 and extensionless files nobody would think to list.
-docs/official-materials/*
-!docs/official-materials/README.md
+# Per team decision (9 Aug 2026), these ARE committed so everyone gets them
+# with a clone instead of re-downloading. Two caveats worth remembering:
+#
+#   1. This repo is PUBLIC, so these become publicly visible. They're FIRST's
+#      copyrighted material — fine for a team repo, but a deliberate choice.
+#      If that ever becomes a problem, going private also kills the free
+#      GitHub Pages site.
+#   2. Committed binaries live in git history forever. Removing them later
+#      needs a history rewrite, not just a delete.
+#
+# The missions video stays out: at 1.3GB it exceeds GitHub's 100MB hard
+# per-file limit and the push would be rejected. Stream it from the FIRST
+# Season Resources page instead.
+docs/official-materials/*.mp4
+docs/official-materials/*.mov
+
+# Junk from the download — HTML pages saved without an extension
+docs/official-materials/scoresheet
+docs/official-materials/wDan0826cn0
 
 # MkDocs build output — the site is built by CI, not committed
 site/
