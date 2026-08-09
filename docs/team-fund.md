@@ -84,7 +84,11 @@ than "team-fund".
 
 ## Keeping it up to date
 
-Whoever holds the money updates the Sheet. If you want the repo copy to stay
-accurate too, download the Sheet as CSV occasionally (**File**, **Download**,
-**Comma-separated values**) and replace `team-fund.csv`. That is optional. The
-Sheet can be the live version and this file the starting point.
+Whoever holds the money updates the Sheet. Keep it in the team Google Drive
+folder alongside the receipts, under `Admin/`. The folder link is in
+[`team-links.md`](team-links.md).
+
+If you want the repo copy to stay accurate too, download the Sheet as CSV
+occasionally (**File**, **Download**, **Comma-separated values**) and replace
+`team-fund.csv`. That is optional. The Sheet can be the live version and this
+file the starting point.

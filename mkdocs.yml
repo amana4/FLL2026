@@ -74,7 +74,12 @@ markdown_extensions:
 #
 # team-fund.md and team-fund.csv are excluded for the same reason: they track
 # what each family has contributed. That belongs between the coach and the
-# parents, not on a public page.
+# parents, not on a public page. team-links.md is excluded because it holds the
+# Google Drive folder link, which should not be on a search-indexed page.
+#
+# Note that excluding a file from the SITE does not hide it from the public
+# repo. Anything that must stay private has to be gitignored, not just listed
+# here.
 #
 # The official-materials PDFs and .pptx decks are committed to git (so a clone
 # gets everything) but excluded from the SITE build. docs_dir is the repo root,
@@ -89,6 +94,7 @@ exclude_docs: |
   docs/team-roster.md
   docs/team-fund.md
   docs/team-fund.csv
+  docs/team-links.md
   docs/official-materials/*.pdf
   docs/official-materials/*.pptx
   docs/official-materials/*.llsp3
