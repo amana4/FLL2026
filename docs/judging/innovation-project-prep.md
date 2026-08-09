@@ -14,16 +14,27 @@ This sheet is for the judging room itself.
 
 ## Mapping our project to the rubric
 
-Fill in one strong sentence per criterion. If a cell is hard to fill, that's the
-gap to close before the tournament.
+Official BIOGLOW rubric wording (`rubrics-color.pdf`, page 2). Judges tick one
+box per row: **Beginning (1) · Developing (2) · Accomplished (3) · Exceeds (4)**.
 
-| Criterion | Our evidence |
-| --- | --- |
-| **Identify** — clear, well-defined problem | _TODO_ |
-| **Research** — multiple sources, real people | _TODO_ |
-| **Innovate** — genuinely our own idea | _TODO_ |
-| **Iterate** — shared, got feedback, changed it | _TODO_ |
-| **Communicate** — clear, and shared beyond the team | _TODO_ |
+Fill in one strong sentence per criterion. A cell that's hard to fill is a gap
+to close before the competition.
+
+| Criterion | To score Accomplished you need… | Our evidence |
+| --- | --- | --- |
+| **IDENTIFY** — clearly defined, well-researched problem | Clear definition of the problem **+** clear, detailed research from **a variety of sources** | _TODO_ |
+| **DESIGN** — worked together on a plan and developed ideas | Clear evidence of an effective project plan **+** clear evidence **all** members were involved | _TODO_ |
+| **CREATE** — original idea, or built on an existing one, with a model/drawing | Detailed explanation of the innovation **+** a detailed model or drawing | _TODO_ |
+| **ITERATE** — shared, collected feedback, improved | Solution shared with **multiple** people/groups **+** clear evidence of improvements from feedback | _TODO_ |
+| **COMMUNICATE** — effective presentation of solution and impact | Clear explanation of solution and its potential impact **+** visible pride and enthusiasm | _TODO_ |
+
+Two things worth noticing in the official wording:
+
+- **ITERATE says "multiple people/groups" for Accomplished** — sharing with one
+  person only reaches Developing. Plan for at least two.
+- **"A variety of sources" is explicit under IDENTIFY.** Websites alone won't
+  reach Accomplished; that's what
+  [`expert-outreach.md`](../../innovation-project/expert-outreach.md) is for.
 
 ## Questions to be ready for
 

@@ -1,13 +1,14 @@
 # Robot Game
 
-Everything about scoring points on the table in 2:30.
+Scoring points on the table in **2.5 minutes**. Three official matches; **only
+your best score counts** toward awards and advancement.
 
 | File | What's in it |
 | --- | --- |
-| [`strategy.md`](strategy.md) | Target score, run grouping, what we skip and why |
-| [`scoring-tracker.md`](scoring-tracker.md) | Points available, practice scores over time |
-| [`missions/`](missions/) | One analysis file per mission |
-| [`runs/`](runs/) | One plan per robot run, with reliability logs |
+| [`missions/`](missions/README.md) | All 15 missions with official scoring |
+| [`strategy.md`](strategy.md) | Target score, run grouping, what we skip |
+| [`scoring-tracker.md`](scoring-tracker.md) | Points available, practice scores |
+| [`runs/`](runs/README.md) | One plan per robot run, with reliability logs |
 
 ## The loop
 
@@ -19,25 +20,86 @@ Analyze mission  →  Group into runs  →  Build attachment
 
 Stay in that loop until every run clears 80%.
 
-## Rules that bite teams every year
+## Equipment limits
 
-Verify each against the BIOGLOW rulebook — these are general FLL patterns, not
-season-specific quotes.
+From the rulebook (pages 14–15). Check these before designing anything:
 
-- Equipment must fit within the launch area at the start of the match.
-- You may only touch the robot in Base; touching it elsewhere is an interruption.
-- Interruptions cost Precision Tokens, and leftover tokens are worth points.
-- Anything the robot leaves outside Base stays there — you can't retrieve it freely.
-- The match ends at 2:30 exactly; a mission half-done scores nothing.
+| Limit | Value |
+| --- | --- |
+| Controllers | **1** max per match |
+| Motors | **4** max, any mix |
+| Sensors | Touch/force, colour, distance/ultrasonic, gyro only — any number |
+| Power | One controller power pack **or** six AA batteries |
+| Height limit at inspection | **12 in. (305 mm)** |
+| Notebook paper | One sheet per home area, doesn't count as equipment |
+
+All pieces must be **LEGO in original factory condition** — only string and
+pneumatic tubes may be cut. Any programming language is allowed; the robot must
+be autonomous outside home.
+
+**Four motors is the real constraint.** Two go to driving, leaving two for
+attachments. Plan mechanisms around that.
+
+## Rules that decide matches
+
+Direct from the rulebook — these are the ones teams lose points to:
+
+- **All wording means precisely and only what it says.** If a detail isn't
+  mentioned, it doesn't matter. Read scoring conditions literally.
+- **Ties/unclear calls go to the team** — benefit of the doubt is yours.
+- Mission requirements must be **visibly met at the end of the match**, unless
+  the mission specifies a method.
+- "In" an area **includes the lines and the airspace above it**.
+- Technicians may only handle things **completely within their own home area**,
+  and may not pass anything between the two home areas.
+- Interrupting the robot outside home costs **one precision token**.
+- Objects picked up outside home after the last launch **go to the referee** —
+  you don't get them back.
+- You may not take models apart, separate the Dual Lock, or break a model.
+  Points scored that way don't count.
+- A mission model combined with your robot must be freeable **in a single
+  motion, in perfect original condition**, if the referee asks.
+- Don't touch the opposing team's field. Points they lose to your interference
+  **score automatically for them**.
+
+## Gracious Professionalism is scored at the table
+
+Referees score every match: **Accomplished (3)** by default, **Exceeds (4)** for
+above-and-beyond sportsmanship, **Developing (2)** for less. It adds to your
+Core Values score.
+
+Can't run the robot? Show up and explain what happened — you can still score 2–4.
+Not showing up scores zero.
 
 ## Field setup
 
-Build it exactly per `field-setup.pdf`. A mat that's 1cm off makes every program
-lie to you.
+Follow the official Field Setup Video and `field-setup-reference-guide.pdf`. A
+mat 1 cm out of position makes every program lie to you.
 
-- [ ] Mat flat, no wrinkles, taped or bordered per spec
-- [ ] All mission models built and dual-locked in the correct positions
-- [ ] Border walls square
-- [ ] Lighting consistent if we're using light/color sensors
+- [ ] Mat flat, aligned to the bottom wall, centred left-to-right
+- [ ] Optional: tape the left and right edges with matte black gaffer tape
+- [ ] Dual Lock placed per the wireframe
+- [ ] All mission models built **exactly** per the building instructions
+- [ ] The three interchangeable docks (mine, city, farm) seated and latched
 
-**Recheck the field before every practice session.** Models drift.
+**Recheck before every practice session.** Models drift.
+
+> **At events, setups vary** — table construction, surface smoothness, shared
+> mission interactions. Expect it and adapt graciously.
+
+## The interchangeable docks — new this year
+
+Missions 13, 14, and 15 sit on three docks: **mine, city, farm**. You choose
+which model goes where before the match.
+
+This matters for M15 Biocentric Architecture, whose Environmental Bonus depends
+on the dock:
+
+| Dock | Bonus action |
+| --- | --- |
+| Mine | Nesting canopy raised |
+| City | Garden skylight completely in |
+| Farm | Compost hatch opened, touching mat |
+
+Put M15 on the dock matching whichever action your robot does **most reliably**.
+It's a free 10 points for a decision made in the pit.

@@ -25,11 +25,13 @@ desktop.ini
 *.pptx.tmp
 
 # FIRST's copyrighted season materials. This repo is public (GitHub Pages
-# requires it on the free tier), so the PDFs must NOT be committed.
-# Download them locally per docs/official-materials/README.md — they'll sit
-# in that folder untracked, available to the team, invisible to git.
-docs/official-materials/*.pdf
-docs/official-materials/*.PDF
+# requires it on the free tier), so NONE of it may be committed.
+#
+# Allowlist, not blocklist: ignore everything in that folder except our own
+# README. Listing extensions to block is fragile — the download included
+# .pptx, .mp4, .llsp3 and extensionless files nobody would think to list.
+docs/official-materials/*
+!docs/official-materials/README.md
 
 # MkDocs build output — the site is built by CI, not committed
 site/

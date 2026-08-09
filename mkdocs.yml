@@ -94,7 +94,23 @@ nav:
       - robot-game/README.md
       - Strategy: robot-game/strategy.md
       - Scoring Tracker: robot-game/scoring-tracker.md
-      - Missions: robot-game/missions/README.md
+      - Missions:
+          - robot-game/missions/README.md
+          - 01 Drone Survey: robot-game/missions/M01-drone-survey.md
+          - 02 Exploding Seeds: robot-game/missions/M02-exploding-seeds.md
+          - 03 Flip the Rock: robot-game/missions/M03-flip-the-rock.md
+          - 04 Lucky Leaves: robot-game/missions/M04-lucky-leaves.md
+          - 05 Reaching Roots: robot-game/missions/M05-reaching-roots.md
+          - 06 Leafcutter Frenzy: robot-game/missions/M06-leafcutter-frenzy.md
+          - 07 Humongous Fungus: robot-game/missions/M07-humongous-fungus.md
+          - 08 Tangled: robot-game/missions/M08-tangled.md
+          - 09 Research Platform: robot-game/missions/M09-research-platform.md
+          - 10 Fragile Microhabitats: robot-game/missions/M10-fragile-microhabitats.md
+          - 11 Window to the Past: robot-game/missions/M11-window-to-the-past.md
+          - 12 Forest Elder: robot-game/missions/M12-forest-elder.md
+          - 13 Keystone Species: robot-game/missions/M13-keystone-species.md
+          - 14 Seeds of Renewal: robot-game/missions/M14-seeds-of-renewal.md
+          - 15 Biocentric Architecture: robot-game/missions/M15-biocentric-architecture.md
       - Runs: robot-game/runs/README.md
   - Robot Design:
       - robot-design/README.md

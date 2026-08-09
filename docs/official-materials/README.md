@@ -1,45 +1,74 @@
 # Official BIOGLOW Materials
 
-**Nothing in this repo overrides these documents.** If our notes disagree with the
-official rulebook, the rulebook wins — always. When you find a conflict, fix our
-notes and mention it at the next meeting.
+**Nothing in this repo overrides these documents.** If our notes disagree with
+the official rulebook, the rulebook wins — always. When you find a conflict, fix
+our notes and mention it at the next meeting.
 
-## Download these first
+> 🔒 **These files are gitignored and must stay that way.** They're FIRST's
+> copyrighted material and this repo is public. `.gitignore` allowlists only
+> this README; the CI build fails if anything else here gets committed. They
+> live on team members' computers, not on GitHub.
+
+## What we have (downloaded 9 Aug 2026)
+
+| File | What it is | Read? |
+| --- | --- | --- |
+| `fll-challenge-bioglow-rgr.pdf` | **Robot Game Rulebook** — 15 missions, all rules | ✅ extracted into [`robot-game/`](../../robot-game/README.md) |
+| `fll-challenge-bioglow-rubrics-color.pdf` | The judging rubrics | ✅ extracted into [`docs/judging/`](../judging/README.md) |
+| `fll-challenge-bioglow-updates.pdf` | **Challenge Updates** | ✅ no updates as of 4 Aug 2026 |
+| `fll-challenge-bioglow-season-overview.pdf` | Season summary, project brief | ✅ |
+| `fll-challenge-bioglow-en.pdf` / `RsaYLB-...-tmg.pdf` | Team Meeting Guide (32 pp) — session plans | ☐ |
+| `fll-challenge-bioglow-field-setup-reference-guide.pdf` | Field setup | ☐ |
+| `fll-challenge-bioglow-participation-rules.pdf` | Participation rules | ☐ |
+| `fll-challenge-bioglow-awards.pdf` | Award descriptions | ☐ |
+| `fll-challenge-bioglow-judging-session-flowchart.pdf` | How judging runs | ☐ |
+| `fll-challenge-bioglow-software-scoresheet.pdf` | Scoresheet | ☐ |
+| `fll-challenge-bioglow-wireframe-grid.pdf` | Mat wireframe for model placement | ☐ |
+| `fll-challenge-bioglow-multimedia-resources.pdf` | Links to videos | ☐ |
+| `fll-challenge-bioglow-session-slide-*.pptx` | 13 meeting slide decks | ☐ |
+| `fll-challenge-bioglow-robot-game-missions.mp4` | Missions video (1.4 GB) | ☐ |
+| `guided-mission-bioglow-11.llsp3` | SPIKE guided program for Mission 11 | ☐ |
+
+Two files came down with no extension (`scoresheet`, `wDan0826cn0`) and are
+HTML, not documents — safe to delete.
+
+## Still worth downloading
+
+- [ ] **Mission Model Building Instructions** — needed to build the field
+- [ ] Engineering Notebook template
+- [ ] Table Building Instructions (if building a practice table)
 
 Source: <https://www.firstinspires.org/resources/library/fll/season-materials>
 
-Drop the PDFs in this folder and tick the box. Filenames in the table are what we
-should rename them to, so links elsewhere in the repo keep working.
+## Challenge Updates — check monthly
 
-- [ ] `robot-game-rulebook.pdf` — missions, point values, rules, penalties
-- [ ] `field-setup.pdf` — mat placement, dual-lock, model positions
-- [ ] `mission-model-building-instructions.pdf` — how to build the field models
-- [ ] `engineering-notebook.pdf` — the FIRST-provided notebook template
-- [ ] `innovation-project-intro.pdf` — this season's project prompt
-- [ ] `rubrics.pdf` — the four judging rubrics
-- [ ] `challenge-updates.pdf` — **re-download monthly**, this one changes
+FIRST publishes rule changes after launch that **supersede the rulebook**. Teams
+lose points every year practicing against outdated rules.
 
-## Challenge Updates — read these every month
+Assign one person to check on the 1st of each month:
 
-FIRST publishes a running **Challenge Updates** document that changes rules and
-clarifies missions *after* the season launches. It supersedes the rulebook.
-Teams lose points every year by practicing against an outdated rule.
-
-Assign one person to check on the 1st of each month and log it here:
-
-| Date checked | Version / date of updates doc | Anything that affects us? | Checked by |
+| Date checked | Version | Anything affecting us? | Checked by |
 | --- | --- | --- | --- |
-| _TODO_ | _TODO_ | _TODO_ | _TODO_ |
+| 9 Aug 2026 | 4 Aug 2026 | No updates at this time | _initial scaffold_ |
 
-## Other links worth bookmarking
+## Reading PDFs
 
-- Season materials library — <https://www.firstinspires.org/resources/library/fll/season-materials>
-- FLL Challenge home — <https://www.firstinspires.org/robotics/fll>
-- Our regional program delivery partner — _TODO: add local contact + registration deadlines_
+macOS ships PDFKit, so no install is needed. The team can just open them in
+Preview. For text extraction (useful for quoting exact scoring wording):
 
-## Licensing note
+```bash
+# Build once
+swiftc -O /tmp/pdftext.swift -o /tmp/pdftext
+# Then
+/tmp/pdftext docs/official-materials/fll-challenge-bioglow-rgr.pdf 9 12
+```
 
-These PDFs are FIRST's copyrighted material. Keeping a copy for team use is fine;
-if this repo is ever made public, delete the PDFs and keep only the links. See
-`.gitignore` — PDFs in this folder are **not** ignored by default, so decide
-deliberately before pushing to a public remote.
+## The four you'll reach for most
+
+These live in this folder on your computer. They're deliberately **not** linked
+as pages — the website can't serve them, and the build fails if it tries.
+
+- `fll-challenge-bioglow-rgr.pdf` — Robot Game Rulebook
+- `fll-challenge-bioglow-rubrics-color.pdf` — Rubrics
+- `fll-challenge-bioglow-updates.pdf` — Challenge Updates
+- `fll-challenge-bioglow-field-setup-reference-guide.pdf` — Field Setup
