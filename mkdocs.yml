@@ -95,11 +95,45 @@ not_in_nav: |
   **/_TEMPLATE.md
   code/screenshots/README.md
   code/spike-projects/README.md
+  meetings/plan/README.md
 
 nav:
   - Home: README.md
   - Day 1: docs/day-1.md
-  - Meeting Plan: docs/meeting-plan.md
+  - Meeting Plan:
+      - docs/meeting-plan.md
+      - Block 1 · Setup:
+          - "M1 · Sun 9 Aug — Kickoff": meetings/plan/m01.md
+          - "M2 · Wed 12 Aug — Build the field": meetings/plan/m02.md
+          - "M3 · Sun 16 Aug — Field setup + driving base": meetings/plan/m03.md
+          - "M4 · Wed 19 Aug — Base driving reliably": meetings/plan/m04.md
+      - Block 2 · Explore:
+          - "M5 · Sun 23 Aug — My Blocks": meetings/plan/m05.md
+          - "M6 · Wed 26 Aug — Points-per-second": meetings/plan/m06.md
+          - "M7 · Sun 30 Aug — Choose the problem": meetings/plan/m07.md
+          - "M8 · Wed 2 Sep — First mission scored": meetings/plan/m08.md
+      - Block 3 · Commit:
+          - "M9 · Sun 6 Sep — Freeze the mission list": meetings/plan/m09.md
+          - "M10 · Wed 9 Sep — Attachment design": meetings/plan/m10.md
+          - "M11 · Sun 13 Sep — Build and program": meetings/plan/m11.md
+          - "M12 · Wed 16 Sep — Run 2": meetings/plan/m12.md
+      - Block 4 · Build & Iterate:
+          - "M13 · Sun 20 Sep — Run 1 to 80%": meetings/plan/m13.md
+          - "M14 · Wed 23 Sep — Run 2 to 80%": meetings/plan/m14.md
+          - "M15 · Sun 27 Sep — Run 3 + share the solution": meetings/plan/m15.md
+          - "M16 · Wed 30 Sep — Act on feedback": meetings/plan/m16.md
+          - "M17 · Sun 4 Oct — Full matches": meetings/plan/m17.md
+          - "M18 · Wed 7 Oct — Notebook checkpoint": meetings/plan/m18.md
+      - Block 5 · Polish:
+          - "M19 · Sun 11 Oct — Freeze the robot": meetings/plan/m19.md
+          - "M20 · Wed 14 Oct — Presentation": meetings/plan/m20.md
+          - "M21 · Sun 18 Oct — Mock judging": meetings/plan/m21.md
+          - "M22 · Wed 21 Oct — Close the gaps": meetings/plan/m22.md
+      - Block 6 · Final:
+          - "M23 · Sun 25 Oct — Notebook done": meetings/plan/m23.md
+          - "M24 · Wed 28 Oct — Submit": meetings/plan/m24.md
+          - "M25 · Sun 1 Nov — Dress rehearsal": meetings/plan/m25.md
+          - "M26 · Wed 4 Nov — Pack": meetings/plan/m26.md
   - Season Plan: docs/season-plan.md
   - Equipment: docs/equipment.md
   - Robot Game:
