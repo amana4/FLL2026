@@ -27,21 +27,28 @@ never from the last three.
 
 Kits arrived 8 August, so robot work starts at meeting 1.
 
-## Who's who — fill in at Meeting 1
+## Who's who
 
-Homework is assigned to **Kid 1**–**Kid 5**. Write the real names here once.
+Homework through this plan is assigned to **Kid 1** to **Kid 5**. The names
+behind those labels are in
+[`team-roster.md`](https://github.com/amana4/FLL2026/blob/main/docs/team-roster.md),
+which lives in the repo but is **not published to this website**.
 
-| Slot | Name | Starting focus |
-| --- | --- | --- |
-| **Kid 1** | _TODO_ | Robot build |
-| **Kid 2** | _TODO_ | Programming |
-| **Kid 3** | _TODO_ | Innovation Project research |
-| **Kid 4** | _TODO_ | Robot strategy & testing |
-| **Kid 5** | _TODO_ | Notebook & documentation |
+That is deliberate. This page is public and search-indexed, and the team is five
+children. Please do not paste real names into this file or any other published
+page. The roster is the key; read the two side by side.
 
-> **Starting points, not permanent jobs.** The Robot Design rubric wants
-> *"building and coding skills in **all** team members"*, and judges pick who
-> they question. Rotate — see [rotation](#rotation).
+| Slot | Starting focus |
+| --- | --- |
+| **Kid 1** | Robot build |
+| **Kid 2** | Programming |
+| **Kid 3** | Innovation Project research |
+| **Kid 4** | Robot strategy and testing |
+| **Kid 5** | Notebook and documentation |
+
+These are starting points, not permanent jobs. The Robot Design rubric asks for
+"building and coding skills in **all** team members", and judges choose who they
+question, so everyone needs to rotate. See [rotation](#rotation) below.
 
 ## Rotation
 
@@ -52,10 +59,10 @@ Swap focus every 3 weeks so everyone touches everything.
 | 1–3 (Aug 9–26) | Build | Code | Project | Strategy | Notebook |
 | 4–6 (Aug 30 – Sep 16) | Code | Project | Strategy | Notebook | Build |
 | 7–9 (Sep 20 – Oct 7) | Project | Strategy | Notebook | Build | Code |
-| 10–13 (Oct 11 – Nov 4) | _settle into competition roles — put people where they're strongest_ |
+| 10–13 (Oct 11 – Nov 4) | _settle into competition roles, putting people where they are strongest_ |
 
-By week 10 everyone has done three areas. Then stop rotating and let each kid
-own the part they'll present.
+By week 10 everyone has done three areas. Then stop rotating and let each student
+own the part they will present.
 
 ---
 
