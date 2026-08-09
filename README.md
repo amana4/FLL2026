@@ -1,6 +1,7 @@
-# FLL 2026–2027 — BIGGLOW
+# FLL 2026–2027 — BIOGLOW
 
-Team workspace for our *FIRST*® LEGO® League Challenge season: **BIGGLOW**.
+Team workspace for our *FIRST*® LEGO® League Challenge season: **BIOGLOW** —
+the theme is **biodiversity**.
 
 Everything the team makes this season lives here — robot strategy, mission plans,
 code, the Innovation Project, Core Values work, and the Engineering Notebook.
@@ -9,11 +10,23 @@ code, the Innovation Project, Core Values work, and the Engineering Notebook.
 works well on a phone at the practice table. Setup notes in
 [`docs/website.md`](docs/website.md).
 
-> **⚠️ Unverified season details.** This repo was scaffolded without access to the
-> official BIGGLOW materials. Every mission name, point value, rule number, and
-> date is a placeholder marked `TODO`. Download the official PDFs into
+| | |
+| --- | --- |
+| Challenge announced | **4 August 2026** |
+| Local competition | **Early November 2026** |
+| Time to build | **~12 weeks** |
+
+> ⏱️ **Short season.** Twelve weeks is enough to do well, but not enough to do
+> things twice. Two things are urgent in week 1 and block everything downstream:
+> **order the LEGO kits** ([`docs/equipment.md`](docs/equipment.md)) and
+> **email local biodiversity experts**
+> ([`innovation-project/expert-outreach.md`](innovation-project/expert-outreach.md)).
+
+> **⚠️ Mission details unverified.** This repo was scaffolded without access to
+> the official BIOGLOW materials — every mission name, point value, and rule
+> number is a placeholder marked `TODO`. Download the official PDFs into
 > [`docs/official-materials/`](docs/official-materials/) and fill them in before
-> anyone relies on this. See that folder's README for the download list.
+> anyone relies on this.
 
 ## Start here
 

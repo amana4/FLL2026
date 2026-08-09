@@ -1,6 +1,6 @@
 # Missions
 
-One file per BIGGLOW mission. Copy [`_TEMPLATE.md`](_TEMPLATE.md) and name it
+One file per BIOGLOW mission. Copy [`_TEMPLATE.md`](_TEMPLATE.md) and name it
 `MXX-short-name.md` (e.g. `M03-cargo-delivery.md`).
 
 ## How to fill these in (Phase 1)

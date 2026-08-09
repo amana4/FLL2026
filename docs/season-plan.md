@@ -1,180 +1,221 @@
-# BIGGLOW Season Plan
+# BIOGLOW Season Plan — 12 Weeks
 
-> **Dates are placeholders.** Fill in the real tournament date first — everything
-> else works backward from it. Once you know it, replace `T-minus` weeks with
-> actual calendar dates.
+**Theme: Biodiversity.** Challenge announced 4 August 2026. Local competition:
+early November 2026.
+
+> ⏱️ **This is a 12-week season, not a 20-week one.** From today (9 Aug) to an
+> early-November competition is about 12 weeks. That's enough time to do well,
+> but not enough to do things twice. The plan below is compressed accordingly:
+> shorter exploration, earlier commitment, more overlap between workstreams.
 
 | Key date | Date | Notes |
 | --- | --- | --- |
-| Season kickoff | _TODO_ | Challenge released |
-| Team registration deadline | _TODO_ | Check with regional partner |
-| Engineering Notebook due | _TODO_ | Often 1–2 weeks before tournament |
-| **Qualifying tournament** | _TODO_ | ← anchor date |
-| Championship (if we advance) | _TODO_ | |
+| Challenge announced | **4 Aug 2026** | ✅ done |
+| Team registration deadline | _TODO — check now_ | ⚠️ may already be close |
+| LEGO kits ordered | _TODO_ | ⚠️ **blocks everything** — see below |
+| Engineering Notebook due | _TODO_ | Often 1–2 weeks before the competition |
+| **Local competition** | **Early Nov 2026** | ← everything works back from here |
 
-## How to read this plan
+## Do these this week
 
-Four workstreams run **in parallel** all season. The single most common way teams
-fail is to spend September–December only on the robot, then improvise the
-Innovation Project the week before. Robot Game is one quarter of the score.
-Protect the project time.
+Three things gate the whole season. None involve the robot.
 
-Each phase below lists a **Definition of done** — the thing that must be true
-before moving on. If a phase isn't done, that's fine; carry it. Don't skip it.
+1. **Order the LEGO kits.** Nothing on the robot side can start without them,
+   and shipping is unpredictable. If they take three weeks, that's a quarter of
+   the season gone. Order today; work the paper side while you wait.
+2. **Confirm the competition date and register.** Registration deadlines are
+   real and unforgiving.
+3. **Download the official BIOGLOW materials** into
+   [`official-materials/`](official-materials/) and read the rulebook.
+
+## The 12-week shape
+
+| Weeks | Phase | Robot | Innovation Project |
+| --- | --- | --- | --- |
+| 1–2 | Setup | Order kits, read rulebook, build field | Brainstorm, contact experts |
+| 3–4 | Explore | Driving base, analyse all missions | Pick problem, first expert call |
+| 5–6 | Commit | Choose missions, group into runs | Research, design solution |
+| 7–9 | Build & iterate | Attachments, code, repeat until reliable | Prototype, share, revise |
+| 10–11 | Polish | Freeze design, practice matches | Rehearse presentation |
+| 12 | Compete | | |
+
+The compression versus a normal season is mostly in weeks 3–6: you commit to a
+mission list sooner and explore less. That's the right trade at this length.
 
 ---
 
-## Phase 0 — Setup (Weeks 1–2)
+## Weeks 1–2 — Setup
 
-Goal: everyone can find things, and we all know what BIGGLOW actually asks for.
+Goal: unblock everything, and understand what BIOGLOW actually asks for.
+
+**Blocking tasks (coaches)**
+- [ ] **Order LEGO kits** — SPIKE Prime sets + this season's field/mission model set
+- [ ] Confirm competition date, venue, and registration deadline
+- [ ] Register the team, pay fees
+- [ ] Download all official PDFs → [`official-materials/`](official-materials/)
+- [ ] Set the weekly meeting schedule
 
 **Everyone**
-- [ ] Read the Robot Game Rulebook cover to cover. Yes, all of it.
-- [ ] Build the field: mat, mission models, dual-lock. Follow `field-setup.pdf` exactly.
+- [ ] Read the Robot Game Rulebook cover to cover
 - [ ] Sign the [team agreement](../core-values/team-agreement.md)
-- [ ] Fill in [`docs/team-roster.md`](https://github.com/amana4/FLL2026/blob/main/docs/team-roster.md) — names, roles, who's on what
+- [ ] Fill in the [team roster](https://github.com/amana4/FLL2026/blob/main/docs/team-roster.md)
 
-**Coaches / mentors**
-- [ ] Confirm tournament date and registration
-- [ ] Download all official PDFs into [`docs/official-materials/`](official-materials/)
-- [ ] Set the meeting schedule
+**Innovation Project — start now, don't wait for kits**
+- [ ] Brainstorm 20+ biodiversity questions. Go wide; judge nothing yet.
+- [ ] **Start emailing local experts this week.** University biology
+      departments, nature reserves, conservation charities, council ecology
+      officers, botanic gardens, wildlife trusts. Expect slow replies — that
+      lag is exactly why this can't wait until week 6.
 
-**Definition of done:** field is built and legal, everyone has read the rulebook,
-tournament date is on the calendar.
+> **Why experts now:** a researcher who takes three weeks to answer an email is
+> normal. Contact ten people in week 1 and you'll have two conversations by
+> week 4. Contact them in week 6 and you'll have none before the competition.
 
----
+**Once kits arrive**
+- [ ] Build the field: mat, mission models, dual-lock, per `field-setup.pdf`
+- [ ] Build a driving base — nothing attached to it yet
 
-## Phase 1 — Explore (Weeks 3–5)
-
-Goal: understand every mission and pick a project problem. Commit to nothing yet.
-
-**Robot Game**
-- [ ] One mission analysis file per mission in [`robot-game/missions/`](../robot-game/missions/) — copy `_TEMPLATE.md`
-- [ ] Score every mission for points, difficulty, and field position
-- [ ] Fill in [`robot-game/scoring-tracker.md`](../robot-game/scoring-tracker.md)
-
-**Innovation Project**
-- [ ] Brainstorm problems inside the BIGGLOW theme — go wide, 20+ ideas
-- [ ] Pick 3 candidates, do a quick feasibility pass on each
-- [ ] Choose one → write it up in [`innovation-project/problem.md`](../innovation-project/problem.md)
-
-**Robot Design**
-- [ ] Build a driving base. Don't attach anything to it yet.
-- [ ] Test: can it drive straight 1m? Turn 90° repeatably? Fix that before anything else.
-
-**Core Values**
-- [ ] Team name, identity, and how we'll make decisions when we disagree
-
-**Definition of done:** every mission has an analysis file, one project problem is
-chosen and written down, base robot drives repeatably.
+**Done when:** kits ordered, team registered, rulebook read, expert emails sent.
 
 ---
 
-## Phase 2 — Design (Weeks 6–10)
+## Weeks 3–4 — Explore
 
-Goal: turn analysis into a strategy and a first working solution.
+Goal: understand every mission; lock the project problem.
 
 **Robot Game**
-- [ ] Group missions into **runs** by field location — see [`robot-game/strategy.md`](../robot-game/strategy.md)
-- [ ] Target score: pick a realistic number and write down why
-- [ ] Draft a run plan per run in [`robot-game/runs/`](../robot-game/runs/)
+- [ ] One analysis file per mission → [`../robot-game/missions/`](../robot-game/missions/README.md)
+- [ ] Score each: points, difficulty 1–5, estimated seconds, field position
+- [ ] Roll up into [`scoring-tracker.md`](../robot-game/scoring-tracker.md)
 
 **Robot Design**
-- [ ] Design attachments per run. Aim for fast swaps — seconds spent in base are points lost.
-- [ ] Document each in [`robot-design/attachments/`](../robot-design/attachments/)
-- [ ] Decide on a navigation method (gyro / line following / wall squaring) and log the reasoning
+- [ ] Driving base drives straight 1m and turns 90° repeatably.
+      **Fix this before building anything else** — every later problem
+      compounds from an unreliable base.
 
 **Code**
-- [ ] One SPIKE project per run, saved to [`code/spike-projects/`](../code/spike-projects/)
-- [ ] Build the reusable blocks first: `drive_straight`, `turn_degrees`, `line_square`
+- [ ] Build the reusable My Blocks first: `drive_straight`, `turn_degrees`,
+      `reset_gyro` → [`../code/my-blocks.md`](../code/my-blocks.md)
 
 **Innovation Project**
-- [ ] Interview at least **two** people affected by the problem — real people, not web pages
-- [ ] Research existing solutions. Find out why they don't fully work.
-- [ ] Sketch our solution → [`innovation-project/solution.md`](../innovation-project/solution.md)
+- [ ] Narrow 20 ideas → 3 candidates → **1 chosen problem**
+- [ ] Write it up in [`problem.md`](../innovation-project/problem.md)
+- [ ] First expert conversation happens in this window
 
-**Definition of done:** run strategy is written, each run has a draft program that
-completes at least once, project has original research and a proposed solution.
+**Done when:** every mission analysed, base robot reliable, problem chosen.
 
 ---
 
-## Phase 3 — Build & Iterate (Weeks 11–16)
+## Weeks 5–6 — Commit
 
-Goal: reliability. This is the longest phase and it is mostly repetition.
+Goal: decide what you're actually doing. **After this, the mission list is fixed.**
 
-**Robot Game — this is the whole game**
-- [ ] Run each program **10 times**. Log every attempt in the run's file.
-- [ ] Anything below 80% success gets redesigned, not re-tuned.
-- [ ] Full 2:30 practice matches, timed, with attachment swaps
-- [ ] Track scores over time in [`robot-game/scoring-tracker.md`](../robot-game/scoring-tracker.md)
+**Robot Game**
+- [ ] Pick the mission list. Use points-per-second, not enthusiasm.
+- [ ] Group into runs by field location → [`strategy.md`](../robot-game/strategy.md)
+- [ ] Write down a target score and why it's realistic
+- [ ] Draft a run plan each → [`../robot-game/runs/`](../robot-game/runs/README.md)
 
-> **Consistency beats ambition.** A 250-point run that works half the time
-> averages worse than a 180-point run that always works — and it's miserable at a
-> tournament. Cut missions that won't stabilize.
-
-**Innovation Project**
-- [ ] Build a model, prototype, or detailed drawing of the solution
-- [ ] Share it with an expert / the affected community and get real feedback
-- [ ] Iterate based on that feedback — **judges specifically look for this**
-- [ ] Draft the 5-minute presentation
+> **Commit harder than feels comfortable.** With 6 weeks left, a mission list
+> that keeps changing is the main way teams end up with nothing reliable.
+> Pick fewer missions than you think you can do.
 
 **Robot Design**
-- [ ] Durability pass: what falls off? Fix it.
-- [ ] Can a team member swap any attachment in under 10 seconds?
+- [ ] Design and build one attachment per run
+- [ ] Document each → [`../robot-design/attachments/`](../robot-design/attachments/README.md)
+- [ ] Choose a navigation method and record the reasoning
+
+**Innovation Project**
+- [ ] Second expert interview
+- [ ] Research existing solutions; find out why they fall short
+- [ ] Design our solution → [`solution.md`](../innovation-project/solution.md)
+
+**Done when:** mission list frozen, runs defined, attachments built, solution designed.
+
+---
+
+## Weeks 7–9 — Build & Iterate
+
+The longest phase, and mostly repetition. This is where the score comes from.
+
+**Robot Game — the core loop**
+- [ ] Run each program **10 times**; log every attempt in its run file
+- [ ] Below 80%? **Redesign it, don't re-tune it.**
+- [ ] Full 2:30 timed practice matches with attachment swaps
+- [ ] Track scores in [`scoring-tracker.md`](../robot-game/scoring-tracker.md)
+
+> **Consistency beats ambition.** A 250-point run that works half the time
+> averages worse than a 180-point run that always works — and it's miserable on
+> the day. Cut what won't stabilise.
+
+**Innovation Project**
+- [ ] Build the prototype / model / detailed drawing
+- [ ] **Share it with an expert and get real feedback**
+- [ ] **Revise it based on what they said** — judges score this directly
+- [ ] Draft the 5-minute presentation
 
 **Engineering Notebook**
-- [ ] Should be ~70% complete by the end of this phase. Do not leave it to the end.
+- [ ] ~70% complete by the end of week 9. Do not leave it to the last week.
 
-**Definition of done:** each run at ≥80% success, project solution built and
-revised after outside feedback, notebook mostly written.
-
----
-
-## Phase 4 — Polish & Rehearse (Weeks 17–19)
-
-Goal: nothing new. Only refinement.
-
-- [ ] **Freeze the robot design.** Changes after this point cause tournament failures.
-- [ ] Innovation Project presentation rehearsed to time, from memory
-- [ ] Every student can explain *any* part of the robot — judges pick who they ask
-- [ ] Mock judging session with an outside adult asking rubric questions
-- [ ] Practice matches under pressure: noise, a timer, strangers watching
-- [ ] Complete [`docs/judging/`](judging/) prep sheets for all three judged areas
-- [ ] Engineering Notebook finished and exported
-
-**Definition of done:** presentation runs clean without notes, notebook submitted,
-robot untouched for a week and still scoring.
+**Done when:** every run ≥80%, solution revised after outside feedback,
+notebook mostly written.
 
 ---
 
-## Phase 5 — Tournament (Week 20)
+## Weeks 10–11 — Polish
 
-- [ ] Work through [`competition/packing-list.md`](../competition/packing-list.md) the night before
-- [ ] Follow [`competition/tournament-day.md`](../competition/tournament-day.md) on the day
-- [ ] Charge every hub and spare battery
-- [ ] Print the notebook and any handouts
-- [ ] Sleep. Genuinely — tired teams make judging mistakes.
+Nothing new. Only refinement.
+
+- [ ] **Freeze the robot design.** Late changes cause competition failures.
+- [ ] Presentation rehearsed to time, without notes
+- [ ] Every student can explain *any* part of the robot — judges choose who to ask
+- [ ] Mock judging with an outside adult using the real rubrics
+- [ ] Practice under pressure: noise, a timer, strangers watching
+- [ ] Fill in the [judging prep sheets](judging/README.md)
+- [ ] Notebook finished and submitted
+
+**Done when:** presentation runs clean, notebook submitted, robot untouched for
+a week and still scoring.
 
 ---
 
-## Phase 6 — Retrospective (after)
+## Week 12 — Competition
 
-- [ ] What worked, what didn't → [`docs/retrospective.md`](retrospective.md)
-- [ ] Write it while it's fresh. Next season's team will thank you.
+- [ ] [`packing-list.md`](../competition/packing-list.md) the night before
+- [ ] [`tournament-day.md`](../competition/tournament-day.md) on the day
+- [ ] Every hub and spare battery charged
+- [ ] Sleep. Tired teams make judging mistakes.
+
+---
+
+## After
+
+- [ ] [`retrospective.md`](retrospective.md), written while it's fresh
 
 ---
 
 ## Weekly rhythm
 
-A meeting that works, roughly 2 hours:
+Roughly 2 hours:
 
 | Time | What |
 | --- | --- |
-| 0:00–0:10 | Standup — what did you do, what's next, what's blocking you |
+| 0:00–0:10 | Standup — did, next, blocked |
 | 0:10–1:30 | Split into workstreams and build |
-| 1:30–1:50 | Come back together, demo to each other |
-| 1:50–2:00 | Log the meeting in [`meetings/`](../meetings/), assign next steps |
+| 1:30–1:50 | Regroup, demo to each other |
+| 1:50–2:00 | Log the meeting, assign next steps |
 
-Copy [`meetings/_TEMPLATE.md`](../meetings/_TEMPLATE.md) for every session. The
-meeting log is not busywork — it's the raw material for the Engineering Notebook
-and it's the evidence judges ask for.
+Copy [`_TEMPLATE.md`](../meetings/_TEMPLATE.md) each session. The log is the raw
+material for the Engineering Notebook and the evidence judges ask for.
+
+**At 12 weeks, consider meeting twice a week** if schedules allow. Weeks 7–9
+especially — reliability comes from repetition, and repetition needs table time.
+
+## Protecting the project time
+
+Robot Game is **one quarter** of the Champion's Award. The classic failure is
+spending twelve weeks on the robot and improvising the Innovation Project in
+week 11.
+
+Guard against it: **every meeting, someone works on the project.** Even 20
+minutes. Split the team rather than serialising the work.

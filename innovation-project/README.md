@@ -1,13 +1,16 @@
 # Innovation Project
 
-Find a real problem in the BIGGLOW theme, design a better solution, and share it
+Find a real problem in the BIOGLOW theme, design a better solution, and share it
 with people who can use it.
 
-**This is 25% of the Champion's Award.** Start it in week 3, not week 18.
+**This is 25% of the Champion's Award.** With only 12 weeks, start it in week 1 —
+the expert emails especially. Everything else here waits on replies.
 
 | File | What's in it |
 | --- | --- |
+| [`brainstorm.md`](brainstorm.md) | Going wide, then choosing a problem |
 | [`problem.md`](problem.md) | The problem we chose and why it matters |
+| [`expert-outreach.md`](expert-outreach.md) | Who we're contacting — **start week 1** |
 | [`research.md`](research.md) | Sources, interviews, existing solutions |
 | [`solution.md`](solution.md) | What we designed |
 | [`sharing.md`](sharing.md) | Who we shared with and what they said |
@@ -35,14 +38,22 @@ Worth reading before you start — these are the recurring gaps:
   innovation has to be in *our* twist. Say what that twist is.
 - **Only one student talks.** Judges notice. Everyone presents a part.
 
-## Deadlines
+## Deadlines — 12-week season
+
+Compressed to fit an early-November competition. See
+[`docs/season-plan.md`](../docs/season-plan.md).
 
 | Milestone | Target | Done |
 | --- | --- | --- |
-| Problem chosen | Week 5 | ☐ |
-| Research + 2 interviews complete | Week 10 | ☐ |
-| Solution designed | Week 12 | ☐ |
-| Prototype / model built | Week 15 | ☐ |
-| Shared and feedback collected | Week 16 | ☐ |
-| Solution revised after feedback | Week 17 | ☐ |
-| Presentation rehearsed to time | Week 19 | ☐ |
+| Brainstorm done, 10+ expert emails sent | Week 2 | ☐ |
+| Problem chosen | Week 4 | ☐ |
+| First expert interview | Week 4 | ☐ |
+| Research + 2 interviews complete | Week 6 | ☐ |
+| Solution designed | Week 6 | ☐ |
+| Prototype / model built | Week 8 | ☐ |
+| Shared and feedback collected | Week 9 | ☐ |
+| Solution revised after feedback | Week 9 | ☐ |
+| Presentation rehearsed to time | Week 11 | ☐ |
+
+⚠️ **The expert emails are the critical path.** Everything downstream waits on
+replies, and replies take weeks. See [`expert-outreach.md`](expert-outreach.md).

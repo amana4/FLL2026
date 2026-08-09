@@ -21,7 +21,7 @@ Stay in that loop until every run clears 80%.
 
 ## Rules that bite teams every year
 
-Verify each against the BIGGLOW rulebook — these are general FLL patterns, not
+Verify each against the BIOGLOW rulebook — these are general FLL patterns, not
 season-specific quotes.
 
 - Equipment must fit within the launch area at the start of the match.

@@ -1,4 +1,4 @@
-site_name: FLL 2026–27 — BIGGLOW
+site_name: FLL 2026–27 — BIOGLOW
 site_description: Team workspace for our FIRST LEGO League Challenge season
 site_url: https://amana4.github.io/FLL2026/
 repo_url: https://github.com/amana4/FLL2026
@@ -89,6 +89,7 @@ not_in_nav: |
 nav:
   - Home: README.md
   - Season Plan: docs/season-plan.md
+  - Equipment: docs/equipment.md
   - Robot Game:
       - robot-game/README.md
       - Strategy: robot-game/strategy.md
@@ -105,7 +106,9 @@ nav:
       - My Blocks: code/my-blocks.md
   - Innovation Project:
       - innovation-project/README.md
+      - Brainstorm: innovation-project/brainstorm.md
       - Problem: innovation-project/problem.md
+      - Expert Outreach: innovation-project/expert-outreach.md
       - Research: innovation-project/research.md
       - Solution: innovation-project/solution.md
       - Sharing & Feedback: innovation-project/sharing.md

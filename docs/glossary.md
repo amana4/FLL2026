@@ -7,7 +7,7 @@ FLL has a lot of jargon. New team members and parents can start here.
 | **Base** / Home | The marked area on the mat where the robot starts and where you may legally touch it. Also called Launch Area. |
 | **Launch** | Starting the robot from Base. |
 | **Interruption** | Touching the robot outside Base. Usually costs a penalty and you must return it to Base. |
-| **Precision Tokens** | Tokens you start the match with; you lose one each time you interrupt the robot. Remaining tokens are worth points. _Verify the exact count and value in the BIGGLOW rulebook._ |
+| **Precision Tokens** | Tokens you start the match with; you lose one each time you interrupt the robot. Remaining tokens are worth points. _Verify the exact count and value in the BIOGLOW rulebook._ |
 | **Mission** | One scoring task on the field. |
 | **Mission Model** | The LEGO structure on the mat that a mission uses. |
 | **Run** | One trip out from Base and back, usually completing several missions. |

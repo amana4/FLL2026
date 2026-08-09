@@ -1,4 +1,4 @@
-# Official BIGGLOW Materials
+# Official BIOGLOW Materials
 
 **Nothing in this repo overrides these documents.** If our notes disagree with the
 official rulebook, the rulebook wins — always. When you find a conflict, fix our

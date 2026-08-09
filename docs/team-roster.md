@@ -9,7 +9,7 @@ _TODO: fill this in during Phase 0._
 | Team name | _TODO_ |
 | Team number | _TODO_ |
 | Region / program delivery partner | _TODO_ |
-| Season | BIGGLOW (2026–2027) |
+| Season | BIOGLOW (2026–2027) |
 | Meeting time & place | _TODO_ |
 
 ## Members

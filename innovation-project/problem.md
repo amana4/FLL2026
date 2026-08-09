@@ -20,7 +20,7 @@ of what they put in recycling bins is contaminated and gets landfilled."
 
 _TODO — scale, consequences, why it's worth solving_
 
-## How it connects to BIGGLOW
+## How it connects to BIOGLOW
 
 _TODO — fill in once the official theme description is available in
 `docs/official-materials/`. The project must sit inside the season's theme._
