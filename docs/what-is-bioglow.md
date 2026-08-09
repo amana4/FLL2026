@@ -37,21 +37,88 @@ Straight from the rulebook:
 
 ## The four rainforest layers
 
-The official materials organise the rainforest into four layers. Worth drawing
-on a whiteboard — it makes the missions click:
+A rainforest isn't one habitat — it's **four stacked habitats**, and most
+species never leave their own layer. Draw this on a whiteboard; it's the single
+best five minutes you can spend explaining the season.
 
 ```
-   ☀️  EMERGENT LAYER    the tallest trees, poking above everything
-  🌳  CANOPY LAYER      the dense green roof where most life lives
- 🌿  UNDERSTORY         shady, humid, between trunks
-🍄  FOREST FLOOR        dark, decomposing, fungal networks
+                    ☀️  full sun, high wind
+   ╱▲╲              ─────────────────────────────
+  ╱   ╲   EMERGENT LAYER          45–60 m+
+ ╱     ╲  A few giant trees poking out above everything else.
+──────────────────────────────────────────────────
+▓▓▓▓▓▓▓▓  CANOPY LAYER            30–45 m
+▓▓▓▓▓▓▓▓  The dense green roof. Crowns interlock into a
+▓▓▓▓▓▓▓▓  near-continuous surface.
+──────────────────────────────────────────────────
+ ▒▒  ▒▒   UNDERSTORY              up to ~20 m
+ ▒▒  ▒▒   Shady, humid, still air. Young trees waiting
+ ▒▒  ▒▒   for a gap to open above them.
+──────────────────────────────────────────────────
+░░░░░░░░  FOREST FLOOR            ground level
+🍄 🐜      Dark. Almost everything that falls is recycled
+          within weeks by fungi and insects.
 ```
 
-Then ask: **"Which layer do you think most of our missions are in?"**
+### What lives where, and why it matters
 
-Look at the mission list together — drones survey *above* the canopy (M01),
-research platforms go *into* it (M09), and mycelium and roots work *below* the
-floor (M05, M07, M11). The missions climb the whole rainforest.
+| Layer | Light | Conditions | Life there |
+| --- | --- | --- | --- |
+| **Emergent** | Full sun | Hot, windy, big temperature swings | Eagles, bats, butterflies. Trees here are huge and widely spaced. |
+| **Canopy** | Most of it | Stable, wet, food-rich | **Roughly half of all rainforest species.** Monkeys, sloths, tree frogs, birds, and plants that grow *on* other plants. |
+| **Understory** | ~5% | Humid, still, dim | Big broad leaves to catch scraps of light. Jaguars, snakes, insects, frogs. |
+| **Forest floor** | ~2% | Dark, damp, fast decay | Fungi, leafcutter ants, decomposers. Large mammals passing through. |
+
+**The counter-intuitive bit worth telling kids:** rainforest soil is
+*surprisingly poor*. Almost all the nutrients are locked up in living things,
+not the ground. When a leaf falls it's broken down and reabsorbed within weeks.
+That's why clearing rainforest for farmland fails so fast — the fertility was
+never in the soil.
+
+### The layers explain the mission list
+
+Ask: **"Which layer do you think our missions are in?"** Then work through it —
+the answer is *all of them*, and the robot climbs the whole rainforest.
+
+| Layer | Missions |
+| --- | --- |
+| **Emergent / above** | M01 Drone Survey — drones fly above the canopy to map it |
+| **Canopy** | M09 Research Platform, M04 Lucky Leaves, M08 Tangled, M02 Exploding Seeds |
+| **Understory** | M12 Forest Elder, M03 Flip the Rock |
+| **Forest floor & below** | M05 Reaching Roots, M06 Leafcutter Frenzy, M07 Humongous Fungus, M10 Fragile Microhabitats, M11 Window to the Past, M14 Seeds of Renewal |
+| **The city** | M15 Biocentric Architecture — where humans and nature meet |
+
+> This mapping is **ours**, read off the mission descriptions. FIRST labels the
+> four Project Sparks by layer but doesn't assign the missions to layers.
+
+Notice the shape: the missions get *harder to see* as you go down. The drone
+survey is visible from the air; the mycelium network is invisible underground.
+That's true of real biodiversity work too — the most important connections are
+usually the ones nobody can see.
+
+### FIRST's Project Sparks are organised by layer
+
+The Team Meeting Guide pairs each starter prompt with a layer:
+
+| Layer | Spark |
+| --- | --- |
+| **Emergent** | Scientists use **drones** to reach places humans can't — dense canopy, flooded ground. *How could you use aerial technology to help a rainforest?* |
+| **Canopy** | Ecologists use **simple tools** to study how plants grow and support wildlife. *How could you use tools innovatively to support a local ecosystem?* |
+| **Understory** | Wildlife biologists use **camera traps and trackers** to study animals. *How could you use tools innovatively to support a local ecosystem?* |
+| **Forest floor** | Conservationists use **mapping technology** to see how forests change. *How could you restore a piece of land to benefit native plants and animals?* |
+
+Useful brainstorming trick: **assign each kid a layer** and have them find a
+problem in it. It stops everyone converging on the same obvious idea, and it
+guarantees somebody thinks about soil and fungi, which teams usually skip.
+
+### Do this with your own local habitat
+
+Any woodland, park, or even a hedge has layers — canopy, shrub, ground, soil.
+Walk somewhere nearby and identify them. Ask what lives in each and which layer
+gets ignored when people "tidy up."
+
+That question — *which layer do people forget?* — has produced a lot of good
+Innovation Projects. The answer is usually the ground and the soil.
 
 ## The one-sentence version
 
@@ -96,21 +163,16 @@ separate trees. The game design makes cooperation literal.
 
 ## Official Project Sparks
 
-If the brainstorm stalls, FIRST provides four starting prompts:
-
-1. Scientists use **drones** to reach places humans can't — dense canopy,
-   flooded ground. *How could you use aerial technology to help a rainforest?*
-2. Ecologists use **simple tools** to study how plants grow and support
-   wildlife. *How could you use tools innovatively to support a local ecosystem?*
-3. Wildlife biologists use **camera traps and trackers** to study animals.
-   *How could you use tools innovatively to support a local ecosystem?*
-4. Conservationists use **mapping technology** to see how forests change.
-   *How could you restore a piece of land to benefit native plants and animals?*
+FIRST provides four starting prompts, one per rainforest layer — the full table
+is in [the layers section above](#firsts-project-sparks-are-organised-by-layer).
 
 > **But local beats exotic.** You can't interview a rainforest. You *can*
 > interview a council ecologist about the park down the road. A local problem
 > gets you real research, real photos, and real feedback — all of which the
 > rubric rewards. Rainforest is the setting; your project doesn't have to be.
+>
+> The layers still apply: your local park has a canopy, a shrub layer, ground,
+> and soil, and the same question works — *which one do people forget?*
 
 ## Questions that get kids talking
 
