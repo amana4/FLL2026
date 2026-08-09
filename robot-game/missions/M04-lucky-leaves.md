@@ -28,7 +28,7 @@
 
 ## Notes and gotchas
 
-⚠️ **This mission can score you zero.** Direct rulebook wording:
+**This mission can score you zero.** Direct rulebook wording:
 
 > If the katydid is completely removed from the nest at any time, the bonus is no longer available.
 >

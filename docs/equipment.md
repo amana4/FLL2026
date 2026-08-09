@@ -1,6 +1,6 @@
 # Equipment
 
-✅ **Kits arrived 8 August 2026.** The season's biggest blocker is already
+**Kits arrived 8 August 2026.** The season's biggest blocker is already
 cleared — robot work can start at the first meeting.
 
 Remaining equipment tasks are inventory and spares, below.

@@ -3,7 +3,7 @@
 All 15 BIOGLOW missions, plus the Equipment Inspection bonus and Precision
 Tokens. Scoring quoted from the official Robot Game Rulebook (4 Aug 2026).
 
-> ⚠️ **Check [Challenge Updates](../../docs/official-materials/README.md) monthly.**
+> **Check [Challenge Updates](../../docs/official-materials/README.md) monthly.**
 > They supersede the rulebook. As of 4 Aug 2026 there are none.
 
 ## Mission index
@@ -13,18 +13,18 @@ Tokens. Scoring quoted from the official Robot Game Rulebook (4 Aug 2026).
 | [M01](M01-drone-survey.md) | Drone Survey | 30 | 1, 2 | 9 | 20 + 10 bonus |
 | [M02](M02-exploding-seeds.md) | Exploding Seeds | 10 each seed | 3 | 9 | Per-seed |
 | [M03](M03-flip-the-rock.md) | Flip the Rock | 30 | 4, 5 | 9 | 20 + 10 bonus (return rock) |
-| [M04](M04-lucky-leaves.md) | Lucky Leaves | 30 | 6 | 9 | ⚠️ **Can score zero** |
+| [M04](M04-lucky-leaves.md) | Lucky Leaves | 30 | 6 | 9 | **Can score zero** |
 | [M05](M05-reaching-roots.md) | Reaching Roots | 20 | 7 | 10 | Either/or, not additive |
 | [M06](M06-leafcutter-frenzy.md) | Leafcutter Frenzy | 10 each fragment | 8, 9, 10 | 10 | Per-fragment |
-| [M07](M07-humongous-fungus.md) | Humongous Fungus | 20 + 10 | 10 | 10 | 🤝 Needs opposing team |
-| [M08](M08-tangled.md) | Tangled | **30** | 11–15 | 10 | ⭐ Single condition |
+| [M07](M07-humongous-fungus.md) | Humongous Fungus | 20 + 10 | 10 | 10 | Needs opposing team |
+| [M08](M08-tangled.md) | Tangled | **30** | 11–15 | 10 | Single condition |
 | [M09](M09-research-platform.md) | Research Platform | 30 | 11–15 | 11 | 3 × 10, partial credit |
-| [M10](M10-fragile-microhabitats.md) | Fragile Microhabitats | 20 | 16 | 11 | ⭐ **Do nothing** |
+| [M10](M10-fragile-microhabitats.md) | Fragile Microhabitats | 20 | 16 | 11 | **Do nothing** |
 | [M11](M11-window-to-the-past.md) | Window to the Past | 20 | 17 | 11 | Single condition |
 | [M12](M12-forest-elder.md) | Forest Elder | 30 | 18 | 11 | 20 + 10 |
-| [M13](M13-keystone-species.md) | Keystone Species | 30 | 19, 20 | 12 | 🆕 Dock · you build the model |
-| [M14](M14-seeds-of-renewal.md) | Seeds of Renewal | 10 each seed | 21 | 12 | 🆕 Dock · per-seed |
-| [M15](M15-biocentric-architecture.md) | Biocentric Architecture | 40 | 22, 23, 24 | 12 | 🆕 Dock · one bonus only |
+| [M13](M13-keystone-species.md) | Keystone Species | 30 | 19, 20 | 12 | New this year: Dock · you build the model |
+| [M14](M14-seeds-of-renewal.md) | Seeds of Renewal | 10 each seed | 21 | 12 | New this year: Dock · per-seed |
+| [M15](M15-biocentric-architecture.md) | Biocentric Architecture | 40 | 22, 23, 24 | 12 | New this year: Dock · one bonus only |
 | M20 | **Equipment Inspection** | **20** | — | 8 | See below |
 | — | **Precision Tokens** | **up to 50** | — | 8 | See below |
 

@@ -46,7 +46,7 @@ Run it 10 times in a row. Log honestly — a fudged log means we tune the wrong 
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | _TODO_ | | | | | | | | | | | % | |
 
-✅ = full success, ⚠️ = partial, ❌ = failure
+Y = full success, P = partial, N = failure
 
 **Current success rate:** _TODO_%
 **Ship it?** Needs ≥80% to go in a match.

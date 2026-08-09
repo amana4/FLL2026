@@ -29,7 +29,7 @@
 
 Mission models: Restoration Platform, Young Trees.
 
-🆕 **Uses the new interchangeable dock system** (see Docks below).
+**Uses the new interchangeable dock system** (see Docks below).
 
 **You build the keystone species yourself** from bag 20:
 

@@ -3,21 +3,21 @@
 **Theme: Biodiversity.** Challenge announced 4 August 2026. Local competition:
 early November 2026.
 
-> ⏱️ **This is a 12-week season, not a 20-week one.** From today (9 Aug) to an
+> **This is a 12-week season, not a 20-week one.** From today (9 Aug) to an
 > early-November competition is about 12 weeks. That's enough time to do well,
 > but not enough to do things twice. The plan below is compressed accordingly:
 > shorter exploration, earlier commitment, more overlap between workstreams.
 
 | Key date | Date | Notes |
 | --- | --- | --- |
-| Challenge announced | **4 Aug 2026** | ✅ done |
-| LEGO kits arrived | **8 Aug 2026** | ✅ done — robot work unblocked |
+| Challenge announced | **4 Aug 2026** | Done |
+| LEGO kits arrived | **8 Aug 2026** | Done — robot work unblocked |
 | Season starts | **Sun 9 Aug 2026** | Meeting 1 |
-| Team registration deadline | _TODO — check now_ | ⚠️ may already be close |
+| Team registration deadline | _TODO — check now_ | Important: may already be close |
 | Engineering Notebook due | _TODO_ | Often 1–2 weeks before the competition |
 | **Local competition** | **Early Nov 2026** | ← everything works back from here |
 
-> 📅 **Meeting-by-meeting plan:** [`meeting-plan.md`](meeting-plan.md) breaks
+> **Meeting-by-meeting plan:** [`meeting-plan.md`](meeting-plan.md) breaks
 > this into the 26 actual Sunday/Wednesday sessions with tickable deliverables.
 > Use that day to day; use this page for the shape of the season.
 
@@ -57,8 +57,8 @@ Goal: field built, base driving, and the slow-moving project work started.
 **Coaches**
 - [ ] Confirm competition date, venue, and registration deadline
 - [ ] Register the team, pay fees
-- [x] ~~Order LEGO kits~~ — arrived 8 Aug ✅
-- [x] ~~Download official PDFs~~ — in [`official-materials/`](official-materials/) ✅
+- [x] ~~Order LEGO kits~~ — arrived 8 Aug
+- [x] ~~Download official PDFs~~ — in [`official-materials/`](official-materials/)
 
 **Everyone**
 - [ ] Read the Robot Game Rulebook cover to cover

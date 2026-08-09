@@ -35,13 +35,13 @@ git checkout -b code/r2-line-following
 A good message says **what changed and why**. Future-you has no memory.
 
 ```
-✅ R2: slow approach to 30% — was overshooting the drop zone
-✅ Add interview notes from the recycling centre visit
-✅ Gripper v3: wider fork so it doesn't miss the loop
+Good: R2: slow approach to 30% — was overshooting the drop zone
+Good: Add interview notes from the recycling centre visit
+Good: Gripper v3: wider fork so it doesn't miss the loop
 
-❌ update
-❌ fixed stuff
-❌ asdf
+Bad:  update
+Bad:  fixed stuff
+Bad:  asdf
 ```
 
 ```bash

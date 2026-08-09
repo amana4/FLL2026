@@ -1,13 +1,31 @@
 # Meeting Plan — 26 Sessions
 
-**Sundays and Wednesdays**, 9 Aug → 4 Nov 2026. Competition **Sat 7 Nov**.
+Confirmed schedule, 9 August to 4 November 2026:
 
-One page per meeting. Open the one you're running; everything else is out of the way.
+| Day | Time |
+| --- | --- |
+| **Sundays** | 11:00 am to 12:30 pm |
+| **Wednesdays** | 6:00 to 7:30 pm |
 
-> ⚠️ **Competition date assumed Sat 7 Nov.** Confirm and adjust — if earlier, cut
-> from Build & Iterate, never from the last three meetings.
+Competition is **Saturday 7 November**.
 
-> ✅ **Kits arrived 8 Aug**, so robot work starts at meeting 1.
+One page per meeting. Open the one you're running; everything else stays out of
+the way.
+
+Both sessions are 90 minutes, which comes to about 39 hours of table time for
+the whole season. That is workable but tight, and it is less than the two-hour
+Sundays this plan was first drafted around. Two things follow. A 90-minute
+meeting realistically fits two or three agenda items rather than five, so pick
+the important ones and let the rest carry to the next session. And homework
+matters more than it would with longer meetings: reading, sketching, and
+writing up should happen between sessions so that table time goes on building
+and testing.
+
+Note: the competition date is assumed to be Saturday 7 November. Confirm it and
+adjust. If it turns out to be earlier, cut meetings from Build and Iterate,
+never from the last three.
+
+Kits arrived 8 August, so robot work starts at meeting 1.
 
 ## Who's who — fill in at Meeting 1
 
@@ -21,7 +39,7 @@ Homework is assigned to **Kid 1**–**Kid 5**. Write the real names here once.
 | **Kid 4** | _TODO_ | Robot strategy & testing |
 | **Kid 5** | _TODO_ | Notebook & documentation |
 
-> ⚠️ **Starting points, not permanent jobs.** The Robot Design rubric wants
+> **Starting points, not permanent jobs.** The Robot Design rubric wants
 > *"building and coding skills in **all** team members"*, and judges pick who
 > they question. Rotate — see [rotation](#rotation).
 
@@ -49,7 +67,7 @@ own the part they'll present.
 
 | # | Date | Focus | |
 | --- | --- | --- | --- |
-| [1](../meetings/plan/m01.md) | Sun 9 Aug | [Kickoff](../meetings/plan/m01.md) | 🚀 Kickoff |
+| [1](../meetings/plan/m01.md) | Sun 9 Aug | [Kickoff](../meetings/plan/m01.md) | Kickoff |
 | [2](../meetings/plan/m02.md) | Wed 12 Aug | [Build the field](../meetings/plan/m02.md) |  |
 | [3](../meetings/plan/m03.md) | Sun 16 Aug | [Field setup + driving base](../meetings/plan/m03.md) |  |
 | [4](../meetings/plan/m04.md) | Wed 19 Aug | [Base driving reliably](../meetings/plan/m04.md) |  |
@@ -71,7 +89,7 @@ own the part they'll present.
 
 | # | Date | Focus | |
 | --- | --- | --- | --- |
-| [9](../meetings/plan/m09.md) | Sun 6 Sep | [Freeze the mission list ⚠️](../meetings/plan/m09.md) | 🔒 **Mission list freezes** |
+| [9](../meetings/plan/m09.md) | Sun 6 Sep | [Freeze the mission list ](../meetings/plan/m09.md) | **Mission list freezes** |
 | [10](../meetings/plan/m10.md) | Wed 9 Sep | [Attachment design](../meetings/plan/m10.md) |  |
 | [11](../meetings/plan/m11.md) | Sun 13 Sep | [Build and program](../meetings/plan/m11.md) |  |
 | [12](../meetings/plan/m12.md) | Wed 16 Sep | [Run 2](../meetings/plan/m12.md) |  |
@@ -95,9 +113,9 @@ own the part they'll present.
 
 | # | Date | Focus | |
 | --- | --- | --- | --- |
-| [19](../meetings/plan/m19.md) | Sun 11 Oct | [Freeze the robot ⚠️](../meetings/plan/m19.md) | 🔒 **Robot design freezes** |
+| [19](../meetings/plan/m19.md) | Sun 11 Oct | [Freeze the robot ](../meetings/plan/m19.md) | **Robot design freezes** |
 | [20](../meetings/plan/m20.md) | Wed 14 Oct | [Presentation](../meetings/plan/m20.md) |  |
-| [21](../meetings/plan/m21.md) | Sun 18 Oct | [Mock judging](../meetings/plan/m21.md) | 🎤 Mock judging |
+| [21](../meetings/plan/m21.md) | Sun 18 Oct | [Mock judging](../meetings/plan/m21.md) | Mock judging |
 | [22](../meetings/plan/m22.md) | Wed 21 Oct | [Close the gaps](../meetings/plan/m22.md) |  |
 
 ### Block 6 — Final
@@ -107,9 +125,9 @@ own the part they'll present.
 | # | Date | Focus | |
 | --- | --- | --- | --- |
 | [23](../meetings/plan/m23.md) | Sun 25 Oct | [Notebook done](../meetings/plan/m23.md) |  |
-| [24](../meetings/plan/m24.md) | Wed 28 Oct | [Submit](../meetings/plan/m24.md) | 📓 **Notebook due** |
+| [24](../meetings/plan/m24.md) | Wed 28 Oct | [Submit](../meetings/plan/m24.md) | **Notebook due** |
 | [25](../meetings/plan/m25.md) | Sun 1 Nov | [Dress rehearsal](../meetings/plan/m25.md) |  |
-| [26](../meetings/plan/m26.md) | Wed 4 Nov | [Pack](../meetings/plan/m26.md) | 🎒 Pack |
+| [26](../meetings/plan/m26.md) | Wed 4 Nov | [Pack](../meetings/plan/m26.md) | Pack |
 
 ---
 
@@ -122,14 +140,14 @@ Put these in a real calendar with reminders.
 | Wed 12 Aug | Team registered, **10 expert emails sent** |
 | Wed 19 Aug | Field built, base driving, all 15 missions analysed |
 | Sun 30 Aug | Innovation Project problem chosen |
-| Sun 6 Sep | 🔒 **Mission list frozen** |
+| Sun 6 Sep | **Mission list frozen** |
 | Sun 27 Sep | Solution shared with expert #1 |
 | Sun 4 Oct | Solution shared with group #2 |
 | Wed 7 Oct | Notebook 70% complete |
-| Sun 11 Oct | 🔒 **Robot design frozen** |
+| Sun 11 Oct | **Robot design frozen** |
 | Sun 18 Oct | Mock judging done |
-| Wed 28 Oct | 📓 **Notebook submitted** |
-| Sat 7 Nov | 🏆 **Competition** |
+| Wed 28 Oct | **Notebook submitted** |
+| Sat 7 Nov | **Competition** |
 
 ## Standing agenda
 

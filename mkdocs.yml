@@ -67,7 +67,7 @@ markdown_extensions:
 
 # Files that shouldn't become web pages.
 #
-# ⚠️ team-roster.md is excluded ON PURPOSE. It holds students' names, grades,
+# Important: team-roster.md is excluded ON PURPOSE. It holds students' names, grades,
 # and contact details, and this site is PUBLIC. Do not add it to the site.
 # It stays in the repo for the team; it must not be published. Apply the same
 # care to anything else naming a minor — photos of students especially.
@@ -92,6 +92,7 @@ exclude_docs: |
 # deliberately kept out of the nav — they'd clutter it, and they aren't meant
 # to be read top-to-bottom.
 not_in_nav: |
+  CLAUDE.md
   **/_TEMPLATE.md
   code/screenshots/README.md
   code/spike-projects/README.md

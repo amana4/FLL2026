@@ -4,7 +4,7 @@
 the official rulebook, the rulebook wins — always. When you find a conflict, fix
 our notes and mention it at the next meeting.
 
-> 🔒 **These files are gitignored and must stay that way.** They're FIRST's
+> **These files are gitignored and must stay that way.** They're FIRST's
 > copyrighted material and this repo is public. `.gitignore` allowlists only
 > this README; the CI build fails if anything else here gets committed. They
 > live on team members' computers, not on GitHub.
@@ -13,10 +13,10 @@ our notes and mention it at the next meeting.
 
 | File | What it is | Read? |
 | --- | --- | --- |
-| `fll-challenge-bioglow-rgr.pdf` | **Robot Game Rulebook** — 15 missions, all rules | ✅ extracted into [`robot-game/`](../../robot-game/README.md) |
-| `fll-challenge-bioglow-rubrics-color.pdf` | The judging rubrics | ✅ extracted into [`docs/judging/`](../judging/README.md) |
-| `fll-challenge-bioglow-updates.pdf` | **Challenge Updates** | ✅ no updates as of 4 Aug 2026 |
-| `fll-challenge-bioglow-season-overview.pdf` | Season summary, project brief | ✅ |
+| `fll-challenge-bioglow-rgr.pdf` | **Robot Game Rulebook** — 15 missions, all rules | Done, extracted into [`robot-game/`](../../robot-game/README.md) |
+| `fll-challenge-bioglow-rubrics-color.pdf` | The judging rubrics | Done, extracted into [`docs/judging/`](../judging/README.md) |
+| `fll-challenge-bioglow-updates.pdf` | **Challenge Updates** | Done, no updates as of 4 Aug 2026 |
+| `fll-challenge-bioglow-season-overview.pdf` | Season summary, project brief | Done |
 | `fll-challenge-bioglow-en.pdf` / `RsaYLB-...-tmg.pdf` | Team Meeting Guide (32 pp) — session plans | ☐ |
 | `fll-challenge-bioglow-field-setup-reference-guide.pdf` | Field setup | ☐ |
 | `fll-challenge-bioglow-participation-rules.pdf` | Participation rules | ☐ |

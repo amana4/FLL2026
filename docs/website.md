@@ -50,7 +50,7 @@ rather than publishing them by accident. Don't disable that check.
 
 Three ways, in order of convenience:
 
-**From the website.** Every page has a pencil ✏️ icon that opens it on GitHub
+**From the website.** Every page has a pencil icon that opens it on GitHub
 ready to edit. Easiest for a quick fix from a phone.
 
 **On GitHub.com.** Navigate to the file, click edit, commit. No git needed —
@@ -81,7 +81,7 @@ Skip step 2 and the page still builds, but nobody will find it in the menu.
 
 ## If the build fails
 
-Check the **Actions** tab for the red ✗ and read the log. Common causes:
+Check the **Actions** tab for the red cross and read the log. Common causes:
 
 | Error | Cause | Fix |
 | --- | --- | --- |
@@ -90,7 +90,7 @@ Check the **Actions** tab for the red ✗ and read the log. Common causes:
 | `Page exists in nav but not in docs` | `nav:` references a file that doesn't exist | Correct the path in `mkdocs.yml` |
 
 The build uses `--strict`, which turns broken internal links into failures. That
-is deliberate: better a red ✗ in Actions than a dead link found during judging
+is deliberate: better a red cross in Actions than a dead link found during judging
 prep.
 
 ## Why MkDocs and not Notion or a wiki

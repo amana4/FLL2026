@@ -30,7 +30,7 @@
 
 Mission models: Spider Habitat, Snail Habitat.
 
-⚠️ **This is a 'do nothing' mission — you start with these 20 points and can only lose them.** Both habitats appear twice on the field map (position 10 shown in two places), so check where they sit relative to your other runs.
+**This is a 'do nothing' mission — you start with these 20 points and can only lose them.** Both habitats appear twice on the field map (position 10 shown in two places), so check where they sit relative to your other runs.
 
 Any run that passes nearby risks knocking them. Factor this into route planning: a 20-point mission you disturb costs the same as a 20-point mission you fail.
 

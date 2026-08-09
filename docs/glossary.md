@@ -21,7 +21,7 @@ Definitions match the official BIOGLOW Robot Game Rulebook (page 13).
 | **Dual Lock** | The 3M™ recloseable fastener holding mission models to the mat. |
 | **Equipment** | Everything brought to the match: robot, attachments, materials. Must fit the launch area(s) and stay under 12 in. (305 mm). |
 | **Equipment Inspection** | Pre-match check. Fit everything in **one** launch area under the height limit → **20 points**. |
-| **Interchangeable Docks** | 🆕 New this year. Three docks (mine, city, farm) for Missions 13–15. You choose which model goes where before the match. |
+| **Interchangeable Docks** | New this year: New this year. Three docks (mine, city, farm) for Missions 13–15. You choose which model goes where before the match. |
 | **Autonomous** | Operating independently, without human intervention. Required outside home. |
 | **Challenge Updates** | Official rule changes published after launch. **They supersede the rulebook.** |
 | **Core Values** | Discovery, Innovation, Impact, Inclusion, Teamwork, Fun. 25% of the Champion's score. |

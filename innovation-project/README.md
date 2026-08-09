@@ -55,5 +55,5 @@ Compressed to fit an early-November competition. See
 | Solution revised after feedback | Week 9 | ☐ |
 | Presentation rehearsed to time | Week 11 | ☐ |
 
-⚠️ **The expert emails are the critical path.** Everything downstream waits on
+**The expert emails are the critical path.** Everything downstream waits on
 replies, and replies take weeks. See [`expert-outreach.md`](expert-outreach.md).

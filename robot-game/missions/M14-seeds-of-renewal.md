@@ -30,7 +30,7 @@
 
 Mission model: Replantation Station.
 
-🆕 **Uses the new interchangeable dock system.**
+**Uses the new interchangeable dock system.**
 
 Per-seed scoring with a per-seed bonus — 10 points per seed if fully done. Confirm the seed count when building to work out the maximum.
 

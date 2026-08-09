@@ -6,7 +6,7 @@ A script for the first 20 minutes. Written to be read aloud or paraphrased.
 
 **BIO** = life. **GLOW** = light, energy, life showing itself.
 
-> ⚠️ **Honest note:** FIRST never spells out what GLOW stands for. The season
+> **Honest note:** FIRST never spells out what GLOW stands for. The season
 > materials just use the name. So the reading below is *ours*, not official —
 > which is fine, and actually a good first team discussion. Ask the kids what
 > they think it means before offering an answer.
@@ -42,7 +42,7 @@ species never leave their own layer. Draw this on a whiteboard; it's the single
 best five minutes you can spend explaining the season.
 
 ```
-                    ☀️  full sun, high wind
+                        full sun, high wind
    ╱▲╲              ─────────────────────────────
   ╱   ╲   EMERGENT LAYER          45–60 m+
  ╱     ╲  A few giant trees poking out above everything else.
@@ -56,7 +56,7 @@ best five minutes you can spend explaining the season.
  ▒▒  ▒▒   for a gap to open above them.
 ──────────────────────────────────────────────────
 ░░░░░░░░  FOREST FLOOR            ground level
-🍄 🐜      Dark. Almost everything that falls is recycled
+             Dark. Almost everything that falls is recycled
           within weeks by fungi and insects.
 ```
 
@@ -105,16 +105,16 @@ down the right — **each Spark sits level with one layer**.
 ```
    PROJECT SPARK                          ILLUSTRATION
    ─────────────                          ────────────
-   🚁 Drones reach places humans     ◄──►  EMERGENT LAYER   (toucan flying)
+   Drones reach places humans     ◄──►  EMERGENT LAYER   (toucan flying)
       can't — dense canopy, floods
 
-   🔍 Ecologists use simple tools    ◄──►  CANOPY LAYER     (butterfly)
+   Ecologists use simple tools    ◄──►  CANOPY LAYER     (butterfly)
       to study how plants grow
 
-   📷 Camera traps and trackers      ◄──►  UNDERSTORY LAYER (perched bird)
+   Camera traps and trackers      ◄──►  UNDERSTORY LAYER (perched bird)
       to study animals
 
-   🗺️ Mapping how forests change     ◄──►  FOREST FLOOR     (dragonfly, ferns)
+   Mapping how forests change     ◄──►  FOREST FLOOR     (dragonfly, ferns)
       over time, to guide restoration
 ```
 

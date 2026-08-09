@@ -6,29 +6,53 @@ the theme is **biodiversity**.
 Everything the team makes this season lives here — robot strategy, mission plans,
 code, the Innovation Project, Core Values work, and the Engineering Notebook.
 
-📖 **Read this as a website:** <https://amana4.github.io/FLL2026/> — searchable and
+**Read this as a website:** <https://amana4.github.io/FLL2026/> — searchable and
 works well on a phone at the practice table. Setup notes in
 [`docs/website.md`](docs/website.md).
 
 | | |
 | --- | --- |
 | Challenge announced | **4 August 2026** |
-| LEGO kits arrived | **8 August 2026** ✅ |
-| Season starts | **Sun 9 August 2026** |
-| Meetings | **Sundays & Wednesdays** — [26 sessions mapped](docs/meeting-plan.md) |
+| LEGO kits arrived | **8 August 2026** |
+| Season starts | **Sunday 9 August 2026** |
+| Meetings | **Sundays 11:00 am to 12:30 pm**, **Wednesdays 6:00 to 7:30 pm** |
 | Local competition | **Early November 2026** |
 
-> ⏱️ **Short season — 26 meetings.** Kits are here, so the robot isn't blocked.
-> The one thing with a multi-week fuse is **emailing local biodiversity
-> experts** ([`expert-outreach.md`](innovation-project/expert-outreach.md)) —
-> replies take 2–3 weeks, and the Innovation Project rubric needs *multiple*
-> people. Send those in week 1.
+Season plan: [26 meetings mapped out](docs/meeting-plan.md).
 
-> **⚠️ Mission details unverified.** This repo was scaffolded without access to
-> the official BIOGLOW materials — every mission name, point value, and rule
-> number is a placeholder marked `TODO`. Download the official PDFs into
-> [`docs/official-materials/`](docs/official-materials/) and fill them in before
-> anyone relies on this.
+## Official FIRST materials
+
+Everything about missions, points, and rules comes from FIRST, not from this
+repo. If our notes ever disagree with theirs, theirs are right.
+
+**Season materials page:**
+<https://www.firstinspires.org/resources/library/fll/season-materials>
+
+That page is where the rulebook, rubrics, field setup guide, building
+instructions, and the missions video all live. The PDFs are also committed to
+this repo under [`docs/official-materials/`](docs/official-materials/) so a
+clone gets everything, but the page above is the source and is worth
+re-checking.
+
+**Challenge Updates matter most.** FIRST publishes rule changes there after the
+season launches, and those changes override the rulebook. Teams lose points
+every year practising against an outdated rule. Someone should check monthly and
+log it in [`docs/official-materials/README.md`](docs/official-materials/README.md).
+As of 4 August 2026 there are no updates.
+
+Other useful links:
+
+- FLL Challenge home: <https://www.firstinspires.org/robotics/fll>
+- All 15 BIOGLOW missions, written up with official scoring:
+  [`robot-game/missions/`](robot-game/missions/)
+
+## What is urgent right now
+
+Kits are here, so the robot is not blocked. The one thing with a multi-week fuse
+is **emailing local biodiversity experts**
+([`expert-outreach.md`](innovation-project/expert-outreach.md)). Replies take two
+to three weeks, and the Innovation Project rubric wants feedback from *multiple*
+people to score well. Those emails should go out in week 1.
 
 ## Start here
 

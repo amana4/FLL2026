@@ -32,7 +32,7 @@
 
 Mission models: Nesting Canopy, Garden Skylight, Compost Hatch.
 
-🆕 **Uses the new interchangeable dock system.**
+**Uses the new interchangeable dock system.**
 
 **Only one bonus is possible for this mission.** The bonus depends on which dock you place this model on — so the dock choice is a strategy decision made *before* the match, and it should match whichever of the three actions your robot does most reliably.
 
