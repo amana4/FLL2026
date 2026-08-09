@@ -74,7 +74,7 @@ Then open <http://127.0.0.1:8000>. It reloads as you save.
 ## Adding a page
 
 1. Create the `.md` file wherever it belongs
-2. Add it to the `nav:` list in [`../mkdocs.yml`](../mkdocs.yml)
+2. Add it to the `nav:` list in [`mkdocs.yml`](https://github.com/amana4/FLL2026/blob/main/mkdocs.yml)
 3. Commit and push
 
 Skip step 2 and the page still builds, but nobody will find it in the menu.

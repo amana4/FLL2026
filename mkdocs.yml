@@ -8,6 +8,9 @@ edit_uri: edit/main/
 # Our markdown lives at the repo root, not in a docs/ subfolder. The same-dir
 # plugin lets MkDocs publish it in place, so there's exactly one copy of every
 # document and the site can never drift from the repo.
+#
+# site_dir sits inside docs_dir here, which MkDocs would normally reject — the
+# same-dir plugin makes it work by excluding the output folder from the build.
 docs_dir: .
 site_dir: site
 
@@ -91,10 +94,12 @@ nav:
       - Strategy: robot-game/strategy.md
       - Scoring Tracker: robot-game/scoring-tracker.md
       - Missions: robot-game/missions/README.md
+      - Runs: robot-game/runs/README.md
   - Robot Design:
       - robot-design/README.md
       - Chassis: robot-design/chassis.md
       - Design Log: robot-design/design-log.md
+      - Attachments: robot-design/attachments/README.md
   - Code:
       - code/README.md
       - My Blocks: code/my-blocks.md
