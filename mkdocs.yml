@@ -99,6 +99,7 @@ not_in_nav: |
 nav:
   - Home: README.md
   - Day 1: docs/day-1.md
+  - Meeting Plan: docs/meeting-plan.md
   - Season Plan: docs/season-plan.md
   - Equipment: docs/equipment.md
   - Robot Game:

@@ -3,18 +3,21 @@
 A 2-hour agenda for the first session. Print it, or open it on a laptop.
 
 > **The goal of Day 1 is not to build a robot.** It's to get the team excited,
-> unblock the two things with long lead times, and agree how you'll work. The
-> robot has 11 more weeks. The kit order and the expert emails don't.
+> unblock what has a long lead time, and agree how you'll work.
+>
+> ✅ **Kits arrived 8 Aug**, so the usual Day 1 blocker is gone. That leaves
+> **one** thing with a multi-week fuse: the expert emails. Everything else can
+> be caught up; those can't.
 
 ## Coach pre-work — before anyone arrives
 
-Do these **first**; they gate the rest of the season.
-
-- [ ] **Order the LEGO kits** if not already done → [`equipment.md`](equipment.md)
+- [x] ~~Order the LEGO kits~~ — **arrived 8 Aug** ✅
 - [ ] **Confirm the competition date and register the team**
 - [ ] Print: the 15 mission pages, the team agreement, this agenda
 - [ ] Have the missions video ready to play
       (`docs/official-materials/fll-challenge-bioglow-robot-game-missions.mp4`)
+- [ ] Open the kit boxes, but **don't sort them** — unboxing is a good group
+      activity and everyone wants to touch the pieces
 - [ ] Snacks. Genuinely — it changes the mood of a first meeting.
 
 ---
@@ -112,8 +115,13 @@ Students write them, not coaches — that's part of what's judged.
 - Fill in [`team-agreement.md`](../core-values/team-agreement.md) together
 - The important question: **"How will we decide when we disagree?"** Settle it
   now, while nobody is annoyed. It's much harder mid-argument in October.
-- Meeting schedule: when, where, how often
+- Meeting schedule: **Sundays and Wednesdays** until the competition —
+  26 sessions, mapped out in [`meeting-plan.md`](meeting-plan.md)
 - Log today in [`meetings/`](../meetings/README.md)
+
+**While that discussion happens**, two students unbox and inventory the kits
+against the parts list and put the hubs on charge. It's a good job for anyone
+who's had enough talking.
 
 ---
 
@@ -123,24 +131,23 @@ Students write them, not coaches — that's part of what's judged.
 | --- | --- | --- |
 | Send 10 expert emails | _2 students_ | End of week |
 | Read the Robot Game Rulebook | Everyone | Next meeting |
-| Chase the kit order | Coach | This week |
 | Register the team | Coach | This week |
+| Report any missing LEGO pieces (LEGO replaces them free) | _1 student_ | This week |
 
 ## Day 1 is a success if…
 
 - [ ] Everyone wants to come back
-- [ ] Kits are ordered
 - [ ] Team is registered
 - [ ] 10 expert targets identified, 2 people assigned to email them
+- [ ] Kits inventoried, hubs charging
 - [ ] The team has a name
 - [ ] Everyone knows the robot is only 25%
 
-Nothing on that list involves the robot. That's deliberate.
+Note that only one of those is about the robot. That's deliberate — with kits
+already here it's tempting to spend all of Day 1 building, and the teams that
+do are the ones scrambling on the project in October.
 
----
+## Next meeting
 
-## If the kits have already arrived
-
-Swap the 1:00–1:25 brainstorm for building the driving base, and move the
-brainstorm to Day 2. **Do not** drop the expert list — it stays on Day 1
-regardless. It's the only item here with a two-week fuse.
+**Wed 12 Aug** — build the mission models. Full plan:
+[`meeting-plan.md`](meeting-plan.md)

@@ -11,22 +11,28 @@ early November 2026.
 | Key date | Date | Notes |
 | --- | --- | --- |
 | Challenge announced | **4 Aug 2026** | ✅ done |
+| LEGO kits arrived | **8 Aug 2026** | ✅ done — robot work unblocked |
+| Season starts | **Sun 9 Aug 2026** | Meeting 1 |
 | Team registration deadline | _TODO — check now_ | ⚠️ may already be close |
-| LEGO kits ordered | _TODO_ | ⚠️ **blocks everything** — see below |
 | Engineering Notebook due | _TODO_ | Often 1–2 weeks before the competition |
 | **Local competition** | **Early Nov 2026** | ← everything works back from here |
 
+> 📅 **Meeting-by-meeting plan:** [`meeting-plan.md`](meeting-plan.md) breaks
+> this into the 26 actual Sunday/Wednesday sessions with tickable deliverables.
+> Use that day to day; use this page for the shape of the season.
+
 ## Do these this week
 
-Three things gate the whole season. None involve the robot.
+With kits already here, two things gate the season — and neither is the robot.
 
-1. **Order the LEGO kits.** Nothing on the robot side can start without them,
-   and shipping is unpredictable. If they take three weeks, that's a quarter of
-   the season gone. Order today; work the paper side while you wait.
-2. **Confirm the competition date and register.** Registration deadlines are
+1. **Confirm the competition date and register.** Registration deadlines are
    real and unforgiving.
-3. **Download the official BIOGLOW materials** into
-   [`official-materials/`](official-materials/) and read the rulebook.
+2. **Email 10 local biodiversity experts.** Replies take 2–3 weeks, and the
+   rubric needs *multiple* people for a top score. Emails sent this week become
+   interviews in September; emails sent in October become nothing.
+
+The rulebook is already downloaded and the missions are written up in
+[`../robot-game/missions/`](../robot-game/missions/README.md).
 
 ## The 12-week shape
 
@@ -46,36 +52,39 @@ mission list sooner and explore less. That's the right trade at this length.
 
 ## Weeks 1–2 — Setup
 
-Goal: unblock everything, and understand what BIOGLOW actually asks for.
+Goal: field built, base driving, and the slow-moving project work started.
 
-**Blocking tasks (coaches)**
-- [ ] **Order LEGO kits** — SPIKE Prime sets + this season's field/mission model set
+**Coaches**
 - [ ] Confirm competition date, venue, and registration deadline
 - [ ] Register the team, pay fees
-- [ ] Download all official PDFs → [`official-materials/`](official-materials/)
-- [ ] Set the weekly meeting schedule
+- [x] ~~Order LEGO kits~~ — arrived 8 Aug ✅
+- [x] ~~Download official PDFs~~ — in [`official-materials/`](official-materials/) ✅
 
 **Everyone**
 - [ ] Read the Robot Game Rulebook cover to cover
 - [ ] Sign the [team agreement](../core-values/team-agreement.md)
 - [ ] Fill in the [team roster](https://github.com/amana4/FLL2026/blob/main/docs/team-roster.md)
 
-**Innovation Project — start now, don't wait for kits**
-- [ ] Brainstorm 20+ biodiversity questions. Go wide; judge nothing yet.
-- [ ] **Start emailing local experts this week.** University biology
-      departments, nature reserves, conservation charities, council ecology
-      officers, botanic gardens, wildlife trusts. Expect slow replies — that
-      lag is exactly why this can't wait until week 6.
-
-> **Why experts now:** a researcher who takes three weeks to answer an email is
-> normal. Contact ten people in week 1 and you'll have two conversations by
-> week 4. Contact them in week 6 and you'll have none before the competition.
-
-**Once kits arrive**
-- [ ] Build the field: mat, mission models, dual-lock, per `field-setup.pdf`
+**Robot — kits are here, so start now**
+- [ ] Inventory the kits; report missing pieces (LEGO replaces them free)
+- [ ] Build the mission models **exactly** per the building instructions
+- [ ] Set up the field: mat, Dual Lock, models, the three docks
 - [ ] Build a driving base — nothing attached to it yet
+- [ ] Test it drives straight 1 m and turns 90° repeatably
 
-**Done when:** kits ordered, team registered, rulebook read, expert emails sent.
+**Innovation Project — the only thing with a multi-week fuse**
+- [ ] Brainstorm 20+ biodiversity questions. Go wide; judge nothing yet.
+- [ ] **Email 10 local experts this week.** University biology departments,
+      nature reserves, conservation charities, council ecology officers,
+      botanic gardens, wildlife trusts.
+
+> **Why experts now:** a researcher taking three weeks to reply is normal.
+> Contact ten people in week 1 and you'll have two conversations by week 4.
+> Contact them in week 6 and you'll have none before the competition. The
+> rubric needs *multiple* people for a top ITERATE score.
+
+**Done when:** field built and legal, base driving reliably, team registered,
+rulebook read, 10 expert emails sent.
 
 ---
 

@@ -13,14 +13,16 @@ works well on a phone at the practice table. Setup notes in
 | | |
 | --- | --- |
 | Challenge announced | **4 August 2026** |
+| LEGO kits arrived | **8 August 2026** ✅ |
+| Season starts | **Sun 9 August 2026** |
+| Meetings | **Sundays & Wednesdays** — [26 sessions mapped](docs/meeting-plan.md) |
 | Local competition | **Early November 2026** |
-| Time to build | **~12 weeks** |
 
-> ⏱️ **Short season.** Twelve weeks is enough to do well, but not enough to do
-> things twice. Two things are urgent in week 1 and block everything downstream:
-> **order the LEGO kits** ([`docs/equipment.md`](docs/equipment.md)) and
-> **email local biodiversity experts**
-> ([`innovation-project/expert-outreach.md`](innovation-project/expert-outreach.md)).
+> ⏱️ **Short season — 26 meetings.** Kits are here, so the robot isn't blocked.
+> The one thing with a multi-week fuse is **emailing local biodiversity
+> experts** ([`expert-outreach.md`](innovation-project/expert-outreach.md)) —
+> replies take 2–3 weeks, and the Innovation Project rubric needs *multiple*
+> people. Send those in week 1.
 
 > **⚠️ Mission details unverified.** This repo was scaffolded without access to
 > the official BIOGLOW materials — every mission name, point value, and rule
@@ -33,6 +35,7 @@ works well on a phone at the practice table. Setup notes in
 | If you want to… | Go to |
 | --- | --- |
 | **Run the first meeting** | [`docs/day-1.md`](docs/day-1.md) |
+| **See what to do at each of the 26 meetings** | [`docs/meeting-plan.md`](docs/meeting-plan.md) |
 | See the whole season plan and deadlines | [`docs/season-plan.md`](docs/season-plan.md) |
 | Work on a robot mission | [`robot-game/missions/`](robot-game/missions/) |
 | Plan or tune a robot run | [`robot-game/runs/`](robot-game/runs/) |

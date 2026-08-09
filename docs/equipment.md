@@ -1,8 +1,9 @@
 # Equipment
 
-⚠️ **Ordering the LEGO kits is the hardest blocker in a 12-week season.** No
-kits means no field, no robot, no practice. Shipping times are unpredictable
-and school purchase orders are slow. Order in week 1.
+✅ **Kits arrived 8 August 2026.** The season's biggest blocker is already
+cleared — robot work can start at the first meeting.
+
+Remaining equipment tasks are inventory and spares, below.
 
 ## What to order
 
@@ -30,36 +31,37 @@ ordering — the field/mission model set changes every year.
 | Local distributor | _TODO — often faster, worth checking_ |
 | Other teams | Ask locally. Many have spare kits, and borrowing is Coopertition. |
 
-## While you wait
+## Still to sort
 
-Don't lose the weeks. Kit-free work that's on the critical path anyway:
+Not blockers, but worth having:
 
-- [ ] Read the rulebook properly
-- [ ] Analyse missions from the PDFs — no field needed
-- [ ] **All of the Innovation Project** — brainstorm, expert emails, research
-- [ ] Learn Word Blocks in the SPIKE app (it has a simulator, no hub required)
-- [ ] Build the competition table / border walls
-- [ ] Team agreement and roles
+- [ ] **Competition table / border walls** — build from timber per the official
+      Table Building Instructions. You can practice on the floor, but matches
+      are on tables and robots behave differently.
+- [ ] Spare motors — the medium angular ones fail most often
+- [ ] Spare hub, if budget allows. A dead hub on competition day ends the season.
+- [ ] Storage boxes, sorted and labelled
 
 ## Budget
 
 | Item | Cost | Paid? |
 | --- | --- | --- |
 | Team registration | _TODO_ | ☐ |
-| LEGO kits | _TODO_ | ☐ |
-| Challenge set | _TODO_ | ☐ |
+| LEGO kits | _paid_ | ☑ |
+| Challenge set | _paid_ | ☑ |
 | Table materials | _TODO_ | ☐ |
 | Travel to competition | _TODO_ | ☐ |
 | **Total** | _TODO_ | |
 
 **Funding source:** _TODO — school, PTA, sponsor, parents_
 
-## Inventory
-
-Once kits arrive:
+## Inventory — do this at Meeting 1
 
 - [ ] Everything checked against the parts list
-- [ ] Missing pieces reported (LEGO replaces them free)
+- [ ] Missing pieces reported (LEGO replaces them free — but it takes time,
+      so check early)
 - [ ] Parts sorted into labelled boxes
 - [ ] Hubs charged and firmware updated
 - [ ] SPIKE app installed on every laptop the team will use
+- [ ] Mission models built (Meeting 2) — **exactly** per the building
+      instructions; wrongly built models teach the robot the wrong thing
