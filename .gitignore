@@ -1,0 +1,25 @@
+# macOS
+.DS_Store
+._*
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# LEGO SPIKE app scratch files — keep exported .llsp3 in code/spike-projects/
+*.llsp3.bak
+~$*
+
+# Large media: put raw video in shared cloud storage, link to it instead.
+# Committing 4K match footage will make this repo painful to clone.
+*.mov
+*.mp4
+*.avi
+
+# Presentation exports that can be regenerated
+*.pptx.tmp
