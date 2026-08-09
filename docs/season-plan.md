@@ -32,7 +32,7 @@ Goal: everyone can find things, and we all know what BIGGLOW actually asks for.
 - [ ] Read the Robot Game Rulebook cover to cover. Yes, all of it.
 - [ ] Build the field: mat, mission models, dual-lock. Follow `field-setup.pdf` exactly.
 - [ ] Sign the [team agreement](../core-values/team-agreement.md)
-- [ ] Fill in [`docs/team-roster.md`](team-roster.md) — names, roles, who's on what
+- [ ] Fill in [`docs/team-roster.md`](https://github.com/amana4/FLL2026/blob/main/docs/team-roster.md) — names, roles, who's on what
 
 **Coaches / mentors**
 - [ ] Confirm tournament date and registration

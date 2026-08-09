@@ -5,6 +5,10 @@ Team workspace for our *FIRST*® LEGO® League Challenge season: **BIGGLOW**.
 Everything the team makes this season lives here — robot strategy, mission plans,
 code, the Innovation Project, Core Values work, and the Engineering Notebook.
 
+📖 **Read this as a website:** <https://amana4.github.io/FLL2026/> — searchable and
+works well on a phone at the practice table. Setup notes in
+[`docs/website.md`](docs/website.md).
+
 > **⚠️ Unverified season details.** This repo was scaffolded without access to the
 > official BIGGLOW materials. Every mission name, point value, rule number, and
 > date is a placeholder marked `TODO`. Download the official PDFs into
@@ -54,4 +58,6 @@ competition/            Tournament-day checklists and packing lists
 
 ## Team
 
-Roster, roles, and contact info: [`docs/team-roster.md`](docs/team-roster.md)
+Roster, roles, and contact info: [`docs/team-roster.md`](https://github.com/amana4/FLL2026/blob/main/docs/team-roster.md)
+(kept in the repo only — it has students' names and contacts, so it's deliberately
+not published to the website)

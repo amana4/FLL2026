@@ -23,3 +23,19 @@ desktop.ini
 
 # Presentation exports that can be regenerated
 *.pptx.tmp
+
+# FIRST's copyrighted season materials. This repo is public (GitHub Pages
+# requires it on the free tier), so the PDFs must NOT be committed.
+# Download them locally per docs/official-materials/README.md — they'll sit
+# in that folder untracked, available to the team, invisible to git.
+docs/official-materials/*.pdf
+docs/official-materials/*.PDF
+
+# MkDocs build output — the site is built by CI, not committed
+site/
+.cache/
+
+# Python virtualenv, if you preview the site locally
+.venv/
+venv/
+__pycache__/

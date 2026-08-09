@@ -1,0 +1,65 @@
+name: Build and deploy site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:        # lets you rebuild by hand from the Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# If two pushes land close together, let the newer one win rather than
+# queueing a stale build.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # This repo is public. Fail loudly rather than publishing FIRST's
+      # copyrighted PDFs or students' personal details.
+      - name: Guard against publishing private material
+        run: |
+          fail=0
+          if git ls-files | grep -iE '^docs/official-materials/.*\.pdf$'; then
+            echo "::error::A FIRST PDF is committed. These are copyrighted and this repo is public. Remove it: git rm --cached <file>"
+            fail=1
+          fi
+          if git ls-files --error-unmatch docs/team-roster.md >/dev/null 2>&1; then
+            if ! grep -q 'docs/team-roster.md' mkdocs.yml; then
+              echo "::error::team-roster.md is tracked but no longer excluded in mkdocs.yml. It contains students' names and contacts and must not be published."
+              fail=1
+            fi
+          fi
+          exit $fail
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      # --strict turns broken internal links into build failures, so the site
+      # can't silently rot as pages get renamed.
+      - run: mkdocs build --strict
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

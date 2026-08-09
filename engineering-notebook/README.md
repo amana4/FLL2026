@@ -11,7 +11,7 @@ The notebook is assembled from things we're already producing:
 
 | Notebook section | Source in this repo |
 | --- | --- |
-| Team introduction | [`docs/team-roster.md`](../docs/team-roster.md) |
+| Team introduction | [`docs/team-roster.md`](https://github.com/amana4/FLL2026/blob/main/docs/team-roster.md) |
 | Core Values | [`core-values/evidence-log.md`](../core-values/evidence-log.md) |
 | Innovation Project | [`innovation-project/`](../innovation-project/) |
 | Robot design & build | [`robot-design/design-log.md`](../robot-design/design-log.md) |

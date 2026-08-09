@@ -1,0 +1,128 @@
+site_name: FLL 2026–27 — BIGGLOW
+site_description: Team workspace for our FIRST LEGO League Challenge season
+site_url: https://amana4.github.io/FLL2026/
+repo_url: https://github.com/amana4/FLL2026
+repo_name: amana4/FLL2026
+edit_uri: edit/main/
+
+# Our markdown lives at the repo root, not in a docs/ subfolder. The same-dir
+# plugin lets MkDocs publish it in place, so there's exactly one copy of every
+# document and the site can never drift from the repo.
+docs_dir: .
+site_dir: site
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.action.edit      # "edit this page" button → straight to GitHub
+    - content.code.copy
+    - toc.follow
+  palette:
+    # Students practice in bright gyms and dark bedrooms. Offer both.
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: amber
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: amber
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+plugins:
+  - same-dir
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true          # renders our ☐ checklists properly
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+# Files that shouldn't become web pages.
+#
+# ⚠️ team-roster.md is excluded ON PURPOSE. It holds students' names, grades,
+# and contact details, and this site is PUBLIC. Do not add it to the site.
+# It stays in the repo for the team; it must not be published. Apply the same
+# care to anything else naming a minor — photos of students especially.
+exclude_docs: |
+  .github/
+  .venv/
+  venv/
+  site/
+  docs/team-roster.md
+
+# Templates and folder placeholders are reachable from their section pages but
+# deliberately kept out of the nav — they'd clutter it, and they aren't meant
+# to be read top-to-bottom.
+not_in_nav: |
+  **/_TEMPLATE.md
+  code/screenshots/README.md
+  code/spike-projects/README.md
+
+nav:
+  - Home: README.md
+  - Season Plan: docs/season-plan.md
+  - Robot Game:
+      - robot-game/README.md
+      - Strategy: robot-game/strategy.md
+      - Scoring Tracker: robot-game/scoring-tracker.md
+      - Missions: robot-game/missions/README.md
+  - Robot Design:
+      - robot-design/README.md
+      - Chassis: robot-design/chassis.md
+      - Design Log: robot-design/design-log.md
+  - Code:
+      - code/README.md
+      - My Blocks: code/my-blocks.md
+  - Innovation Project:
+      - innovation-project/README.md
+      - Problem: innovation-project/problem.md
+      - Research: innovation-project/research.md
+      - Solution: innovation-project/solution.md
+      - Sharing & Feedback: innovation-project/sharing.md
+      - Presentation: innovation-project/presentation/README.md
+  - Core Values:
+      - core-values/README.md
+      - Team Agreement: core-values/team-agreement.md
+      - Evidence Log: core-values/evidence-log.md
+  - Judging:
+      - docs/judging/README.md
+      - Robot Design: docs/judging/robot-design-prep.md
+      - Innovation Project: docs/judging/innovation-project-prep.md
+      - Core Values: docs/judging/core-values-prep.md
+  - Engineering Notebook: engineering-notebook/README.md
+  - Competition:
+      - competition/README.md
+      - Tournament Day: competition/tournament-day.md
+      - Packing List: competition/packing-list.md
+  - Meetings: meetings/README.md
+  - Reference:
+      - Glossary: docs/glossary.md
+      - Official Materials: docs/official-materials/README.md
+      - How We Use Git: CONTRIBUTING.md
+      - The Website: docs/website.md
+      - Retrospective: docs/retrospective.md
