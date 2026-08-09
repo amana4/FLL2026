@@ -72,6 +72,10 @@ markdown_extensions:
 # It stays in the repo for the team; it must not be published. Apply the same
 # care to anything else naming a minor — photos of students especially.
 #
+# team-fund.md and team-fund.csv are excluded for the same reason: they track
+# what each family has contributed. That belongs between the coach and the
+# parents, not on a public page.
+#
 # The official-materials PDFs and .pptx decks are committed to git (so a clone
 # gets everything) but excluded from the SITE build. docs_dir is the repo root,
 # so without this MkDocs would copy ~121MB of binaries into the deploy
@@ -83,6 +87,8 @@ exclude_docs: |
   venv/
   site/
   docs/team-roster.md
+  docs/team-fund.md
+  docs/team-fund.csv
   docs/official-materials/*.pdf
   docs/official-materials/*.pptx
   docs/official-materials/*.llsp3

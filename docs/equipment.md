@@ -44,16 +44,20 @@ Not blockers, but worth having:
 
 ## Budget
 
-| Item | Cost | Paid? |
-| --- | --- | --- |
-| Team registration | _TODO_ | ☐ |
-| LEGO kits | _paid_ | ☑ |
-| Challenge set | _paid_ | ☑ |
-| Table materials | _TODO_ | ☐ |
-| Travel to competition | _TODO_ | ☐ |
-| **Total** | _TODO_ | |
+Money in and out is tracked in the team fund worksheet, which is kept out of this
+website because it records what each family has contributed:
+[`docs/team-fund.md`](https://github.com/amana4/FLL2026/blob/main/docs/team-fund.md)
 
-**Funding source:** _TODO — school, PTA, sponsor, parents_
+Where things stand:
+
+| | |
+| --- | --- |
+| Expected, 5 families at $200 | $1,000.00 |
+| Spent on registration and the robot kit | $440.23 |
+| Remaining once all contributions are in | $559.77 |
+
+Funded by parent contributions. If a school, PTA, or sponsor is also
+contributing, note it in the worksheet and keep the receipts.
 
 ## Inventory — do this at Meeting 1
 
