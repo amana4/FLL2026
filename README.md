@@ -34,8 +34,7 @@ works well on a phone at the practice table. Setup notes in
 
 | If you want to… | Go to |
 | --- | --- |
-| **Run today's meeting** | [`docs/meeting-plan.md`](docs/meeting-plan.md) → pick the date |
-| Run the very first meeting | [`docs/day-1.md`](docs/day-1.md) |
+| **Run today's meeting** | [`docs/meeting-plan.md`](docs/meeting-plan.md) → pick the date. Starting out? [Meeting 1](meetings/plan/m01.md). |
 | See the whole season plan and deadlines | [`docs/season-plan.md`](docs/season-plan.md) |
 | Work on a robot mission | [`robot-game/missions/`](robot-game/missions/) |
 | Plan or tune a robot run | [`robot-game/runs/`](robot-game/runs/) |
