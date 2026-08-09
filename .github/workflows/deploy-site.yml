@@ -22,22 +22,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # This repo is public. Fail loudly rather than publishing FIRST's
-      # copyrighted PDFs or students' personal details.
-      - name: Guard against publishing private material
+      # The PDF check was removed on 9 Aug 2026: the team decided to commit
+      # FIRST's season materials so a clone gets everything. That's a
+      # deliberate choice about copyrighted material in a public repo, not
+      # an accident, so CI no longer blocks it.
+      #
+      # The roster check stays. It holds students' names, grades, and contact
+      # details, and this site is public.
+      - name: Guard against publishing students' personal details
         run: |
-          fail=0
-          if git ls-files | grep -iE '^docs/official-materials/.*\.pdf$'; then
-            echo "::error::A FIRST PDF is committed. These are copyrighted and this repo is public. Remove it: git rm --cached <file>"
-            fail=1
-          fi
           if git ls-files --error-unmatch docs/team-roster.md >/dev/null 2>&1; then
             if ! grep -q 'docs/team-roster.md' mkdocs.yml; then
               echo "::error::team-roster.md is tracked but no longer excluded in mkdocs.yml. It contains students' names and contacts and must not be published."
-              fail=1
+              exit 1
             fi
           fi
-          exit $fail
 
       - uses: actions/setup-python@v5
         with:

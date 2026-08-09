@@ -71,12 +71,22 @@ markdown_extensions:
 # and contact details, and this site is PUBLIC. Do not add it to the site.
 # It stays in the repo for the team; it must not be published. Apply the same
 # care to anything else naming a minor — photos of students especially.
+#
+# The official-materials PDFs and .pptx decks are committed to git (so a clone
+# gets everything) but excluded from the SITE build. docs_dir is the repo root,
+# so without this MkDocs would copy ~121MB of binaries into the deploy
+# artifact, making every build slow for no benefit — nothing links to them as
+# pages. Team members read them from their local checkout.
 exclude_docs: |
   .github/
   .venv/
   venv/
   site/
   docs/team-roster.md
+  docs/official-materials/*.pdf
+  docs/official-materials/*.pptx
+  docs/official-materials/*.llsp3
+  docs/official-materials/*.mp4
 
 # Templates and folder placeholders are reachable from their section pages but
 # deliberately kept out of the nav — they'd clutter it, and they aren't meant
