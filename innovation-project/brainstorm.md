@@ -2,7 +2,30 @@
 
 Weeks 1–2. Go wide first, judge later — mixing the two kills good ideas early.
 
-## Rules for the brainstorm
+## Give each kid a layer
+
+Before free-form brainstorming, run one structured round. FIRST's four Project
+Sparks each pair with a rainforest layer (see
+[`what-is-bioglow.md`](../docs/what-is-bioglow.md)), so hand one to each person:
+
+| Kid | Layer | Their Spark | Their question |
+| --- | --- | --- | --- |
+| _TODO_ | **Emergent** | Drones reach where humans can't | How could aerial technology help? |
+| _TODO_ | **Canopy** | Simple tools to study how plants grow | How could tools support a local ecosystem? |
+| _TODO_ | **Understory** | Camera traps and trackers study animals | How could tools support a local ecosystem? |
+| _TODO_ | **Forest floor** | Mapping how forests change over time | How could you restore land for native species? |
+| _TODO_ | **The city** | M15 Biocentric Architecture — where people and nature meet | How could a building or street help wildlife? |
+
+Five minutes each, working alone, then share. **This is worth doing before the
+open brainstorm**, because five kids in a room converge fast — usually on bees
+or plastic. Assigning layers forces four genuinely different problem spaces,
+and guarantees somebody thinks about soil and fungi, which teams always skip.
+
+Translate to where you live: your local park has a canopy, a shrub layer,
+ground, and soil. Same question in each — *what's in trouble here, and who'd
+notice?*
+
+## Rules for the open brainstorm
 
 1. **Quantity first.** Target 20+ ideas before evaluating any of them.
 2. **No criticism during the wide phase.** "Yes, and" not "no, but".

@@ -96,20 +96,47 @@ survey is visible from the air; the mycelium network is invisible underground.
 That's true of real biodiversity work too — the most important connections are
 usually the ones nobody can see.
 
-### FIRST's Project Sparks are organised by layer
+### How the layers relate to the Project Sparks
 
-The Team Meeting Guide pairs each starter prompt with a layer:
+This is the bit that makes the page click. On page 6 of the Team Meeting Guide,
+the four Project Sparks run down the left, and a rainforest cross-section runs
+down the right — **each Spark sits level with one layer**.
 
-| Layer | Spark |
-| --- | --- |
-| **Emergent** | Scientists use **drones** to reach places humans can't — dense canopy, flooded ground. *How could you use aerial technology to help a rainforest?* |
-| **Canopy** | Ecologists use **simple tools** to study how plants grow and support wildlife. *How could you use tools innovatively to support a local ecosystem?* |
-| **Understory** | Wildlife biologists use **camera traps and trackers** to study animals. *How could you use tools innovatively to support a local ecosystem?* |
-| **Forest floor** | Conservationists use **mapping technology** to see how forests change. *How could you restore a piece of land to benefit native plants and animals?* |
+```
+   PROJECT SPARK                          ILLUSTRATION
+   ─────────────                          ────────────
+   🚁 Drones reach places humans     ◄──►  EMERGENT LAYER   (toucan flying)
+      can't — dense canopy, floods
 
-Useful brainstorming trick: **assign each kid a layer** and have them find a
-problem in it. It stops everyone converging on the same obvious idea, and it
-guarantees somebody thinks about soil and fungi, which teams usually skip.
+   🔍 Ecologists use simple tools    ◄──►  CANOPY LAYER     (butterfly)
+      to study how plants grow
+
+   📷 Camera traps and trackers      ◄──►  UNDERSTORY LAYER (perched bird)
+      to study animals
+
+   🗺️ Mapping how forests change     ◄──►  FOREST FLOOR     (dragonfly, ferns)
+      over time, to guide restoration
+```
+
+The pairing isn't decorative — each tool genuinely belongs to its layer:
+
+| Layer | Spark | Why it fits |
+| --- | --- | --- |
+| **Emergent** | Aerial technology | Drones work *above* the treetops — the only practical way to survey what you can't climb to |
+| **Canopy** | Simple tools for studying plants | Where most of the living plant material is; hand tools, magnifiers, sampling |
+| **Understory** | Camera traps and trackers | Camera traps get strapped to trunks at animal height — that's the understory |
+| **Forest floor** | Mapping and land restoration | Restoration happens on the ground: soil, seedlings, what grows back |
+
+> **Precisely what FIRST does and doesn't say:** the Sparks and the layer
+> diagram are laid out side by side, aligned in pairs, on the same page. FIRST
+> doesn't write "Spark 1 = emergent layer" in words. The pairing is clear from
+> the layout and holds up scientifically, but it's a design choice you're meant
+> to notice rather than a labelled rule.
+
+**Why this is useful:** it turns four generic prompts into a *coverage map*.
+Assign each kid a layer and its Spark, and you get four genuinely different
+problem spaces instead of five variations on "save the bees." Somebody has to
+think about soil and fungi — the layer teams almost always skip.
 
 ### Do this with your own local habitat
 
