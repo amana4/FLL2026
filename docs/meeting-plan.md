@@ -96,7 +96,7 @@ own the part they will present.
 
 | # | Date | Focus | |
 | --- | --- | --- | --- |
-| [9](../meetings/plan/m09.md) | Sun 6 Sep | [Freeze the mission list ](../meetings/plan/m09.md) | **Mission list freezes** |
+| [9](../meetings/plan/m09.md) | Sun 6 Sep | [Freeze the mission list](../meetings/plan/m09.md) | **Mission list freezes** |
 | [10](../meetings/plan/m10.md) | Wed 9 Sep | [Attachment design](../meetings/plan/m10.md) |  |
 | [11](../meetings/plan/m11.md) | Sun 13 Sep | [Build and program](../meetings/plan/m11.md) |  |
 | [12](../meetings/plan/m12.md) | Wed 16 Sep | [Run 2](../meetings/plan/m12.md) |  |
@@ -120,19 +120,19 @@ own the part they will present.
 
 | # | Date | Focus | |
 | --- | --- | --- | --- |
-| [19](../meetings/plan/m19.md) | Sun 11 Oct | [Freeze the robot ](../meetings/plan/m19.md) | **Robot design freezes** |
+| [19](../meetings/plan/m19.md) | Sun 11 Oct | [Freeze the robot](../meetings/plan/m19.md) | **Robot design freezes** |
 | [20](../meetings/plan/m20.md) | Wed 14 Oct | [Presentation](../meetings/plan/m20.md) |  |
 | [21](../meetings/plan/m21.md) | Sun 18 Oct | [Mock judging](../meetings/plan/m21.md) | Mock judging |
 | [22](../meetings/plan/m22.md) | Wed 21 Oct | [Close the gaps](../meetings/plan/m22.md) |  |
 
 ### Block 6 — Final
 
-*Oct 25 – Nov 4 · M23–M26* — Notebook submitted, packed, ready
+*Oct 25 – Nov 4 · M23–M26* — Notebook finished, rehearsed, packed
 
 | # | Date | Focus | |
 | --- | --- | --- | --- |
 | [23](../meetings/plan/m23.md) | Sun 25 Oct | [Notebook done](../meetings/plan/m23.md) |  |
-| [24](../meetings/plan/m24.md) | Wed 28 Oct | [Submit](../meetings/plan/m24.md) | **Notebook due** |
+| [24](../meetings/plan/m24.md) | Wed 28 Oct | [Final polish](../meetings/plan/m24.md) | |
 | [25](../meetings/plan/m25.md) | Sun 1 Nov | [Dress rehearsal](../meetings/plan/m25.md) |  |
 | [26](../meetings/plan/m26.md) | Wed 4 Nov | [Pack](../meetings/plan/m26.md) | Pack |
 
@@ -153,7 +153,7 @@ Put these in a real calendar with reminders.
 | Wed 7 Oct | Notebook 70% complete |
 | Sun 11 Oct | **Robot design frozen** |
 | Sun 18 Oct | Mock judging done |
-| Wed 28 Oct | **Notebook submitted** |
+| Wed 28 Oct | Notebook finished (not submitted — FIRST does not require it) |
 | Sat 7 Nov | **Competition** |
 
 ## Standing agenda
@@ -171,7 +171,9 @@ Copy [`_TEMPLATE.md`](../meetings/_TEMPLATE.md) each session into `meetings/` as
 
 ## Ground rules
 
-- **Sunday = long** (2 hrs, deep work). **Wednesday = short** (1–1.5 hrs, test and iterate).
+- **Both sessions are 90 minutes.** Sunday mornings tend to suit longer building
+  work, Wednesday evenings suit testing and iterating, but neither is longer than
+  the other.
 - **Every meeting has an Innovation Project item.** Never zero. That's what
   stops the week-11 panic on something worth 25%.
 - **Homework is 15–30 minutes.** Cut it if it runs longer — burnt-out kids in

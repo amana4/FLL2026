@@ -82,4 +82,6 @@ Vague answers read as "we didn't measure."
 - [ ] Robot charged
 - [ ] Programs loaded and tested
 - [ ] Attachments in a tidy box
-- [ ] Practiced demoing on a *table*, not the floor
+- [ ] Practised explaining the robot **without a field present** — there is no
+      robot game field in the judging room, so you cannot demonstrate a mission.
+      Bring photos and the design log instead.

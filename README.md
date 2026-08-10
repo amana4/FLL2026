@@ -71,12 +71,17 @@ people to score well. Those emails should go out in week 1.
 
 ## The four things we're judged on
 
-FLL Challenge scores four separate areas. Three are judged by humans in a room;
-one is scored on the table. **They are weighted equally for the Champion's Award**,
-so a team that only practices the robot is leaving most of the season on the floor.
+FLL Challenge scores four areas. Two are presented to judges in a **single
+30-minute session**, Core Values is scored through those two rubrics rather than
+separately, and the Robot Game is scored on the table.
 
-1. **Robot Game** — objective points scored in 2:30 matches → [`robot-game/`](robot-game/)
-2. **Robot Design** — judges interview us about how we built and programmed it → [`robot-design/`](robot-design/)
+The four are weighted equally — and the Champion's Award adds up your **rank** in
+each, with the lowest total winning. So being solid in all four beats being
+outstanding in one and weak in three, and a team that only practises the robot is
+leaving most of the season on the floor.
+
+1. **Robot Game** — objective points scored in 2.5-minute matches → [`robot-game/`](robot-game/)
+2. **Robot Design** — 5 minutes explaining how we built and programmed it, then Q&A → [`robot-design/`](robot-design/)
 3. **Innovation Project** — we find a real problem, design a solution, share it → [`innovation-project/`](innovation-project/)
 4. **Core Values** — how we work together, judged everywhere all season → [`core-values/`](core-values/)
 

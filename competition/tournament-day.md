@@ -29,13 +29,18 @@ Fill in on arrival.
 | --- | --- | --- |
 | _TODO_ | Registration | |
 | _TODO_ | Robot inspection | |
-| _TODO_ | Innovation Project judging | |
-| _TODO_ | Robot Design judging | |
-| _TODO_ | Core Values judging | |
+| _TODO_ | **Judging session** (one visit, ~30 min, project and robot together) | |
 | _TODO_ | Match 1 | |
 | _TODO_ | Match 2 | |
 | _TODO_ | Match 3 | |
 | _TODO_ | Awards | |
+
+There is **one** judging session, not three. It covers the Innovation Project and
+Robot Design in the same 30-minute visit, and Core Values is scored through both.
+Full timings in [`../docs/judging/README.md`](../docs/judging/README.md).
+
+All five students must attend the judging session and be present at the matches —
+that is an official participation rule, not a preference.
 
 ## Before each match
 
