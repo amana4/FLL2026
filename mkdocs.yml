@@ -116,6 +116,7 @@ exclude_docs: |
 # be published belongs in exclude_docs above.
 not_in_nav: |
   **/_TEMPLATE.md
+  meetings/20*.md
   code/screenshots/README.md
   code/spike-projects/README.md
   meetings/plan/README.md
