@@ -29,7 +29,12 @@ Two people tick this independently. Things get missed otherwise.
 - [ ] Engineering Notebook (printed, and confirmed submitted if required)
 - [ ] Printed [`tournament-day.md`](tournament-day.md)
 - [ ] Judging prep sheets from [`../docs/judging/`](../docs/judging/README.md)
-- [ ] Consent / registration forms if our region requires them
+- [ ] Consent and registration forms — FIRST requires a consent and release for
+      every youth participant as part of registration, so check this rather than
+      assuming it is regional
+- [ ] **Coach/Mentor Award nomination form**, printed — the students fill it in and
+      hand it to a volunteer. See [awards](awards.md).
+- [ ] Printed [quick reference](quick-reference.md), laminated if possible
 - [ ] Team roster with emergency contacts
 
 ## Team

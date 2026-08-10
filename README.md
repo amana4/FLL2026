@@ -61,6 +61,11 @@ people to score well. Those emails should go out in week 1.
 | **Explain BIOGLOW to the team** | [`docs/what-is-bioglow.md`](docs/what-is-bioglow.md) |
 | **Open a rulebook, rubric or any official PDF** | [`docs/official-materials/`](docs/official-materials/README.md) — all 29 files, linked |
 | Look up a term | [`docs/glossary.md`](docs/glossary.md) |
+| **Parents: what is this and what should I do** | [`docs/for-parents.md`](docs/for-parents.md) |
+| Work out how much an adult may help | [`docs/coaching.md`](docs/coaching.md) |
+| Find where a mission is on the field | [`robot-game/field-map.md`](robot-game/field-map.md) |
+| Fix a robot that stopped working | [`robot-design/troubleshooting.md`](robot-design/troubleshooting.md) |
+| Print one page for competition day | [`competition/quick-reference.md`](competition/quick-reference.md) |
 | **Run today's meeting** | [`docs/meeting-plan.md`](docs/meeting-plan.md) — the 26 sessions, with key dates |
 | Write up what happened | [`meetings/`](meetings/README.md) |
 | Work on a robot mission | [`robot-game/missions/`](robot-game/missions/README.md) |

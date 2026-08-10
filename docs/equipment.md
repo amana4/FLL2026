@@ -16,7 +16,7 @@ ordering — the field/mission model set changes every year.
 | SPIKE Prime Expansion Set (45681) | Recommended | Extra elements, more attachment options | ☐ | ☐ |
 | **BIOGLOW Challenge Set** (`F27-FLL-CHLNG-SET`) | Essential | This season's mission models. $105.00 on sales order SO164149. | ☑ | ☑ |
 | Competition mat | Essential | Usually included with the challenge set — verify | ☐ | ☐ |
-| Table / border walls | Essential | Can be built from timber; see the official field setup spec | ☐ | ☐ |
+| Table / border walls | Essential | Can be built from timber. **Adult job, away from the team** — see [safety](safety.md). | ☐ | ☐ |
 | Spare motors | Recommended | Medium angular motors break most often | ☐ | ☐ |
 | Spare hub | Optional | A dead hub on competition day ends the season | ☐ | ☐ |
 | Dual Lock / velcro | Essential | For fixing mission models — often included | ☐ | ☐ |

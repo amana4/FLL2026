@@ -42,9 +42,16 @@ Full timings in [`../docs/judging/README.md`](../docs/judging/README.md).
 All five students must attend the judging session and be present at the matches —
 that is an official participation rule, not a preference.
 
+## On arrival, before anything else
+
+- [ ] **Re-measure the colour thresholds at this venue.** Gym lighting differs from
+      wherever you practised, and this is the most likely single cause of a run
+      failing on the day. See [troubleshooting](../robot-design/troubleshooting.md).
+- [ ] Check the field: models seated, Dual Lock engaged, mat flat
+
 ## Before each match
 
-- [ ] Hub charged and on
+- [ ] Hub charged and on — **battery level changes how far the robot drives**
 - [ ] Correct program selected, ready in slot
 - [ ] Attachments laid out in run order
 - [ ] Robot in the launch position, gyro settled

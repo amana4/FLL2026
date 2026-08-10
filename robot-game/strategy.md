@@ -39,6 +39,24 @@ is a strong one.
 | --- | --- | --- |
 | _TODO_ | | |
 
+## FIRST's own mission-selection heuristic
+
+From the Team Meeting Guide, p14. More concrete than a points-per-second calculation
+alone, and worth applying first as a filter:
+
+> "Look for missions that:
+> - Use basic robot skills like push, pull, or lift.
+> - Have models close to a launch area.
+> - Involve navigation with line detection.
+> - Have easy access to home."
+
+Score each candidate against those four, then use points-per-second to choose between
+the survivors. A 40-point mission that needs a novel mechanism and a long crossing is
+usually worse than two 20-point missions near a launch area.
+
+See the [field map](field-map.md) for which missions are close to home and which are
+along the far edge.
+
 ## Principles
 
 Decisions we've committed to, so we stop re-arguing them:
@@ -51,7 +69,7 @@ Decisions we've committed to, so we stop re-arguing them:
    drift; gyro turns drift over a long run.
 4. **One student, one run — but everyone can run everything.** Judges may ask
    anyone anything.
-5. **Freeze the design before the tournament.** _TODO: pick the freeze date._
+5. **Freeze the design at Meeting 19, Sunday 11 October.** Changes after that cause competition failures.
 
 ## Navigation method
 

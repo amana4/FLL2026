@@ -34,7 +34,7 @@ wheels change, every distance in every program is wrong.
 | Wheel circumference | _TODO_ cm | | |
 | Motor degrees per cm | _TODO_ | | |
 | Motor degrees per 90° turn | _TODO_ | | Only if not using gyro |
-| Reflected light: white | _TODO_ | | On the mat, under normal lighting |
+| Reflected light: white | _TODO_ | | On the mat. **Re-measure at the venue** — see [troubleshooting](troubleshooting.md) |
 | Reflected light: black | _TODO_ | | |
 | Line threshold (midpoint) | _TODO_ | | |
 
