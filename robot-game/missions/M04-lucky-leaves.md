@@ -36,6 +36,32 @@
 
 So a careless grab loses all 30 points, not just the bonus. Design for precision here.
 
+### The referee randomises the start position
+
+From the Field Setup Reference Guide, p6:
+
+> "The starting position of the katydid and leaves is randomized by the referee at
+> the start of the match."
+
+This is the most important fact about this mission and it changes the approach
+completely. A program that assumes fixed positions will fail on the day. Either
+solve it with a sensor, or design a mechanism physically tolerant of where the
+leaves are — or decide deliberately to skip it.
+
+Combined with the zero-score rule below, M04 is the highest-risk mission on the
+field. The scoresheet ticks **0, 1 or 2** leaves.
+
+### No Equipment Constraint applies to this mission
+
+This mission carries the crossed-out-brick symbol, so:
+
+> "A mission model cannot earn points if it is touching equipment at the end of
+> the match."
+
+If the robot leaves an attachment, a wheel or anything else touching this model
+when the match ends, the mission scores nothing even if it looks completed. Check
+it at the end of every practice run.
+
 ## Our analysis
 
 Fill this in during Weeks 3–4. Points-per-second is what drives the run plan.

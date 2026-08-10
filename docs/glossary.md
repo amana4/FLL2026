@@ -19,9 +19,11 @@ Definitions match the official BIOGLOW Robot Game Rulebook (page 13).
 | **Match** | One 2.5-minute round. You play three; **only the best one counts**. |
 | **Field** | The playing area: border walls, mat, mission models, home areas. |
 | **Dual Lock** | The 3M™ recloseable fastener holding mission models to the mat. |
-| **Equipment** | Everything brought to the match: robot, attachments, materials. Must fit the launch area(s) and stay under 12 in. (305 mm). |
-| **Equipment Inspection** | Pre-match check. Fit everything in **one** launch area under the height limit → **20 points**. |
-| **Interchangeable Docks** | New this year: New this year. Three docks (mine, city, farm) for Missions 13–15. You choose which model goes where before the match. |
+| **Equipment** | Everything brought to the match: robot, attachments, materials. Must fit within the **two** launch areas and stay under 12 in. (305 mm) — that is a rule. Fitting it all into **one** launch area earns 20 points. |
+| **Equipment Inspection** | Pre-match check. Everything must fit the two launch areas under 12 in.; fitting it into **one** earns **20 points**. |
+| **Interchangeable Docks** | New this year. Three docks (mine, city, farm) for Missions 13–15. You choose which model goes on which dock before the match, and the referee records it. |
+| **No Equipment Constraint** | A crossed-out-brick symbol on 8 of the 15 mission cards (M01, M04, M05, M07, M09, M10, M12, M15). Where it appears, that mission scores nothing if the model is touching any of your equipment at the end of the match. |
+| **Precision Tokens** | Six tokens worth 50 points. One is removed each time you interrupt the robot outside home. The first interruption is free (6 and 5 both score 50); after that it costs 15, then 10, then 10. |
 | **Autonomous** | Operating independently, without human intervention. Required outside home. |
 | **Challenge Updates** | Official rule changes published after launch. **They supersede the rulebook.** |
 | **Core Values** | Discovery, Innovation, Impact, Inclusion, Teamwork, Fun. 25% of the Champion's score. |

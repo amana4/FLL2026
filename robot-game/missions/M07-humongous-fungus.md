@@ -10,7 +10,7 @@
 | Name | Humongous Fungus |
 | Rulebook page | 10 |
 | Challenge Set bags | 10 |
-| **Max points** | **30 (+10 more if two bonuses)** |
+| **Max points** | **40** |
 | Field location | Position 07 |
 
 ## The story
@@ -37,6 +37,27 @@ Mission model: Mycelium.
 > It is not possible to earn the bonus in remote competitions or if there is no opposing team.
 
 Worth mentioning to your match partner before the round — it's free points for both of you, and it's Coopertition in its purest form.
+
+### Confirmed: up to TWO connections, so 40 not 30
+
+The scoresheet ticks **0, 1 or 2** connections, and the rulebook says "two
+bonuses possible". At 10 each that is **up to 20 added**, so the true maximum is
+**40**.
+
+There are two possible connections because each side has both a mycelium and a
+plant root: your mycelium with their plant root, and their mycelium with your
+plant root.
+
+### No Equipment Constraint applies to this mission
+
+This mission carries the crossed-out-brick symbol, so:
+
+> "A mission model cannot earn points if it is touching equipment at the end of
+> the match."
+
+If the robot leaves an attachment, a wheel or anything else touching this model
+when the match ends, the mission scores nothing even if it looks completed. Check
+it at the end of every practice run.
 
 ## Our analysis
 

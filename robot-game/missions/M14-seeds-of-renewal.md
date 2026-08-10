@@ -10,7 +10,7 @@
 | Name | Seeds of Renewal |
 | Rulebook page | 12 |
 | Challenge Set bags | 21 |
-| **Max points** | **10 per seed (count TBC)** |
+| **Max points** | **40** |
 | Field location | Interchangeable dock |
 
 ## The story
@@ -33,6 +33,12 @@ Mission model: Replantation Station.
 **Uses the new interchangeable dock system.**
 
 Per-seed scoring with a per-seed bonus — 10 points per seed if fully done. Confirm the seed count when building to work out the maximum.
+
+### Confirmed piece count
+
+The scoresheet ticks **0 to 4** seeds contained, and separately **0 to 4** for the
+bonus. So there are **4 seeds**, worth 5 each contained plus 5 each touching the
+mat: **40 maximum**.
 
 ## Our analysis
 

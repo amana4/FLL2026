@@ -33,6 +33,17 @@ Mission models: Research Platform, Camera Trap, Seed.
 
 **Three independent conditions**, 10 points each — partial credit is real here, so it's worth attempting even if you can't get all three. Shares bags with Mission 08.
 
+### No Equipment Constraint applies to this mission
+
+This mission carries the crossed-out-brick symbol, so:
+
+> "A mission model cannot earn points if it is touching equipment at the end of
+> the match."
+
+If the robot leaves an attachment, a wheel or anything else touching this model
+when the match ends, the mission scores nothing even if it looks completed. Check
+it at the end of every practice run.
+
 ## Our analysis
 
 Fill this in during Weeks 3–4. Points-per-second is what drives the run plan.

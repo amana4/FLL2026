@@ -10,7 +10,7 @@
 | Name | Reaching Roots |
 | Rulebook page | 10 |
 | Challenge Set bags | 7 |
-| **Max points** | **20 (either/or, not additive)** |
+| **Max points** | **20** |
 | Field location | Position 05 |
 
 ## The story
@@ -33,6 +33,17 @@ Mission model: Plant Root.
 **Only one scoring condition is possible** — these are alternatives, not additive. Aim for complete.
 
 Also feeds Mission 07: the opposing team's bonus depends on *your* plant root being fully extended.
+
+### No Equipment Constraint applies to this mission
+
+This mission carries the crossed-out-brick symbol, so:
+
+> "A mission model cannot earn points if it is touching equipment at the end of
+> the match."
+
+If the robot leaves an attachment, a wheel or anything else touching this model
+when the match ends, the mission scores nothing even if it looks completed. Check
+it at the end of every practice run.
 
 ## Our analysis
 

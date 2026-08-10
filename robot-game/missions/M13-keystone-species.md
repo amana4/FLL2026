@@ -35,7 +35,7 @@ Mission models: Restoration Platform, Young Trees.
 
 > You can use the bricks in bag 20 to build your keystone species model. Your keystone species counts as equipment and will be included in the pre-match inspection. Teams will be asked to identify their keystone species at that time.
 
-Because it's equipment, it counts toward the 12 in. height limit and the one-launch-area inspection bonus (Mission 20). Build it small.
+Because it's equipment, it counts toward the 12 in. height limit and toward the one-launch-area Equipment Inspection bonus. Build it small.
 
 This is also a nice Innovation Project tie-in — the team chooses which keystone species to represent and can explain why.
 

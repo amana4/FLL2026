@@ -10,7 +10,7 @@
 | Name | Exploding Seeds |
 | Rulebook page | 9 |
 | Challenge Set bags | 3 |
-| **Max points** | **10 per seed (count TBC)** |
+| **Max points** | **30** |
 | Field location | Position 02 |
 
 ## The story
@@ -30,6 +30,18 @@
 Mission models: Stalk, Seeds.
 
 **Per-seed scoring** — confirm the seed count when you build it, since that sets the maximum. No bonus, no penalty for partial completion.
+
+### Confirmed piece count and a field-setup caveat
+
+The referee's scoresheet ticks **0, 1, 2 or 3** seeds, so there are **3 seeds**
+and the maximum is **30**.
+
+From the Field Setup Reference Guide, p4:
+
+> "The seeds must be placed as shown, but in competitions the orientation of the
+> green tubes may vary."
+
+So do not rely on the tubes pointing the same way as on your practice field.
 
 ## Our analysis
 

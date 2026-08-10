@@ -14,7 +14,7 @@ ordering — the field/mission model set changes every year.
 | --- | --- | --- | --- | --- |
 | SPIKE Prime Set (45678) | Essential | The core robot kit. One minimum; two is much better for parallel building. | ☐ | ☐ |
 | SPIKE Prime Expansion Set (45681) | Recommended | Extra elements, more attachment options | ☐ | ☐ |
-| **BIOGLOW Challenge Set** | Essential | This season's mission models. _TODO: confirm set number._ | ☐ | ☐ |
+| **BIOGLOW Challenge Set** (`F27-FLL-CHLNG-SET`) | Essential | This season's mission models. $105.00 on sales order SO164149. | ☑ | ☑ |
 | Competition mat | Essential | Usually included with the challenge set — verify | ☐ | ☐ |
 | Table / border walls | Essential | Can be built from timber; see the official field setup spec | ☐ | ☐ |
 | Spare motors | Recommended | Medium angular motors break most often | ☐ | ☐ |
@@ -53,7 +53,7 @@ Where things stand:
 | | |
 | --- | --- |
 | Expected, 5 families at $200 | $1,000.00 |
-| Spent on registration and the robot kit | $440.23 |
+| Spent so far, on registration and the Challenge Set | $440.23 |
 | Remaining once all contributions are in | $559.77 |
 
 Funded by parent contributions. If a school, PTA, or sponsor is also

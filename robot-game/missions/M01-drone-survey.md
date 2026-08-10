@@ -32,6 +32,17 @@ Mission models: Drone, LiDAR Map, Scan Marker.
 
 The bonus needs the map *completely* flipped and the scan marker *at least partly* in the survey area — two different thresholds in one sentence. Read it carefully.
 
+### No Equipment Constraint applies to this mission
+
+This mission carries the crossed-out-brick symbol, so:
+
+> "A mission model cannot earn points if it is touching equipment at the end of
+> the match."
+
+If the robot leaves an attachment, a wheel or anything else touching this model
+when the match ends, the mission scores nothing even if it looks completed. Check
+it at the end of every practice run.
+
 ## Our analysis
 
 Fill this in during Weeks 3–4. Points-per-second is what drives the run plan.

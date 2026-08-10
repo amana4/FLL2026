@@ -10,7 +10,7 @@
 | Name | Leafcutter Frenzy |
 | Rulebook page | 10 |
 | Challenge Set bags | 8, 9, 10 |
-| **Max points** | **10 per fragment (count TBC)** |
+| **Max points** | **40** |
 | Field location | Position 06 |
 
 ## The story
@@ -30,6 +30,14 @@
 Mission models: Ant, Nest, Leaf Fragments.
 
 Both conditions must hold together — ant touching nest **and** fragments contained. Fragments in the nest with the ant elsewhere scores nothing. Speed scatters the fragments; the mission name is a warning.
+
+### Confirmed piece count
+
+The scoresheet ticks **0, 1, 2, 3 or 4** leaf fragments, so there are **4
+fragments** and the maximum is **40** — more than the mission looks worth.
+
+The scoresheet also separates the two conditions: "the ant is touching the nest"
+is its own yes/no line, then the fragments are counted. Both are needed.
 
 ## Our analysis
 

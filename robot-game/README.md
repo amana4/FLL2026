@@ -30,7 +30,7 @@ From the rulebook (pages 14–15). Check these before designing anything:
 | Motors | **4** max, any mix |
 | Sensors | Touch/force, colour, distance/ultrasonic, gyro only — any number |
 | Power | One controller power pack **or** six AA batteries |
-| Height limit at inspection | **12 in. (305 mm)** |
+| Height limit at inspection | **12 in. (305 mm)** — a rule, not a bonus |
 | Notebook paper | One sheet per home area, doesn't count as equipment |
 
 All pieces must be **LEGO in original factory condition** — only string and
@@ -39,6 +39,21 @@ be autonomous outside home.
 
 **Four motors is the real constraint.** Two go to driving, leaving two for
 attachments. Plan mechanisms around that.
+
+**On the height limit.** Everything must fit within the **two** launch areas and
+under 12 in. — that is a requirement, and a taller robot fails inspection. Fitting
+everything into **one** launch area is a separate thing, and it earns 20 points.
+
+## The No Equipment Constraint
+
+Eight of the fifteen missions carry a crossed-out-brick symbol, and for those:
+
+> "A mission model cannot earn points if it is touching equipment at the end of
+> the match."
+
+**M01, M04, M05, M07, M09, M10, M12, M15.** If the robot parks or drops anything
+touching one of those models, that mission scores nothing even though it looks
+completed. Add "nothing left touching a model" to the end of every practice run.
 
 ## Rules that decide matches
 

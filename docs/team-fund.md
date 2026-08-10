@@ -13,15 +13,36 @@ are excluded in `mkdocs.yml`.
 | | |
 | --- | --- |
 | Expected total, 5 families at $200 | **$1,000.00** |
-| Spent so far | **$440.23** |
-| Remaining, once all contributions are in | **$559.77** |
+| Recorded spend so far | **$440.23** |
+| Remaining on paper, once all contributions are in | **$559.77** |
 | Received so far | _fill in_ |
 
-The $440.23 covers team registration and the robot kit together. That is 44% of
-the budget gone on the two unavoidable startup costs, which is normal and leaves
-a reasonable amount for everything else.
+## Open question: the robot kits are not on this receipt
 
-Per family, the spend so far works out at $88.05 each.
+Sales order SO164149, dated 30 July 2026, itemises exactly three things:
+
+| Line | Amount |
+| --- | --- |
+| `F27-Team-FLLCH-REG` — team registration | $285.00 |
+| `F27-FLL-CHLNG-SET` — BIOGLOW Challenge Set | $105.00 |
+| Shipping $20.00 and tax $30.23 | $50.23 |
+| **Total** | **$440.23** |
+
+There is **no SPIKE Prime set on that order.** The Challenge Set is the mat and the
+mission models; it is not the robot.
+
+The kits reportedly arrived on 8 August, so one of two things is true. Either they
+were bought on a second order whose receipt has not been recorded here — in which
+case the real spend is higher than $440.23 and **$200 per family may be
+under-set** — or they came from a school, a sponsor or a loan and cost the team
+nothing.
+
+Worth resolving before more money is collected, because the answer changes whether
+$1,000 is enough. A SPIKE Prime set is a few hundred dollars, so this is not a
+rounding error.
+
+Until it is settled, treat $440.23 as the *recorded* spend rather than the total
+spend.
 
 ## Contributions
 
@@ -41,11 +62,15 @@ Families are listed by slot rather than name. The mapping is in
 
 | Date | Item | Amount | Paid by | Receipt |
 | --- | --- | --- | --- | --- |
-| Aug 2026 | Team registration and robot kit | $440.23 | _fill in_ | |
+| 30 Jul 2026 | Team registration (`F27-Team-FLLCH-REG`) | $285.00 | | Sales order SO164149 |
+| 30 Jul 2026 | BIOGLOW Challenge Set (`F27-FLL-CHLNG-SET`) | $105.00 | | same order |
+| 30 Jul 2026 | Shipping and tax | $50.23 | | $20.00 + $30.23 |
 | | **Total** | **$440.23** | | |
+| ? | **SPIKE Prime sets — receipt missing** | **unknown** | | See the open question below |
 
-Worth splitting that into two lines once the receipts are to hand. If a school or
-PTA ever reimburses any of it, they will ask which was which.
+The three lines above are the itemised order. Keep the receipt outside the repo —
+it carries a billing address, so `.gitignore` blocks it. A copy is in
+`~/Documents/FLL2026-private/`.
 
 ## Still to come
 

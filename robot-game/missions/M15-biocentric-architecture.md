@@ -10,7 +10,7 @@
 | Name | Biocentric Architecture |
 | Rulebook page | 12 |
 | Challenge Set bags | 22, 23, 24 |
-| **Max points** | **40 (only one bonus possible)** |
+| **Max points** | **40** |
 | Field location | Interchangeable dock |
 
 ## The story
@@ -37,6 +37,35 @@ Mission models: Nesting Canopy, Garden Skylight, Compost Hatch.
 **Only one bonus is possible for this mission.** The bonus depends on which dock you place this model on — so the dock choice is a strategy decision made *before* the match, and it should match whichever of the three actions your robot does most reliably.
 
 Example: if your robot nails the compost hatch but often misses the skylight, put this model on the **farm** dock.
+
+### The dock choice is recorded by the referee
+
+The scoresheet has a "Dock location: Mine / City / Farm" line under this mission,
+so the placement is a declared decision, not something you can adjust mid-match.
+
+Decide it in the pit, based on which of the three actions your robot does most
+reliably:
+
+| Dock | Bonus action |
+| --- | --- |
+| Mine | Nesting canopy raised |
+| City | Garden skylight completely in |
+| Farm | Compost hatch opened, touching the mat |
+
+The three base actions each score 10 whichever dock you choose. The dock only
+decides which one also earns the 10-point Environmental Bonus, and only one bonus
+is possible.
+
+### No Equipment Constraint applies to this mission
+
+This mission carries the crossed-out-brick symbol, so:
+
+> "A mission model cannot earn points if it is touching equipment at the end of
+> the match."
+
+If the robot leaves an attachment, a wheel or anything else touching this model
+when the match ends, the mission scores nothing even if it looks completed. Check
+it at the end of every practice run.
 
 ## Our analysis
 
