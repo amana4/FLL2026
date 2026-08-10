@@ -30,9 +30,8 @@ theme:
   icon:
     repo: fontawesome/brands/github
   features:
-    - navigation.tabs          # top-level groups become a horizontal bar
-    - navigation.tabs.sticky
-    - navigation.prune         # only render the branch you are in, not all 55 pages
+    - navigation.sections      # vertical sidebar with groups as headings
+    - navigation.prune         # only expand the branch you are in, not all 55 pages
     - navigation.indexes       # a section's README becomes the section landing page
     - navigation.footer        # automatic prev/next at the bottom of every page
     - navigation.instant
@@ -234,7 +233,7 @@ nav:
   - Notebook: engineering-notebook/README.md
 
   - Reference:
-      - Official materials: docs/official-materials/README.md
+      - Official FIRST materials (all PDFs): docs/official-materials/README.md
       - How we use git: CONTRIBUTING.md
       - The website: docs/website.md
       - Retrospective: docs/retrospective.md

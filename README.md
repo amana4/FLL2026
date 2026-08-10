@@ -59,6 +59,8 @@ people to score well. Those emails should go out in week 1.
 | If you want to… | Go to |
 | --- | --- |
 | **Explain BIOGLOW to the team** | [`docs/what-is-bioglow.md`](docs/what-is-bioglow.md) |
+| **Open a rulebook, rubric or any official PDF** | [`docs/official-materials/`](docs/official-materials/README.md) — all 29 files, linked |
+| Look up a term | [`docs/glossary.md`](docs/glossary.md) |
 | **Run today's meeting** | [`docs/meeting-plan.md`](docs/meeting-plan.md) — the 26 sessions, with key dates |
 | Write up what happened | [`meetings/`](meetings/README.md) |
 | Work on a robot mission | [`robot-game/missions/`](robot-game/missions/README.md) |
