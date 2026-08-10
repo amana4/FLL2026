@@ -89,3 +89,5 @@ that is an official participation rule, not a preference.
 - [ ] Thank the organisers
 - [ ] Team photo
 - [ ] Note first impressions for [`../docs/retrospective.md`](../docs/retrospective.md)
+
+--8<-- "includes/abbreviations.md"

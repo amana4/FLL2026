@@ -1,0 +1,85 @@
+/* Print styles.
+ *
+ * This team prints things: the packing list, the tournament-day checklist,
+ * mission pages to hand round at a meeting, and the judging prep sheets.
+ * Material's default print output carries the navigation, the search box and the
+ * header, which wastes most of the first page.
+ *
+ * The goal here is a sheet you can put on a table and write on.
+ */
+
+@media print {
+  /* Drop the site furniture. */
+  .md-header,
+  .md-tabs,
+  .md-sidebar,
+  .md-footer,
+  .md-nav,
+  .md-search,
+  .md-top,
+  .md-content__button,
+  .md-source,
+  .md-dialog {
+    display: none !important;
+  }
+
+  /* Let the content use the whole page. */
+  .md-main__inner,
+  .md-content,
+  .md-grid {
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  body,
+  .md-typeset {
+    font-size: 10.5pt;
+    line-height: 1.35;
+  }
+
+  /* Checkboxes need to be big enough to tick with a pen. */
+  .md-typeset .task-list-control .task-list-indicator::before {
+    width: 1.15em;
+    height: 1.15em;
+    border: 1.2pt solid #000;
+    background: none;
+  }
+
+  /* Don't split a table or a checklist across a page break. */
+  .md-typeset table,
+  .md-typeset ul.task-list,
+  .md-typeset blockquote,
+  .md-typeset pre {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .md-typeset h1,
+  .md-typeset h2,
+  .md-typeset h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Tables read better with visible rules on paper. */
+  .md-typeset table:not([class]) th,
+  .md-typeset table:not([class]) td {
+    border: 0.5pt solid #999 !important;
+    padding: 3pt 5pt;
+  }
+
+  /* Show where a link pointed, since you cannot click paper. Internal links
+     would just print noise, so only external URLs are expanded. */
+  .md-typeset a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+    color: #555;
+    word-break: break-all;
+  }
+
+  /* Keep dark mode from printing a black page. */
+  [data-md-color-scheme="slate"] {
+    --md-default-bg-color: #fff;
+    --md-default-fg-color: #000;
+  }
+}

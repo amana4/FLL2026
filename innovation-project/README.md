@@ -3,7 +3,7 @@
 Find a real problem in the BIOGLOW theme, design a better solution, and share it
 with people who can use it.
 
-**This is 25% of the Champion's Award.** With only 12 weeks, start it in week 1 —
+**This is 25% of the Champion's Award.** With only 13 weeks, start it in week 1 —
 the expert emails especially. Everything else here waits on replies.
 
 | File | What's in it |
@@ -14,7 +14,7 @@ the expert emails especially. Everything else here waits on replies.
 | [`research.md`](research.md) | Sources, interviews, existing solutions |
 | [`solution.md`](solution.md) | What we designed |
 | [`sharing.md`](sharing.md) | Who we shared with and what they said |
-| [`presentation/`](presentation/) | The 5-minute pitch |
+| [`presentation/`](presentation/README.md) | The 5-minute pitch |
 
 ## The five steps judges score
 
@@ -38,10 +38,10 @@ Worth reading before you start — these are the recurring gaps:
   innovation has to be in *our* twist. Say what that twist is.
 - **Only one student talks.** Judges notice. Everyone presents a part.
 
-## Deadlines — 12-week season
+## Deadlines
 
 Compressed to fit an early-November competition. See
-[`docs/season-plan.md`](../docs/season-plan.md).
+[`docs/meeting-plan.md`](../docs/meeting-plan.md).
 
 | Milestone | Target | Done |
 | --- | --- | --- |

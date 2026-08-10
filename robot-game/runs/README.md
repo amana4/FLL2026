@@ -24,3 +24,5 @@ One file per run. Copy [`_TEMPLATE.md`](_TEMPLATE.md) and name it `RX-name.md`
 
 **Total run time must fit in 150 seconds**, including ~5s per attachment swap.
 If it doesn't, cut the run with the worst points-per-second.
+
+--8<-- "includes/abbreviations.md"

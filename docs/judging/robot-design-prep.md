@@ -85,3 +85,5 @@ Vague answers read as "we didn't measure."
 - [ ] Practised explaining the robot **without a field present** — there is no
       robot game field in the judging room, so you cannot demonstrate a mission.
       Bring photos and the design log instead.
+
+--8<-- "includes/abbreviations.md"

@@ -41,7 +41,7 @@ notice?*
 | **Specific** | "Bees are declining" is a topic. "Our town's roadside verges are mown before wildflowers seed" is a problem you can solve. |
 | **Local** | You can visit it, photograph it, and find someone affected to interview. |
 | **Unsolved** | If a perfect solution exists, there's nothing to innovate. |
-| **Interesting to you** | Twelve weeks is a long time on something boring. |
+| **Interesting to you** | Thirteen weeks is a long time on something boring. |
 | **Testable** | You can build a model or prototype and show it works. |
 
 The strongest projects almost always come from something the team can go and
@@ -123,6 +123,6 @@ _copy the table_
 Write the full version up in [`problem.md`](problem.md), and record the
 rejected candidates there too — judges ask how you chose.
 
-> **Decide by the end of week 4.** With 12 weeks total, every extra week spent
+> **Decide by the end of week 4.** With 13 weeks total, every extra week spent
 > deciding is a week not spent building and iterating. A good-enough problem
 > chosen in week 4 beats a perfect one chosen in week 7.

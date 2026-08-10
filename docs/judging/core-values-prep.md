@@ -85,3 +85,5 @@ of their own.
 
 Note: some regions run their own Core Values activity even though the official
 rubrics do not include one. **Confirm with your regional partner.**
+
+--8<-- "includes/abbreviations.md"

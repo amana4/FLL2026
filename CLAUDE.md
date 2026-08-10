@@ -42,14 +42,37 @@ Nothing published to the website may contain students' names or contact details.
 `docs/team-roster.md` is deliberately excluded from the site build in
 `mkdocs.yml`, and CI fails if that exclusion is removed.
 
-The site is MkDocs Material, published to GitHub Pages from `main`. Every
-markdown link must point at a real `.md` file or at a directory containing a
-`README.md`, because the build runs `--strict` and a broken link fails CI.
+The site is MkDocs Material, published to GitHub Pages from `main`. Every markdown
+link must point at a real `.md` file — link `dir/README.md` explicitly rather than
+`dir/`, because MkDocs reports a bare directory link as unrecognized and
+`validation.unrecognized_links` is set to `warn`, which `strict: true` turns into a
+build failure.
+
+Run `python3 tools/check-links.py` before pushing. It catches two things
+`mkdocs build --strict` misses: broken in-page anchors, and published pages linking
+to pages that `exclude_docs` keeps off the site.
+
+`exclude_docs` keeps a file off the website. `.gitignore` keeps it out of the repo,
+which is the only real privacy mechanism. `not_in_nav` does neither — it only
+silences a warning, and the file stays published. Confusing the last two put
+internal notes on the public site for a day.
 
 ## Lessons learned the hard way
 
-When doing a bulk find-and-replace across many files, do not use regex character
-ranges for Unicode. Enumerate the exact characters present first, then substitute
-only those. A stray character inside a class once stripped every digit "2" from
-every file in the repo, turning 2026 into 06. Always sanity-check a known string
-afterwards and revert rather than patch if the result is wrong.
+**Bulk find-and-replace.** Do not use regex character ranges for Unicode.
+Enumerate the exact characters present first, then substitute only those. A stray
+character inside a class once stripped every digit "2" from every file in the repo,
+turning 2026 into 06. Always grep a known string afterwards, and revert rather than
+patch if the result is wrong.
+
+**Editing `mkdocs.yml` by string index.** `cfg.index('nav:')` matches inside
+`not_in_nav:` and will truncate the file from the wrong place, destroying
+`exclude_docs` and `not_in_nav`. Use an anchored regex (`re.search(r'^nav:', s,
+re.M)`) and check the YAML still parses and still has every top-level key
+afterwards.
+
+**Inserting rows into `docs/team-fund.csv`.** Every `=SUM()` range and every
+summary cell reference shifts. Recompute the ranges from measured row positions
+rather than editing them by hand, then verify each formula against the row it
+should cover.
+

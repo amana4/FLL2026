@@ -141,3 +141,5 @@ Each mission page has an analysis table to complete during Meetings 3 to 6:
 5. Group into runs in [`../strategy.md`](../strategy.md), by field location
 
 Copy [`_TEMPLATE.md`](_TEMPLATE.md) if you need a fresh mission page.
+
+--8<-- "includes/abbreviations.md"

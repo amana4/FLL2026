@@ -30,7 +30,7 @@ repo. If our notes ever disagree with theirs, theirs are right.
 
 That page is where the rulebook, rubrics, field setup guide, building
 instructions, and the missions video all live. The PDFs are also committed to
-this repo under [`docs/official-materials/`](docs/official-materials/) so a
+this repo under [`docs/official-materials/`](docs/official-materials/README.md) so a
 clone gets everything, but the page above is the source and is worth
 re-checking.
 
@@ -44,7 +44,7 @@ Other useful links:
 
 - FLL Challenge home: <https://www.firstinspires.org/robotics/fll>
 - All 15 BIOGLOW missions, written up with official scoring:
-  [`robot-game/missions/`](robot-game/missions/)
+  [`robot-game/missions/`](robot-game/missions/README.md)
 
 ## What is urgent right now
 
@@ -59,14 +59,13 @@ people to score well. Those emails should go out in week 1.
 | If you want to… | Go to |
 | --- | --- |
 | **Explain BIOGLOW to the team** | [`docs/what-is-bioglow.md`](docs/what-is-bioglow.md) |
-| **Run today's meeting** | [`docs/meeting-plan.md`](docs/meeting-plan.md) → pick the date. Starting out? [Meeting 1](meetings/plan/m01.md). |
-| See the whole season plan and deadlines | [`docs/season-plan.md`](docs/season-plan.md) |
-| Work on a robot mission | [`robot-game/missions/`](robot-game/missions/) |
-| Plan or tune a robot run | [`robot-game/runs/`](robot-game/runs/) |
-| Add or change robot code | [`code/`](code/) |
-| Work on the Innovation Project | [`innovation-project/`](innovation-project/) |
-| Prep for judging | [`docs/judging/`](docs/judging/) |
-| Write up a meeting | [`meetings/`](meetings/) |
+| **Run today's meeting** | [`docs/meeting-plan.md`](docs/meeting-plan.md) — the 26 sessions, with key dates |
+| Write up what happened | [`meetings/`](meetings/README.md) |
+| Work on a robot mission | [`robot-game/missions/`](robot-game/missions/README.md) |
+| Plan or tune a robot run | [`robot-game/runs/`](robot-game/runs/README.md) |
+| Add or change robot code | [`code/`](code/README.md) |
+| Work on the Innovation Project | [`innovation-project/`](innovation-project/README.md) |
+| Prep for judging | [`docs/judging/`](docs/judging/README.md) |
 | Know how to commit / branch | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
 
 ## The four things we're judged on
@@ -80,18 +79,18 @@ each, with the lowest total winning. So being solid in all four beats being
 outstanding in one and weak in three, and a team that only practises the robot is
 leaving most of the season on the floor.
 
-1. **Robot Game** — objective points scored in 2.5-minute matches → [`robot-game/`](robot-game/)
-2. **Robot Design** — 5 minutes explaining how we built and programmed it, then Q&A → [`robot-design/`](robot-design/)
-3. **Innovation Project** — we find a real problem, design a solution, share it → [`innovation-project/`](innovation-project/)
-4. **Core Values** — how we work together, judged everywhere all season → [`core-values/`](core-values/)
+1. **Robot Game** — objective points scored in 2.5-minute matches → [`robot-game/`](robot-game/README.md)
+2. **Robot Design** — 5 minutes explaining how we built and programmed it, then Q&A → [`robot-design/`](robot-design/README.md)
+3. **Innovation Project** — we find a real problem, design a solution, share it → [`innovation-project/`](innovation-project/README.md)
+4. **Core Values** — how we work together, judged everywhere all season → [`core-values/`](core-values/README.md)
 
-The [Engineering Notebook](engineering-notebook/) feeds all four and is submitted
-to judges.
+The [Engineering Notebook](engineering-notebook/README.md) feeds all four. FIRST does not
+require it to be submitted — you bring it to judging and show it.
 
 ## Repo layout
 
 ```
-docs/                   Season plan, judging prep, glossary, official PDFs
+docs/                   Meeting plan, judging prep, glossary, official PDFs
 robot-game/             Mission analysis, run plans, scoring tracker
 code/                   SPIKE Prime Word Blocks projects + screenshots
 robot-design/           Chassis, attachments, mechanical decisions

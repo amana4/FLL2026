@@ -73,3 +73,5 @@ Order to run programs in, and who does what.
 **If we're behind on time:** drop _TODO_ first, then _TODO_.
 **If a run fails mid-match:** _TODO — recover or skip to next?_ Decide this now,
 not at the table.
+
+--8<-- "includes/abbreviations.md"

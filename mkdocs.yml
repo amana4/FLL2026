@@ -14,20 +14,37 @@ edit_uri: edit/main/
 docs_dir: .
 site_dir: site
 
+# Reproduce CI locally: `mkdocs serve` now fails the same way the build does.
+strict: true
+
+# --strict alone does not check in-page anchors, which is how a dead
+# #heading-that-moved link survived for a day. This closes that gap.
+validation:
+  omitted_files: warn
+  absolute_links: info
+  unrecognized_links: warn
+  anchors: warn
+
 theme:
   name: material
   icon:
     repo: fontawesome/brands/github
   features:
+    - navigation.tabs          # top-level groups become a horizontal bar
+    - navigation.tabs.sticky
+    - navigation.prune         # only render the branch you are in, not all 55 pages
+    - navigation.indexes       # a section's README becomes the section landing page
+    - navigation.footer        # automatic prev/next at the bottom of every page
     - navigation.instant
+    - navigation.instant.progress
     - navigation.tracking
-    - navigation.sections
     - navigation.top
-    - navigation.indexes
     - search.suggest
     - search.highlight
+    - search.share
     - content.action.edit      # "edit this page" button → straight to GitHub
     - content.code.copy
+    - content.tooltips         # glossary terms get hover/tap definitions
     - toc.follow
   palette:
     # Students practice in bright gyms and dark bedrooms. Offer both.
@@ -50,17 +67,39 @@ plugins:
   - same-dir
   - search
 
+extra_css:
+  - tools/print.css
+
+extra_javascript:
+  - tools/checkbox-state.js
+
+copyright: >
+  Team materials are ours. FIRST&reg;, LEGO&reg;, FIRST&reg; LEGO&reg; League and
+  BIOGLOW&trade; and all official challenge materials are the property of FIRST
+  and the LEGO Group.
+
 markdown_extensions:
+  - abbr                             # powers glossary tooltips
   - admonition
   - attr_list
+  - def_list
+  - footnotes
   - md_in_html
   - tables
   - toc:
       permalink: true
+  - pymdownx.caret
   - pymdownx.details
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde                   # ~~strikethrough~~, used on done items
   - pymdownx.superfences
+  - pymdownx.snippets:
+      base_path: [.]
+      check_paths: true              # a missing include fails the build
   - pymdownx.tasklist:
-      custom_checkbox: true          # renders our ☐ checklists properly
+      custom_checkbox: true
+      clickable_checkbox: true       # tappable; tools/checkbox-state.js persists them
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
@@ -93,6 +132,7 @@ markdown_extensions:
 # pages. Team members read them from their local checkout.
 exclude_docs: |
   .github/
+  includes/
   .venv/
   venv/
   site/
@@ -116,107 +156,85 @@ exclude_docs: |
 # be published belongs in exclude_docs above.
 not_in_nav: |
   **/_TEMPLATE.md
-  meetings/20*.md
   code/screenshots/README.md
   code/spike-projects/README.md
   meetings/plan/README.md
+  meetings/20*.md
+  meetings/plan/m*.md
 
 nav:
   - Home: README.md
-  - What is BIOGLOW?: docs/what-is-bioglow.md
-  - Meeting Plan:
+
+  - Start here:
+      - What is BIOGLOW?: docs/what-is-bioglow.md
+      - Glossary: docs/glossary.md
+      - Equipment: docs/equipment.md
+
+  - This season:
       - docs/meeting-plan.md
-      - Block 1 · Setup:
-          - "M1 · Sun 9 Aug — Kickoff": meetings/plan/m01.md
-          - "M2 · Wed 12 Aug — Build the field": meetings/plan/m02.md
-          - "M3 · Sun 16 Aug — Field setup + driving base": meetings/plan/m03.md
-          - "M4 · Wed 19 Aug — Base driving reliably": meetings/plan/m04.md
-      - Block 2 · Explore:
-          - "M5 · Sun 23 Aug — My Blocks": meetings/plan/m05.md
-          - "M6 · Wed 26 Aug — Points-per-second": meetings/plan/m06.md
-          - "M7 · Sun 30 Aug — Choose the problem": meetings/plan/m07.md
-          - "M8 · Wed 2 Sep — First mission scored": meetings/plan/m08.md
-      - Block 3 · Commit:
-          - "M9 · Sun 6 Sep — Freeze the mission list": meetings/plan/m09.md
-          - "M10 · Wed 9 Sep — Attachment design": meetings/plan/m10.md
-          - "M11 · Sun 13 Sep — Build and program": meetings/plan/m11.md
-          - "M12 · Wed 16 Sep — Run 2": meetings/plan/m12.md
-      - Block 4 · Build & Iterate:
-          - "M13 · Sun 20 Sep — Run 1 to 80%": meetings/plan/m13.md
-          - "M14 · Wed 23 Sep — Run 2 to 80%": meetings/plan/m14.md
-          - "M15 · Sun 27 Sep — Run 3 + share the solution": meetings/plan/m15.md
-          - "M16 · Wed 30 Sep — Act on feedback": meetings/plan/m16.md
-          - "M17 · Sun 4 Oct — Full matches": meetings/plan/m17.md
-          - "M18 · Wed 7 Oct — Notebook checkpoint": meetings/plan/m18.md
-      - Block 5 · Polish:
-          - "M19 · Sun 11 Oct — Freeze the robot": meetings/plan/m19.md
-          - "M20 · Wed 14 Oct — Presentation": meetings/plan/m20.md
-          - "M21 · Sun 18 Oct — Mock judging": meetings/plan/m21.md
-          - "M22 · Wed 21 Oct — Close the gaps": meetings/plan/m22.md
-      - Block 6 · Final:
-          - "M23 · Sun 25 Oct — Notebook done": meetings/plan/m23.md
-          - "M24 · Wed 28 Oct — Final polish": meetings/plan/m24.md
-          - "M25 · Sun 1 Nov — Dress rehearsal": meetings/plan/m25.md
-          - "M26 · Wed 4 Nov — Pack": meetings/plan/m26.md
-  - Season Plan: docs/season-plan.md
-  - Equipment: docs/equipment.md
-  - Robot Game:
+      - Meeting logs: meetings/README.md
+
+  - Robot:
       - robot-game/README.md
       - Strategy: robot-game/strategy.md
-      - Scoring Tracker: robot-game/scoring-tracker.md
+      - Runs: robot-game/runs/README.md
+      - Scoring tracker: robot-game/scoring-tracker.md
       - Missions:
           - robot-game/missions/README.md
-          - 01 Drone Survey: robot-game/missions/M01-drone-survey.md
-          - 02 Exploding Seeds: robot-game/missions/M02-exploding-seeds.md
-          - 03 Flip the Rock: robot-game/missions/M03-flip-the-rock.md
-          - 04 Lucky Leaves: robot-game/missions/M04-lucky-leaves.md
-          - 05 Reaching Roots: robot-game/missions/M05-reaching-roots.md
-          - 06 Leafcutter Frenzy: robot-game/missions/M06-leafcutter-frenzy.md
-          - 07 Humongous Fungus: robot-game/missions/M07-humongous-fungus.md
-          - 08 Tangled: robot-game/missions/M08-tangled.md
-          - 09 Research Platform: robot-game/missions/M09-research-platform.md
-          - 10 Fragile Microhabitats: robot-game/missions/M10-fragile-microhabitats.md
-          - 11 Window to the Past: robot-game/missions/M11-window-to-the-past.md
-          - 12 Forest Elder: robot-game/missions/M12-forest-elder.md
-          - 13 Keystone Species: robot-game/missions/M13-keystone-species.md
-          - 14 Seeds of Renewal: robot-game/missions/M14-seeds-of-renewal.md
-          - 15 Biocentric Architecture: robot-game/missions/M15-biocentric-architecture.md
-      - Runs: robot-game/runs/README.md
-  - Robot Design:
-      - robot-design/README.md
-      - Chassis: robot-design/chassis.md
-      - Design Log: robot-design/design-log.md
-      - Attachments: robot-design/attachments/README.md
-  - Code:
-      - code/README.md
-      - My Blocks: code/my-blocks.md
+          - M01 Drone Survey: robot-game/missions/M01-drone-survey.md
+          - M02 Exploding Seeds: robot-game/missions/M02-exploding-seeds.md
+          - M03 Flip the Rock: robot-game/missions/M03-flip-the-rock.md
+          - M04 Lucky Leaves: robot-game/missions/M04-lucky-leaves.md
+          - M05 Reaching Roots: robot-game/missions/M05-reaching-roots.md
+          - M06 Leafcutter Frenzy: robot-game/missions/M06-leafcutter-frenzy.md
+          - M07 Humongous Fungus: robot-game/missions/M07-humongous-fungus.md
+          - M08 Tangled: robot-game/missions/M08-tangled.md
+          - M09 Research Platform: robot-game/missions/M09-research-platform.md
+          - M10 Fragile Microhabitats: robot-game/missions/M10-fragile-microhabitats.md
+          - M11 Window to the Past: robot-game/missions/M11-window-to-the-past.md
+          - M12 Forest Elder: robot-game/missions/M12-forest-elder.md
+          - M13 Keystone Species: robot-game/missions/M13-keystone-species.md
+          - M14 Seeds of Renewal: robot-game/missions/M14-seeds-of-renewal.md
+          - M15 Biocentric Architecture: robot-game/missions/M15-biocentric-architecture.md
+      - Design:
+          - robot-design/README.md
+          - Chassis: robot-design/chassis.md
+          - Attachments: robot-design/attachments/README.md
+          - Design log: robot-design/design-log.md
+      - Code:
+          - code/README.md
+          - My Blocks: code/my-blocks.md
+
   - Innovation Project:
       - innovation-project/README.md
       - Brainstorm: innovation-project/brainstorm.md
       - Problem: innovation-project/problem.md
-      - Expert Outreach: innovation-project/expert-outreach.md
+      - Expert outreach: innovation-project/expert-outreach.md
       - Research: innovation-project/research.md
       - Solution: innovation-project/solution.md
-      - Sharing & Feedback: innovation-project/sharing.md
+      - Sharing and feedback: innovation-project/sharing.md
       - Presentation: innovation-project/presentation/README.md
+
   - Core Values:
       - core-values/README.md
-      - Team Agreement: core-values/team-agreement.md
-      - Evidence Log: core-values/evidence-log.md
+      - Team agreement: core-values/team-agreement.md
+      - Evidence log: core-values/evidence-log.md
+
   - Judging:
       - docs/judging/README.md
-      - Robot Design: docs/judging/robot-design-prep.md
-      - Innovation Project: docs/judging/innovation-project-prep.md
-      - Core Values: docs/judging/core-values-prep.md
-  - Engineering Notebook: engineering-notebook/README.md
+      - Innovation Project prep: docs/judging/innovation-project-prep.md
+      - Robot Design prep: docs/judging/robot-design-prep.md
+      - Core Values prep: docs/judging/core-values-prep.md
+
   - Competition:
       - competition/README.md
-      - Tournament Day: competition/tournament-day.md
-      - Packing List: competition/packing-list.md
-  - Meetings: meetings/README.md
+      - Tournament day: competition/tournament-day.md
+      - Packing list: competition/packing-list.md
+
+  - Notebook: engineering-notebook/README.md
+
   - Reference:
-      - Glossary: docs/glossary.md
-      - Official Materials: docs/official-materials/README.md
-      - How We Use Git: CONTRIBUTING.md
-      - The Website: docs/website.md
+      - Official materials: docs/official-materials/README.md
+      - How we use git: CONTRIBUTING.md
+      - The website: docs/website.md
       - Retrospective: docs/retrospective.md

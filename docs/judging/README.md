@@ -102,3 +102,5 @@ exactly the problems a mock is for.
 | Date | Mock judge | What we learned | Gaps to close |
 | --- | --- | --- | --- |
 | _TODO_ | | | |
+
+--8<-- "includes/abbreviations.md"

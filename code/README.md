@@ -49,3 +49,5 @@ lesson is captured in a run file or in `my-blocks.md`.
 
 That last one matters: if the hub gets wiped at the tournament, this folder is the
 only way back.
+
+--8<-- "includes/abbreviations.md"

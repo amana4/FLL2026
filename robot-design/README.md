@@ -7,7 +7,7 @@ show judges.
 | --- | --- |
 | [`chassis.md`](chassis.md) | The driving base and its sensors |
 | [`design-log.md`](design-log.md) | Dated record of what we changed and why |
-| [`attachments/`](attachments/) | One file per attachment |
+| [`attachments/`](attachments/README.md) | One file per attachment |
 
 ## What Robot Design judging actually rewards
 
@@ -39,3 +39,5 @@ Keep [`design-log.md`](design-log.md) current. It's the whole answer to "iterate
 - [ ] Each attachment, mounted and detached
 - [ ] Close-ups of anything unusual we want to talk about
 - [ ] "Before and after" pairs of things we redesigned
+
+--8<-- "includes/abbreviations.md"

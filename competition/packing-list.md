@@ -28,7 +28,7 @@ Two people tick this independently. Things get missed otherwise.
 
 - [ ] Engineering Notebook (printed, and confirmed submitted if required)
 - [ ] Printed [`tournament-day.md`](tournament-day.md)
-- [ ] Judging prep sheets from [`../docs/judging/`](../docs/judging/)
+- [ ] Judging prep sheets from [`../docs/judging/`](../docs/judging/README.md)
 - [ ] Consent / registration forms if our region requires them
 - [ ] Team roster with emergency contacts
 

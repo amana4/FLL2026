@@ -144,6 +144,7 @@ Put these in a real calendar with reminders.
 
 | By | Milestone |
 | --- | --- |
+| _TODO — check now_ | **Team registration deadline.** Confirm with the regional partner; eligibility is verified at registration. |
 | Wed 12 Aug | Team registered, **10 expert emails sent** |
 | Wed 19 Aug | Field built, base driving, all 15 missions analysed |
 | Sun 30 Aug | Innovation Project problem chosen |
@@ -155,6 +156,17 @@ Put these in a real calendar with reminders.
 | Sun 18 Oct | Mock judging done |
 | Wed 28 Oct | Notebook finished (not submitted — FIRST does not require it) |
 | Sat 7 Nov | **Competition** |
+
+## Protecting the project time
+
+The Robot Game is **one quarter** of the score. The classic failure is spending
+the whole season on the robot and improvising the Innovation Project in the last
+fortnight.
+
+The guard is in the ground rules below: every meeting has an Innovation Project
+item, never zero. With five students that means at most four are on the robot at
+any time, usually three. It feels slow in August and it is why you are calm in
+October.
 
 ## Standing agenda
 
@@ -189,3 +201,5 @@ You will, somewhere. Priority order:
 2. **Never cut** the Innovation Project. 25% of the score, can't be rushed at the end.
 3. **Do cut** missions. Fewer runs at 90% beats more runs at 50%.
 4. **Do cut** polish on attachments that already work.
+
+--8<-- "includes/abbreviations.md"

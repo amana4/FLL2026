@@ -118,3 +118,5 @@ on the dock:
 
 Put M15 on the dock matching whichever action your robot does **most reliably**.
 It's a free 10 points for a decision made in the pit.
+
+--8<-- "includes/abbreviations.md"

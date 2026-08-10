@@ -1,7 +1,7 @@
 # Innovation Project Judging Prep
 
 The presentation is in
-[`innovation-project/presentation/`](../../innovation-project/presentation/).
+[`innovation-project/presentation/`](../../innovation-project/presentation/README.md).
 This sheet is for the judging room itself.
 
 ## Room checklist

@@ -77,3 +77,5 @@ What it does.
 **Gotchas:** …
 **Status:** ☐ built ☐ tested ☐ used in a run
 ```
+
+--8<-- "includes/abbreviations.md"
