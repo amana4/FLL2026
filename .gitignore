@@ -46,6 +46,17 @@ docs/official-materials/*.mov
 docs/official-materials/scoresheet
 docs/official-materials/wDan0826cn0
 
+# Purchase paperwork. NEVER commit these. The FIRST sales order carries a
+# billing name, a residential address, and payment details, and this repo is
+# public. One was committed on 9 Aug 2026 and had to be purged from history
+# with git filter-branch; it had not reached the remote, so nothing leaked.
+# Keep receipts outside the repo — see ~/Documents/FLL2026-private.
+docs/official-materials/SalesOrd*
+docs/official-materials/*invoice*
+docs/official-materials/*receipt*
+docs/official-materials/*Invoice*
+docs/official-materials/*Receipt*
+
 # MkDocs build output — the site is built by CI, not committed
 site/
 .cache/

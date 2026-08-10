@@ -67,10 +67,15 @@ markdown_extensions:
 
 # Files that shouldn't become web pages.
 #
-# Important: team-roster.md is excluded ON PURPOSE. It holds students' names, grades,
-# and contact details, and this site is PUBLIC. Do not add it to the site.
-# It stays in the repo for the team; it must not be published. Apply the same
-# care to anything else naming a minor — photos of students especially.
+# IMPORTANT: exclude_docs and not_in_nav do different jobs, and confusing them
+# caused a real leak. `not_in_nav` ONLY silences the "this file isn't in the nav"
+# warning — the file is still built, published and search-indexed. Only
+# `exclude_docs` actually keeps a file off the site. CLAUDE.md sat in not_in_nav
+# for a day and was live at /CLAUDE/ as a result.
+#
+# team-roster.md is excluded ON PURPOSE. It holds students' names, grades,
+# and contact details, and this site is PUBLIC. Apply the same care to anything
+# else naming a minor — photos of students especially.
 #
 # team-fund.md and team-fund.csv are excluded for the same reason: they track
 # what each family has contributed. That belongs between the coach and the
@@ -91,6 +96,10 @@ exclude_docs: |
   .venv/
   venv/
   site/
+  CLAUDE.md
+  requirements.txt
+  mkdocs.yml
+  .DS_Store
   docs/team-roster.md
   docs/team-fund.md
   docs/team-fund.csv
@@ -99,12 +108,13 @@ exclude_docs: |
   docs/official-materials/*.pptx
   docs/official-materials/*.llsp3
   docs/official-materials/*.mp4
+  code/spike-projects/*.llsp3
 
-# Templates and folder placeholders are reachable from their section pages but
-# deliberately kept out of the nav — they'd clutter it, and they aren't meant
-# to be read top-to-bottom.
+# not_in_nav ONLY silences the "not in nav" warning. These files ARE published;
+# they are simply kept out of the menu because they are templates or folder
+# placeholders rather than pages to read top-to-bottom. Anything that must not
+# be published belongs in exclude_docs above.
 not_in_nav: |
-  CLAUDE.md
   **/_TEMPLATE.md
   code/screenshots/README.md
   code/spike-projects/README.md
