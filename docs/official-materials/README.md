@@ -1,74 +1,102 @@
 # Official BIOGLOW Materials
 
-**Nothing in this repo overrides these documents.** If our notes disagree with
-the official rulebook, the rulebook wins — always. When you find a conflict, fix
-our notes and mention it at the next meeting.
+**Nothing in this repo overrides these documents.** If our notes disagree with the
+official rulebook, the rulebook wins — always. When you find a conflict, fix our
+notes and mention it at the next meeting.
 
-> **These files are gitignored and must stay that way.** They're FIRST's
-> copyrighted material and this repo is public. `.gitignore` allowlists only
-> this README; the CI build fails if anything else here gets committed. They
-> live on team members' computers, not on GitHub.
+## These files ARE committed, on purpose
 
-## What we have (downloaded 9 Aug 2026)
+By a team decision on 9 August, FIRST's materials are tracked in git so that a
+clone gets everything instead of each person re-downloading them. They are
+excluded from the *website* build only to keep the deploy artifact small.
 
-| File | What it is | Read? |
+Two things follow. This repo is public, so FIRST's copyrighted material is
+publicly visible — a deliberate choice, not an accident. And committed binaries
+live in git history permanently, so removing them later means a history rewrite
+rather than a delete.
+
+**Do not run `git rm` on them.** An earlier version of this page said they were
+gitignored and that CI would block them. Both claims were wrong, and following
+them would have deleted the team's materials.
+
+Never committed: purchase paperwork (a sales order carries a billing name and
+home address — `.gitignore` blocks it) and the 1.4 GB missions video, which
+exceeds GitHub's 100 MB per-file limit.
+
+## What we have
+
+Downloaded 9 August 2026. "Mined" means the content has been extracted into our
+own pages, not just skimmed.
+
+| File | What it is | Status |
 | --- | --- | --- |
-| `fll-challenge-bioglow-rgr.pdf` | **Robot Game Rulebook** — 15 missions, all rules | Done, extracted into [`robot-game/`](../../robot-game/README.md) |
-| `fll-challenge-bioglow-rubrics-color.pdf` | The judging rubrics | Done, extracted into [`docs/judging/`](../judging/README.md) |
-| `fll-challenge-bioglow-updates.pdf` | **Challenge Updates** | Done, no updates as of 4 Aug 2026 |
-| `fll-challenge-bioglow-season-overview.pdf` | Season summary, project brief | Done |
-| `fll-challenge-bioglow-en.pdf` / `RsaYLB-...-tmg.pdf` | Team Meeting Guide (32 pp) — session plans | ☐ |
-| `fll-challenge-bioglow-field-setup-reference-guide.pdf` | Field setup | ☐ |
-| `fll-challenge-bioglow-participation-rules.pdf` | Participation rules | ☐ |
-| `fll-challenge-bioglow-awards.pdf` | Award descriptions | ☐ |
-| `fll-challenge-bioglow-judging-session-flowchart.pdf` | How judging runs | ☐ |
-| `fll-challenge-bioglow-software-scoresheet.pdf` | Scoresheet | ☐ |
-| `fll-challenge-bioglow-wireframe-grid.pdf` | Mat wireframe for model placement | ☐ |
-| `fll-challenge-bioglow-multimedia-resources.pdf` | Links to videos | ☐ |
-| `fll-challenge-bioglow-session-slide-*.pptx` | 13 meeting slide decks | ☐ |
-| `fll-challenge-bioglow-robot-game-missions.mp4` | Missions video (1.4 GB) | ☐ |
-| `guided-mission-bioglow-11.llsp3` | SPIKE guided program for Mission 11 | ☐ |
+| `fll-challenge-bioglow-rgr.pdf` | **Robot Game Rulebook**, 20 pp — 15 missions and all rules | Mined into [`robot-game/`](../../robot-game/README.md) |
+| `fll-challenge-bioglow-rubrics-color.pdf` | The two judging rubrics plus the feedback sheet, 3 pp | Mined into [`docs/judging/`](../judging/README.md) |
+| `fll-challenge-bioglow-judging-session-flowchart.pdf` | The 30-minute judging session, minute by minute | Mined into [`docs/judging/`](../judging/README.md) |
+| `fll-challenge-bioglow-software-scoresheet.pdf` | The referee's scoresheet — settles every piece count | Mined into [`robot-game/`](../../robot-game/README.md) |
+| `fll-challenge-bioglow-awards.pdf` | All 11 awards and how Champion's rank is calculated | Mined |
+| `fll-challenge-bioglow-participation-rules.pdf` | Team size, ages, adult-help rules, consequences | Mined |
+| `fll-challenge-bioglow-field-setup-reference-guide.pdf` | One page per mission showing starting positions, 17 pp | Mined |
+| `fll-challenge-bioglow-wireframe-grid.pdf` | Printable A–J by 1–6 grid of 20 cm cells, for path planning | Mined |
+| `fll-challenge-bioglow-en.pdf` | **The student Engineering Notebook**, 32 pp — the workbook the team writes in | Mined into [`engineering-notebook/`](../../engineering-notebook/README.md) |
+| `RsaYLB-fll-challenge-bioglow-tmg.pdf` | **The coach's Team Meeting Guide**, 32 pp — the 12-session curriculum | Mined |
+| `fll-challenge-bioglow-session-slide-*.pptx` | 13 ready-to-run session decks with objectives and vocabulary | Mined |
+| `fll-challenge-bioglow-multimedia-resources.pdf` | Curated video and book list, session by session | Mined |
+| `fll-challenge-bioglow-season-overview.pdf` | Season summary and the project brief | Mined |
+| `fll-challenge-bioglow-updates.pdf` | **Challenge Updates** — supersedes the rulebook | Checked, none as of 4 Aug 2026 |
+| `fll-challenge-bioglow-coach-mentor-nomination-print.pdf` | Form the **kids** fill in to nominate their coach | Mined — belongs on the packing list |
+| `fll-challenge-bioglow-bi-enus-prepack.pdf` | Building instructions, 13 pp — image only, no extractable text | Needs opening in Preview |
+| `guided-mission-bioglow-11.llsp3` | SPIKE Word Blocks program for Mission 11 | Inspected — a worked gyro and colour-sensor example |
 
-Two files came down with no extension (`scoresheet`, `wDan0826cn0`) and are
-HTML, not documents — safe to delete.
+Note that `fll-challenge-bioglow-en.pdf` and `RsaYLB-...-tmg.pdf` are **two
+different books**, not the same one. They share a page layout; the coach guide adds
+a facilitator column. An earlier version of this table conflated them.
 
-## Still worth downloading
+Two files arrived with no extension (`scoresheet`, `wDan0826cn0`). They are saved
+HTML pages, not documents, and are gitignored.
 
-- [ ] **Mission Model Building Instructions** — needed to build the field
-- [ ] Engineering Notebook template
-- [ ] Table Building Instructions (if building a practice table)
+## Still worth getting
+
+- [ ] **Mission Model Building Instructions.** `bi-enus-prepack.pdf` may already be
+      this — open it in Preview and check before downloading again.
+- [ ] Table Building Instructions, if building a practice table.
 
 Source: <https://www.firstinspires.org/resources/library/fll/season-materials>
 
 ## Challenge Updates — check monthly
 
 FIRST publishes rule changes after launch that **supersede the rulebook**. Teams
-lose points every year practicing against outdated rules.
+lose points every year practising against outdated rules.
 
-Assign one person to check on the 1st of each month:
+One person checks on the 1st of each month and logs it here:
 
 | Date checked | Version | Anything affecting us? | Checked by |
 | --- | --- | --- | --- |
-| 9 Aug 2026 | 4 Aug 2026 | No updates at this time | _initial scaffold_ |
+| 9 Aug 2026 | 4 Aug 2026 | No updates at this time | initial scaffold |
 
-## Reading PDFs
+## Reading the PDFs
 
-macOS ships PDFKit, so no install is needed. The team can just open them in
-Preview. For text extraction (useful for quoting exact scoring wording):
+Open them in Preview like anything else. For extracting text — useful when you
+need to quote exact scoring wording — there is a small tool in the repo:
 
 ```bash
 # Build once
-swiftc -O /tmp/pdftext.swift -o /tmp/pdftext
-# Then
+swiftc -O tools/pdftext.swift -o /tmp/pdftext
+
+# Whole document, or a page range
+/tmp/pdftext docs/official-materials/fll-challenge-bioglow-rgr.pdf
 /tmp/pdftext docs/official-materials/fll-challenge-bioglow-rgr.pdf 9 12
 ```
 
-## The four you'll reach for most
+It uses macOS PDFKit, so there is nothing to install. It cannot read image-only
+PDFs such as the building instructions — there is no OCR.
 
-These live in this folder on your computer. They're deliberately **not** linked
-as pages — the website can't serve them, and the build fails if it tries.
+## The four you will reach for most
 
 - `fll-challenge-bioglow-rgr.pdf` — Robot Game Rulebook
 - `fll-challenge-bioglow-rubrics-color.pdf` — Rubrics
 - `fll-challenge-bioglow-updates.pdf` — Challenge Updates
 - `fll-challenge-bioglow-field-setup-reference-guide.pdf` — Field Setup
+
+They are files in this folder, not pages on the website, so they are listed here
+rather than linked.

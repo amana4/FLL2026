@@ -18,33 +18,57 @@ Someone with admin on the repo does this once:
 4. Push any commit to `main`. Watch it build in the **Actions** tab.
 5. The site appears at `https://amana4.github.io/FLL2026/`
 
-## Before making the repo public
+## What is public, and what is not
 
-Public means *anyone* can read it, including search engines. Two things must
-stay out:
+The repo is public, so anyone can read it and search engines index the site.
+There are two different mechanisms at work, and confusing them has already caused
+one leak, so it is worth being precise.
 
-**FIRST's copyrighted PDFs.** `.gitignore` excludes `docs/official-materials/*.pdf`,
-so downloading them there keeps them on your computer and out of git. Confirm
-nothing slipped in earlier:
+**`exclude_docs` in `mkdocs.yml` keeps a file off the website.** The file is still
+in the repo and still readable by anyone browsing GitHub. It just does not become
+a page.
 
-```bash
-git ls-files | grep -i '\.pdf$'      # should print nothing
-```
+**`.gitignore` keeps a file out of the repo entirely.** That is the only real
+privacy mechanism.
 
-If a PDF is already tracked, remove it from git while keeping your local copy:
+**`not_in_nav` does neither.** It only silences the "this file is not in the nav"
+build warning. The file is still built, published and indexed. `CLAUDE.md` sat in
+`not_in_nav` for a day and was live at `/CLAUDE/` as a result.
 
-```bash
-git rm --cached docs/official-materials/whatever.pdf
-git commit -m "Remove copyrighted PDF from version control"
-```
+### What is deliberately kept off the website
 
-**Students' personal details.** `docs/team-roster.md` has names, grades, and
-contacts. It's excluded from the website in `mkdocs.yml` and stays repo-only.
-Think carefully before adding photos of students, full names, or a school name
-anywhere else.
+Listed in `exclude_docs`: `docs/team-roster.md` (children's names),
+`docs/team-fund.md` and `.csv` (what each family paid), `docs/team-links.md` (the
+Drive folder), and `CLAUDE.md`. All of these are still in the public repo — they
+are off the *site*, not private. If any of them needs to be genuinely private,
+gitignore it.
 
-The deploy workflow checks both of these on every build and **fails loudly**
-rather than publishing them by accident. Don't disable that check.
+### FIRST's copyrighted materials are committed on purpose
+
+The 15 PDFs and 13 slide decks in `docs/official-materials/` **are tracked**, by a
+team decision on 9 August, so that a clone gets everything instead of each person
+re-downloading. They are excluded from the site build only to keep the deploy
+artifact small.
+
+Do **not** run `git rm` on them. An earlier version of this page told you to,
+which was wrong.
+
+### What must never be committed
+
+- **Purchase paperwork.** Sales orders and invoices carry a billing name, a
+  residential address and payment details. `.gitignore` blocks
+  `docs/official-materials/SalesOrd*` and anything matching invoice or receipt.
+  Keep them outside the repo.
+- **Photos of students.** Git history is permanent. Put these in the team Drive.
+- **The 1.4 GB missions video.** It exceeds GitHub's 100 MB per-file limit and the
+  push would be rejected. Stream it from the FIRST Season Resources page.
+
+### The one automated check
+
+The deploy workflow fails the build if `docs/team-roster.md` is tracked but no
+longer excluded in `mkdocs.yml`. That is the only guard, and it exists because the
+roster is the file most likely to be published by accident. There is no longer a
+check on the PDFs, because committing them is now intentional.
 
 ## Editing
 
@@ -77,7 +101,8 @@ Then open <http://127.0.0.1:8000>. It reloads as you save.
 2. Add it to the `nav:` list in [`mkdocs.yml`](https://github.com/amana4/FLL2026/blob/main/mkdocs.yml)
 3. Commit and push
 
-Skip step 2 and the page still builds, but nobody will find it in the menu.
+Skip step 2 and the page still builds, but nobody will find it in the menu — and
+`--strict` will warn unless you also add it to `not_in_nav`.
 
 ## If the build fails
 
@@ -85,13 +110,19 @@ Check the **Actions** tab for the red cross and read the log. Common causes:
 
 | Error | Cause | Fix |
 | --- | --- | --- |
-| `Guard against publishing private material` | A PDF got committed, or the roster exclusion was removed | See the safety section above |
+| `Guard against publishing students' personal details` | `docs/team-roster.md` is tracked but no longer in `exclude_docs` | Restore the exclusion in `mkdocs.yml` |
 | `is not found among documentation files` | A link points at a file that was renamed or deleted | Fix the link, or the path in `mkdocs.yml` |
 | `Page exists in nav but not in docs` | `nav:` references a file that doesn't exist | Correct the path in `mkdocs.yml` |
+| `contains an unrecognized relative link` | A link points at a directory with no `README.md`, or at a non-markdown file | Link the `README.md` explicitly, or use an absolute GitHub URL for non-pages |
 
-The build uses `--strict`, which turns broken internal links into failures. That
-is deliberate: better a red cross in Actions than a dead link found during judging
+The build uses `--strict`, which turns broken internal links into failures. That is
+deliberate: better a red cross in Actions than a dead link found during judging
 prep.
+
+One thing `--strict` does **not** catch is a broken in-page anchor — a link of the
+form `[see below](#a-heading-that-was-renamed)` where that heading no longer
+exists. The `validation:` block in `mkdocs.yml` turns those into warnings too, and
+`tools/check-links.py` catches them before you push.
 
 ## Why MkDocs and not Notion or a wiki
 

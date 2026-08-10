@@ -191,7 +191,7 @@ separate trees. The game design makes cooperation literal.
 ## Official Project Sparks
 
 FIRST provides four starting prompts, one per rainforest layer — the full table
-is in [the layers section above](#firsts-project-sparks-are-organised-by-layer).
+is in [the layers section above](#how-the-layers-relate-to-the-project-sparks).
 
 > **But local beats exotic.** You can't interview a rainforest. You *can*
 > interview a council ecologist about the park down the road. A local problem
