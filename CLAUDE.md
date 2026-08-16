@@ -38,9 +38,19 @@ works via macOS PDFKit and a small Swift helper; there is no `pdftotext` or
 Source page for the materials:
 https://www.firstinspires.org/resources/library/fll/season-materials
 
-Nothing published to the website may contain students' names or contact details.
-`docs/team-roster.md` is deliberately excluded from the site build in
-`mkdocs.yml`, and CI fails if that exclusion is removed.
+Nothing published to the website may contain students' names or contact details,
+with one deliberate exception: on 15 August 2026 the coach decided the
+after-class notes form may identify its author by **first name**, and that form
+is embedded on the public `docs/after-class-notes.md` page, so those first names
+are public and search-indexable. That was a considered call, not an oversight —
+do not "fix" it back.
+
+Everything else still holds. Surnames, grades, contact details and photos of
+students stay off the site. `docs/team-roster.md` is deliberately excluded from
+the site build in `mkdocs.yml`, and CI fails if that exclusion is removed.
+Markdown files in the repo still use the `Kid 1` to `Kid 5` labels rather than
+names, because those pages get committed and printed and there is no reason to
+widen the exposure further.
 
 The site is MkDocs Material, published to GitHub Pages from `main`. Every markdown
 link must point at a real `.md` file — link `dir/README.md` explicitly rather than

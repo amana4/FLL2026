@@ -20,17 +20,25 @@
  *     start unpublished, which would mean nobody can submit.
  *   - Responses tab, Sheets icon, to create the linked spreadsheet.
  *
- * Question 2 uses Kid 1 to Kid 5 rather than real names on purpose: notes get
- * copied into the repo, and the repo is public.
+ * Question 2 carries the students' first names, by a decision on 15 August 2026.
+ * Fill them into TEAM_NAMES below before running.
+ *
+ * The names are deliberately NOT committed here. The form is embedded on the
+ * public site, so the names are public either way — but a form field can be
+ * changed back in seconds, whereas anything committed to this repo is in git
+ * history permanently and needs a history rewrite to remove. No reason to take
+ * the irreversible version of the same exposure.
  */
+
+// Fill these in before running. Order does not matter.
+var TEAM_NAMES = ['Kid 1', 'Kid 2', 'Kid 3', 'Kid 4', 'Kid 5'];
 
 function createNotesForm() {
   var form = FormApp.create('FLL BIOGLOW — After-class notes');
 
   form.setDescription(
     'Five minutes after a session. You do not have to fill in every box — one ' +
-    'good sentence beats five blank fields. Use Kid 1 to Kid 5 rather than ' +
-    'real names.'
+    'good sentence beats five blank fields.'
   );
 
   // No email collection, so no login is needed. That is what lets the younger
@@ -47,10 +55,10 @@ function createNotesForm() {
     .setHelpText('The meeting this note is about, not necessarily today.')
     .setRequired(true);
 
-  // 2. Who, by slot rather than name.
+  // 2. Who wrote it. First names, plus Coach.
   form.addListItem()
     .setTitle('Who is writing this?')
-    .setChoiceValues(['Kid 1', 'Kid 2', 'Kid 3', 'Kid 4', 'Kid 5', 'Coach'])
+    .setChoiceValues(TEAM_NAMES.concat(['Coach']))
     .setRequired(true);
 
   // 3. Area, so the sheet can be filtered when filling in a prep sheet.

@@ -57,10 +57,12 @@ judging and the easiest to lose the chance at. **You can only photograph version
 one before you take it apart.** Once it is dismantled it is gone, and "we had an
 earlier version but no picture" scores nothing.
 
-Two rules on what not to write. Use **Kid 1** to **Kid 5** rather than real
-names, because notes get copied into the repo and the repo is public. And no
-photos of people's faces on the website — robot, field, attachments, sketches
-and prototype photos are all fine.
+Two rules on what not to write. Pick your own name in the form's dropdown, but
+when notes get **copied into the repo** — the design log, the evidence log — use
+**Kid 1** to **Kid 5** instead of names, because those pages are committed and
+printed and there is no reason to spread names further than needed. And no photos
+of people's faces on the website; robot, field, attachments, sketches and
+prototype photos are all fine.
 
 ## Reading the notes back
 
@@ -168,7 +170,7 @@ one without re-inventing the questions.
     | # | Question | Type | Required |
     | --- | --- | --- | --- |
     | 1 | Session date | Date | Yes |
-    | 2 | Who is writing this? | Dropdown: Kid 1, Kid 2, Kid 3, Kid 4, Kid 5, Coach | Yes |
+    | 2 | Who is writing this? | Dropdown: the five students' first names, plus Coach | Yes |
     | 3 | Area | Checkboxes: Robot, Programming, Innovation Project, Core Values, Other | Yes |
     | 4 | What we did, built, or changed | Paragraph | No |
     | 5 | What broke or did not work, and why we think so | Paragraph | No |
@@ -180,9 +182,13 @@ one without re-inventing the questions.
     | 11 | What needs photographing before it changes | Short answer | No |
     | 12 | Anything else | Paragraph | No |
 
-    Question 2 uses **Kid 1 to Kid 5, not real names.** The roster is the key and
-    is kept off the website. Question 1 exists because the automatic timestamp is
-    when the form was *submitted*, which is not always the session it describes.
+    Question 2 carries **first names**, by a decision on 15 August 2026. Because
+    the form is embedded on this public page, those names are public — see the
+    note in `CLAUDE.md`. The names themselves are not in
+    `tools/create-notes-form.gs`; that script has a placeholder list to fill in,
+    so names are not baked into git history, which is far harder to undo than a
+    form field. Question 1 exists because the automatic timestamp is when the form
+    was *submitted*, which is not always the session it describes.
 
     **Settings that matter.** Under **Settings**:
 
