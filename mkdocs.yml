@@ -172,22 +172,27 @@ nav:
   # session, or look something up in FIRST's own materials. Everything a person
   # reads once has been pushed to the bottom, not deleted — removing a page from
   # the nav does not unpublish it, it just makes it unreachable except by search.
-  - After-class notes: docs/after-class-notes.md
-  - Season materials: docs/official-materials/README.md
+  #
+  # Labels are written for a 9-year-old, EXCEPT the official FIRST terms —
+  # Innovation Project, Core Values, Robot Design, Engineering Notebook. Those
+  # stay word-for-word, because the students need to recognise and say them in
+  # the judging room. Making those friendlier would cost them marks.
+  - Write today's notes: docs/after-class-notes.md
+  - Rules and official PDFs: docs/official-materials/README.md
 
-  - This season:
-      - docs/meeting-plan.md
-      - Meeting logs: meetings/README.md
+  - Our meetings:
+      - All 26 meetings: docs/meeting-plan.md
+      - What happened each time: meetings/README.md
       - Who did what: docs/who-did-what.md
 
   - Robot:
       - robot-game/README.md
-      - Strategy: robot-game/strategy.md
-      - Field map: robot-game/field-map.md
-      - Runs: robot-game/runs/README.md
+      - Which missions we'll try: robot-game/strategy.md
+      - Where things are on the mat: robot-game/field-map.md
+      - Run plans: robot-game/runs/README.md
       - Scoresheet: robot-game/scoresheet.md
-      - Scoring tracker: robot-game/scoring-tracker.md
-      - Missions:
+      - Points tracker: robot-game/scoring-tracker.md
+      - The 15 missions:
           - robot-game/missions/README.md
           - M01 Drone Survey: robot-game/missions/M01-drone-survey.md
           - M02 Exploding Seeds: robot-game/missions/M02-exploding-seeds.md
@@ -204,65 +209,65 @@ nav:
           - M13 Keystone Species: robot-game/missions/M13-keystone-species.md
           - M14 Seeds of Renewal: robot-game/missions/M14-seeds-of-renewal.md
           - M15 Biocentric Architecture: robot-game/missions/M15-biocentric-architecture.md
-      - Design:
+      - Robot Design:
           - robot-design/README.md
-          - Chassis: robot-design/chassis.md
+          - The driving base: robot-design/chassis.md
           - Attachments: robot-design/attachments/README.md
-          - Design log: robot-design/design-log.md
-          - Troubleshooting: robot-design/troubleshooting.md
+          - Design log — what we changed: robot-design/design-log.md
+          - When something breaks: robot-design/troubleshooting.md
       - Code:
           - code/README.md
-          - Library: code/library/README.md
-          - Missions (Python): code/missions/README.md
-          - My Blocks (Word Blocks history): code/my-blocks.md
+          - Shared code (the toolkit): code/library/README.md
+          - Mission programs: code/missions/README.md
+          - Word Blocks (what we used before): code/my-blocks.md
           - SPIKE lessons: code/spike-lessons.md
 
   - Innovation Project:
       - innovation-project/README.md
-      - Brainstorm: innovation-project/brainstorm.md
-      - Problem: innovation-project/problem.md
-      - Expert outreach: innovation-project/expert-outreach.md
-      - Research: innovation-project/research.md
-      - Solution: innovation-project/solution.md
-      - Sharing and feedback: innovation-project/sharing.md
-      - Presentation: innovation-project/presentation/README.md
+      - Ideas — brainstorm: innovation-project/brainstorm.md
+      - The problem we picked: innovation-project/problem.md
+      - Emailing experts: innovation-project/expert-outreach.md
+      - What we found out: innovation-project/research.md
+      - Our solution: innovation-project/solution.md
+      - Showing it to people: innovation-project/sharing.md
+      - The presentation: innovation-project/presentation/README.md
 
   - Core Values:
       - core-values/README.md
-      - Team agreement: core-values/team-agreement.md
-      - Evidence log: core-values/evidence-log.md
+      - Our team agreement: core-values/team-agreement.md
+      - Things we did well — evidence log: core-values/evidence-log.md
 
-  - Judging:
+  - Judging day:
       - docs/judging/README.md
       - Innovation Project prep: docs/judging/innovation-project-prep.md
       - Robot Design prep: docs/judging/robot-design-prep.md
       - Core Values prep: docs/judging/core-values-prep.md
 
-  - Competition:
+  - Competition day:
       - competition/README.md
-      - Quick reference (print this): competition/quick-reference.md
-      - Tournament day: competition/tournament-day.md
-      - Packing list: competition/packing-list.md
-      - Awards: competition/awards.md
-      - Eligibility and rules: competition/eligibility.md
-      - After the qualifier: competition/after-the-qualifier.md
+      - Print this one page: competition/quick-reference.md
+      - What happens on the day: competition/tournament-day.md
+      - What to pack: competition/packing-list.md
+      - The awards: competition/awards.md
+      - Rules about who can compete: competition/eligibility.md
+      - If we get through: competition/after-the-qualifier.md
 
-  - Notebook: engineering-notebook/README.md
+  - Engineering Notebook: engineering-notebook/README.md
 
   # Read once, then rarely again. Kept in the menu so they stay findable, but out
   # of the way of the pages used weekly.
   - Start here:
       - What is BIOGLOW?: docs/what-is-bioglow.md
       - For parents: docs/for-parents.md
-      - How much help is allowed: docs/coaching.md
-      - Equipment: docs/equipment.md
-      - Safety: docs/safety.md
+      - How much can a grown-up help?: docs/coaching.md
+      - Our kit and equipment: docs/equipment.md
+      - Staying safe: docs/safety.md
 
-  - Reference:
-      - Glossary: docs/glossary.md
-      - Joining part-way through: docs/new-member.md
-      - Inclusion in practice: docs/inclusion.md
+  - Useful extras:
+      - Glossary — what the words mean: docs/glossary.md
+      - Joining the team late: docs/new-member.md
+      - Including everyone: docs/inclusion.md
       - FIRST's 12 official sessions: docs/official-sessions.md
-      - How we use git: CONTRIBUTING.md
-      - The website: docs/website.md
-      - Retrospective: docs/retrospective.md
+      - How we save our work (git): CONTRIBUTING.md
+      - How this website works: docs/website.md
+      - End-of-season review: docs/retrospective.md
