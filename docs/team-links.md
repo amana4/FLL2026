@@ -50,23 +50,27 @@ Fill these in as they exist.
 | --- | --- |
 | After-class notes form (what the kids fill in) | <https://docs.google.com/forms/d/e/1FAIpQLSdZLffhEKDjB5kv6IGmUgxbquTiqsvH47d2jKIVPAcYK1TXQg/viewform> |
 | After-class notes form — edit the questions | <https://docs.google.com/forms/d/1FrGEAl5az6Peacy8POCYNkS58cCG2dghD_3KPgBLSX8/edit> |
-| After-class notes responses (Google Sheets) | _paste once created_ |
+| After-class notes responses (Google Sheets) | <https://docs.google.com/spreadsheets/d/1-IdeSZyUmC_o6YaDYDrApmv3IxJiKFbuYZR3TlXOy34/edit> |
 | Team fund spreadsheet (Google Sheets) | _paste once imported_ |
 | WhatsApp group | _optional_ |
 | Team website (public) | <https://amana4.github.io/FLL2026/> |
 | This repository | <https://github.com/amana4/FLL2026> |
 
 The notes responses sheet is the running record of what happened each session,
-ordered by date. It does not exist yet — create it from the form's **Responses**
-tab and paste the link in above.
+ordered by date. Sort by **Session date**, not the automatic Timestamp — they
+differ whenever somebody fills the form in the next morning.
+
+**Check this sheet's sharing before relying on the link above.** Open it, click
+**Share**, and look at **General access**. This is the one link in this file
+where it matters most: the sheet is a session-by-session account of what five
+children did, and this repository is public, so "Anyone with the link" would
+effectively publish it. It should say **Restricted**, shared individually with
+the coaches. If it says anything else, change it — or tell me and I will
+gitignore this file so the link never leaves your machine.
 
 The **form** link is not a secret; it is embedded on the public website by design.
-The **edit** link and the **responses sheet** are different. A stranger clicking
-the edit link gets a permission error as long as the form's sharing stays
-restricted, which is the same caveat as the Drive folder above — worth
-re-checking if you ever widen it. The responses sheet holds a session-by-session
-account of what the children did, so keep that one restricted to coaches and
-parents.
+The **edit** link is safe as long as the form's sharing stays restricted, which is
+the same caveat as the Drive folder above.
 
 ## Official FIRST links
 
