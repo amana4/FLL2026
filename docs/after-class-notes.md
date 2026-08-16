@@ -4,93 +4,91 @@ Five minutes at the end of a session, or on the way home. What you write here is
 what you will have to talk about in the judging room in November, and it is much
 easier to remember now than in October.
 
-**Read this bit first.** The boxes on this page save in *your browser on this
-device*. They are not shared with the team, and they disappear if you clear your
-history or switch to a different phone or laptop. That is fine for catching a
-thought quickly, which is what they are for. It is not somewhere to leave three
-months of work. Use the **Copy** or **Download** button that appears under the
-last box, and move what matters into the meeting log or the team Drive folder
-while you still have it.
+Everything goes into **one shared list, ordered by date**, so the whole team can
+see it and nothing depends on one person's phone.
 
-Use **Kid 1** to **Kid 5** rather than real names in anything you copy into the
-repo. The website is public. The names are in the roster, which is not.
+!!! warning "Coach: this form is not connected yet"
 
-## What we changed on the robot
+    The form below will not work until the Google Form exists. Three steps, about
+    ten minutes, in the **Setting this up** section at the bottom of this page.
+    Delete this box once it works.
 
-Even a small change counts. If you took something apart and put it back
-differently, that is an iteration.
+## Add today's note
 
-<div class="fll-note" data-note="robot-changed" data-label="What we built, changed, or took apart today"></div>
+<iframe
+  src="https://docs.google.com/forms/d/e/PASTE_FORM_ID_HERE/viewform?embedded=true"
+  width="100%"
+  height="900"
+  style="border:0;max-width:100%"
+  title="After-class notes form">Loading the form…</iframe>
 
-<div class="fll-note" data-note="robot-broke" data-label="What broke, fell off, or did not work — and what we think caused it"></div>
+If the form does not load, open it in a new tab instead — the link is in
+`docs/team-links.md` in the repo, which is kept off this website.
 
-Failed attempts are worth more to judges than successes. "This is version four,
-and versions one to three did not work because…" is the single strongest thing
-you can say about your robot. So write down the versions that failed, with the
-reason, while you still remember it.
+## What to write
 
-## Programming
+You do not have to fill in every box. One good sentence beats five blank fields.
 
-<div class="fll-note" data-note="code-changed" data-label="What we changed in the code, and why"></div>
+**What changed on the robot.** Even a small change counts. If you took something
+apart and put it back differently, that is an iteration.
 
-<div class="fll-note" data-note="code-numbers" data-label="Numbers from testing — attempts, successes, distances, speeds that worked"></div>
+**What broke.** This is worth more to judges than what worked. "This is version
+four, and versions one to three did not work because…" is the single strongest
+thing you can say about your robot. Write the reason down while you still
+remember it.
 
-Numbers matter more than adjectives here. "It got more reliable" is a weak
-answer; "it went from four out of ten to nine out of ten after we added gyro
-correction" is a strong one. Write the numbers down at the table, because nobody
-remembers them a week later.
+**Numbers from testing.** Numbers matter more than adjectives. "It got more
+reliable" is weak; "it went from four out of ten to nine out of ten after we
+added gyro correction" is strong. Nobody remembers the numbers a week later, so
+write them at the table.
 
-## Innovation Project
+**Anyone you talked to about the project, and what they said.** Especially
+anything that surprised you or changed your mind. The rubric asks for evidence
+that feedback actually *changed* something, so write down both halves: what they
+said, and what you did differently because of it.
 
-<div class="fll-note" data-note="project-progress" data-label="What we worked out about our problem or our solution today"></div>
+**A Core Values moment.** Something small is fine. Somebody helped somebody.
+Something was funny. Somebody stuck with something hard.
 
-<div class="fll-note" data-note="project-feedback" data-label="Anyone we talked to, and what they told us — including anything that surprised us or changed our mind"></div>
+**Any disagreement, and how you sorted it out.** Judges ask about this almost
+every year, and "we never disagree" is a worse answer than a real story. Two
+honest examples by November is the goal.
 
-That last box is the one judges dig into. The rubric asks for evidence that
-feedback actually *changed* something, so if someone told you something and you
-changed the design because of it, write down both halves.
+**What you personally did.** Answer for yourself, not the team. Judges pick who
+they ask, so each of you needs to be able to say what *you* built, coded, or
+worked out. This feeds [`who-did-what.md`](who-did-what.md).
 
-## Core Values moment
+**What needs photographing.** Photos are the highest-value thing you can bring to
+judging and the easiest to lose the chance at. **You can only photograph version
+one before you take it apart.** Once it is dismantled it is gone, and "we had an
+earlier version but no picture" scores nothing.
 
-Something small is fine. Somebody helped somebody. Something was funny. Somebody
-learned something hard and stuck with it. One line is plenty.
+Two rules on what not to write. Use **Kid 1** to **Kid 5** rather than real
+names, because notes get copied into the repo and the repo is public. And no
+photos of people's faces on the website — robot, field, attachments, sketches
+and prototype photos are all fine.
 
-<div class="fll-note" data-note="core-values" data-label="Something worth remembering about how we worked together today"></div>
+## Reading the notes back
 
-<div class="fll-note" data-note="disagreement" data-label="Did we disagree about anything, and how did we sort it out?"></div>
+The responses live in one spreadsheet, newest at the bottom, with a timestamp on
+every row. The link is in `docs/team-links.md` in the repo, which is kept off
+this website.
 
-Judges ask about disagreements almost every year, and "we never disagree" is a
-worse answer than a real story. Two honest examples by November is the goal.
+Two things worth knowing when you read it:
 
-## What I did today
+There are **two dates** on every row. The automatic *Timestamp* is when the form
+was submitted; *Session date* is the meeting the note is about. They are usually
+the same day, but not if somebody fills the form in the next morning. **Sort by
+Session date**, not Timestamp, or your timeline will be subtly wrong.
 
-Answer for yourself, not the team. Judges pick who they ask, so each of you needs
-to be able to say what *you* personally built, coded, or worked out.
+Sort newest-first with **Data**, then **Sort range**, then Session date
+descending. Filter by the *Area* column to pull out just the robot notes or just
+the project notes when filling in a prep sheet.
 
-<div class="fll-note" data-note="my-contribution" data-label="What I personally worked on today"></div>
+## Where these notes end up
 
-<div class="fll-note" data-note="my-learning" data-label="Something I learned or got better at"></div>
-
-## Photos we should take
-
-Photos are the highest-value thing you can bring to judging, and the easiest to
-lose the chance at. **You can only photograph version one before you take it
-apart.** Once it is dismantled it is gone for good, and "we had an earlier
-version but no picture of it" scores nothing.
-
-<div class="fll-note" data-note="photos" data-label="What needs photographing before it changes or gets taken apart"></div>
-
-No photos of people's faces on the website. Photos of the robot, the field,
-attachments, sketches, and the prototype are all fine.
-
-## Anything else
-
-<div class="fll-note" data-note="other" data-label="Questions, worries, ideas, things to ask the coach"></div>
-
-## Where these notes need to end up
-
-The boxes above are a scratchpad. These files are the real record, and they are
-what gets printed and carried into the judging room.
+The spreadsheet is the running record. These files are what gets printed and
+carried into the judging room, and they are assembled *from* the spreadsheet.
 
 | What you wrote | Where it belongs |
 | --- | --- |
@@ -98,19 +96,19 @@ what gets printed and carried into the judging room.
 | Code changes and test numbers | [`code/README.md`](../code/README.md) and the mission's own page |
 | Test results | [`robot-game/scoring-tracker.md`](../robot-game/scoring-tracker.md) |
 | Innovation Project progress | [`innovation-project/README.md`](../innovation-project/README.md) |
-| Feedback and what changed because of it | [`innovation-project/sharing.md`](../innovation-project/sharing.md) |
+| Feedback, and what changed because of it | [`innovation-project/sharing.md`](../innovation-project/sharing.md) |
 | Core Values moments, disagreements | [`core-values/evidence-log.md`](../core-values/evidence-log.md) |
 | Who did what | [`who-did-what.md`](who-did-what.md) |
-| Everything, roughly | that meeting's log in [`meetings/README.md`](../meetings/README.md) |
 
-The fastest routine that works: one person hits **Copy all notes** at the end of
-the session and pastes the lot into that day's meeting log. Sorting it into the
-right files can happen later. Getting it out of the browser cannot.
+Copying across does not need doing weekly. Once a fortnight is fine, and the
+notebook checkpoint at Meeting 18 is the natural moment to catch up. The
+spreadsheet means nothing is lost in the meantime, which is the part that used to
+go wrong.
 
 ## What else to record for judging day
 
-Beyond the boxes above, these are the things teams most often wish they had
-written down. All of them come straight off the two official rubrics.
+Beyond the form, these are the things teams most often wish they had written
+down. All of them come straight off the two official rubrics.
 
 **Why you rejected things.** Which missions you decided *not* to attempt and why,
 and which Innovation Project ideas you dropped. Judges ask "why not that one?"
@@ -133,7 +131,7 @@ many motors you use. The table is already waiting in
 someone measuring and writing it down.
 
 **Who can explain what.** Both rubrics ask for evidence that *all* members have
-building and coding skills, not just one expert. Tracking it is what
+building and coding skills, not just one expert. That is what
 [`who-did-what.md`](who-did-what.md) is for, and it doubles as your answer to
 "how did you divide the work?"
 
@@ -149,5 +147,61 @@ strong evidence. Write it down the same day.
 said you would send them the result, that goes in
 [`innovation-project/sharing.md`](../innovation-project/sharing.md). Judges are
 impressed by teams who closed the loop.
+
+## Setting this up
+
+??? note "Coach: creating the form (about ten minutes, once)"
+
+    **1. Create the form.** Go to <https://forms.google.com> and start a blank
+    form. Call it "FLL BIOGLOW — After-class notes". Add these questions, in this
+    order. Only the first three are required; leaving the rest optional is what
+    keeps kids actually filling it in.
+
+    | # | Question | Type | Required |
+    | --- | --- | --- | --- |
+    | 1 | Session date | Date | Yes |
+    | 2 | Who is writing this? | Dropdown: Kid 1, Kid 2, Kid 3, Kid 4, Kid 5, Coach | Yes |
+    | 3 | Area | Checkboxes: Robot, Programming, Innovation Project, Core Values, Other | Yes |
+    | 4 | What we did, built, or changed | Paragraph | No |
+    | 5 | What broke or did not work, and why we think so | Paragraph | No |
+    | 6 | Numbers from testing | Short answer | No |
+    | 7 | Anyone we talked to, and what they told us | Paragraph | No |
+    | 8 | A Core Values moment | Paragraph | No |
+    | 9 | Any disagreement, and how we sorted it out | Paragraph | No |
+    | 10 | What I personally did today | Paragraph | No |
+    | 11 | What needs photographing before it changes | Short answer | No |
+    | 12 | Anything else | Paragraph | No |
+
+    Question 2 uses **Kid 1 to Kid 5, not real names.** The roster is the key and
+    is kept off the website. Question 1 exists because the automatic timestamp is
+    when the form was *submitted*, which is not always the session it describes.
+
+    **2. Check the settings.** Under **Settings**:
+
+    - **Responses**: "Collect email addresses" **off**. You do not want children's
+      email addresses in a spreadsheet, and it means no login is needed, which is
+      what lets the younger kids use it at all.
+    - **Allow response editing**: on, so a kid can fix a typo.
+    - **Limit to 1 response**: **off** — several kids submit per session, and one
+      kid may add a second note later.
+
+    **3. Connect it to this page.** Click **Publish** (or **Send**), then the
+    **embed** option, and copy the `src` URL out of the code Google gives you. It
+    looks like `https://docs.google.com/forms/d/e/LONG_ID/viewform?embedded=true`.
+    Replace `PASTE_FORM_ID_HERE` in this file's iframe with that `LONG_ID`, then
+    delete the warning box at the top of the page.
+
+    **4. Create the responses sheet.** On the **Responses** tab, click the Sheets
+    icon to create a linked spreadsheet. Put it in the team Drive folder under
+    `Admin/`, and paste its link into `docs/team-links.md` in the repo — that
+    file is kept off the published website.
+
+    **One thing to know about embedding it here.** This website is public, so the
+    form is reachable by anyone who finds the page. For a small team site that is
+    very low risk, but it does mean a stranger could submit a junk response. They
+    would land as obvious rubbish in the sheet and you can delete the row. If you
+    would rather not have it public at all, tell me and I will move the form
+    behind the private `team-links.md` page instead of embedding it here — the
+    trade is one extra tap for the kids.
 
 --8<-- "includes/abbreviations.md"

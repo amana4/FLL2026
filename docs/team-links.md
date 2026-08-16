@@ -48,10 +48,21 @@ Fill these in as they exist.
 
 | What | Link |
 | --- | --- |
+| After-class notes form (Google Forms) | _paste once created_ |
+| After-class notes responses (Google Sheets) | _paste once created_ |
 | Team fund spreadsheet (Google Sheets) | _paste once imported_ |
 | WhatsApp group | _optional_ |
 | Team website (public) | <https://amana4.github.io/FLL2026/> |
 | This repository | <https://github.com/amana4/FLL2026> |
+
+The notes responses sheet is the running record of what happened each session,
+ordered by date. Setup steps are at the bottom of
+[`after-class-notes.md`](after-class-notes.md).
+
+Note that the **form** link is deliberately also embedded on the public website,
+so it is not a secret. The **responses sheet** is different — keep that one
+restricted to the coaches and parents, because it holds a session-by-session
+account of what the children did.
 
 ## Official FIRST links
 

@@ -68,11 +68,9 @@ plugins:
 
 extra_css:
   - tools/print.css
-  - tools/notes.css
 
 extra_javascript:
   - tools/checkbox-state.js
-  - tools/notes.js
 
 copyright: >
   Team materials are ours. FIRST&reg;, LEGO&reg;, FIRST&reg; LEGO&reg; League and
