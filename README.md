@@ -1,14 +1,29 @@
 # FLL 2026–2027 — BIOGLOW
 
-Team workspace for our *FIRST*® LEGO® League Challenge season: **BIOGLOW** —
-the theme is **biodiversity**.
+Our team's workspace for this season. The theme is **BIOGLOW**, which is all
+about **biodiversity** — the huge web of living things, and how it is in trouble.
 
-Everything the team makes this season lives here — robot strategy, mission plans,
-code, the Innovation Project, Core Values work, and the Engineering Notebook.
+**Read this as a website:** <https://amana4.github.io/FLL2026/> — it searches,
+and it works on a phone at the practice table.
 
-**Read this as a website:** <https://amana4.github.io/FLL2026/> — searchable and
-works well on a phone at the practice table. Setup notes in
-[`docs/website.md`](docs/website.md).
+## What do you want to do?
+
+| I want to… | Go here |
+| --- | --- |
+| **Write down what we did today** | [Write today's notes](docs/after-class-notes.md) |
+| **Find out what's on at the next meeting** | [All 26 meetings](docs/meeting-plan.md) |
+| Read the actual rules | [Rules and official PDFs](docs/official-materials/README.md) |
+| Work on a mission | [The 15 missions](robot-game/missions/README.md) |
+| Change the robot's code | [Code](code/README.md) |
+| Work on our Innovation Project | [Innovation Project](innovation-project/README.md) |
+| Fix a robot that has stopped working | [When something breaks](robot-design/troubleshooting.md) |
+| Look up a word I don't know | [Glossary](docs/glossary.md) |
+| Get ready for judging | [Judging day](docs/judging/README.md) |
+
+Grown-ups: start with [For parents](docs/for-parents.md) and
+[How much can a grown-up help?](docs/coaching.md)
+
+## Key dates
 
 | | |
 | --- | --- |
@@ -18,98 +33,67 @@ works well on a phone at the practice table. Setup notes in
 | Meetings | **Sundays 11:00 am to 12:30 pm**, **Wednesdays 6:00 to 7:30 pm** |
 | Local competition | **Early November 2026** |
 
-Season plan: [26 meetings mapped out](docs/meeting-plan.md).
+## The four things we are judged on
 
-## Official FIRST materials
+FLL Challenge scores four areas, and **they count the same amount**. The
+Champion's Award adds up your *place* in each one, and the lowest total wins. So
+being pretty good at all four beats being brilliant at one and weak at the rest.
+A team that only ever practises the robot throws away most of the season.
 
-Everything about missions, points, and rules comes from FIRST, not from this
-repo. If our notes ever disagree with theirs, theirs are right.
+1. **Robot Game** — points scored in 2.5-minute matches → [`robot-game/`](robot-game/README.md)
+2. **Robot Design** — 5 minutes explaining how we built and programmed it, then questions → [`robot-design/`](robot-design/README.md)
+3. **Innovation Project** — we find a real problem, design a solution, and show it to people → [`innovation-project/`](innovation-project/README.md)
+4. **Core Values** — how we treat each other, watched all season → [`core-values/`](core-values/README.md)
 
-**Season materials page:**
+Two of those happen in a **single 30-minute judging session**, and Core Values is
+scored through the other two rather than on its own.
+
+The [Engineering Notebook](engineering-notebook/README.md) feeds all four. FIRST
+does not make you hand it in — you bring it to judging and show it.
+
+## The rules come from FIRST, not from us
+
+Everything about missions, points and rules comes from FIRST. **If anything in
+here disagrees with their PDFs, they are right and we are wrong.**
+
+Their season materials page:
 <https://www.firstinspires.org/resources/library/fll/season-materials>
 
-That page is where the rulebook, rubrics, field setup guide, building
-instructions, and the missions video all live. The PDFs are also committed to
-this repo under [`docs/official-materials/`](docs/official-materials/README.md) so a
-clone gets everything, but the page above is the source and is worth
-re-checking.
+That is where the rulebook, rubrics, field setup guide, building instructions and
+the missions video live. The PDFs are also saved in this repo under
+[`docs/official-materials/`](docs/official-materials/README.md) so you get them
+all when you clone, but their page is the real source and is worth re-checking.
 
 **Challenge Updates matter most.** FIRST publishes rule changes there after the
-season launches, and those changes override the rulebook. Teams lose points
-every year practising against an outdated rule. Someone should check monthly and
-log it in [`docs/official-materials/README.md`](docs/official-materials/README.md).
-As of 4 August 2026 there are no updates.
-
-Other useful links:
-
-- FLL Challenge home: <https://www.firstinspires.org/robotics/fll>
-- All 15 BIOGLOW missions, written up with official scoring:
-  [`robot-game/missions/`](robot-game/missions/README.md)
+season starts, and those changes beat the rulebook. Teams lose points every year
+practising an out-of-date rule. Someone should check monthly and log it in
+[`docs/official-materials/README.md`](docs/official-materials/README.md). As of
+4 August 2026 there are no updates.
 
 ## What is urgent right now
 
-Kits are here, so the robot is not blocked. The one thing with a multi-week fuse
-is **emailing local biodiversity experts**
+The kits are here, so the robot is not held up by anything. The one job with a
+long fuse is **emailing local biodiversity experts**
 ([`expert-outreach.md`](innovation-project/expert-outreach.md)). Replies take two
-to three weeks, and the Innovation Project rubric wants feedback from *multiple*
-people to score well. Those emails should go out in week 1.
+to three weeks, and the Innovation Project rubric wants feedback from *several*
+people to score well, so those emails want to go out early.
 
-## Start here
-
-| If you want to… | Go to |
-| --- | --- |
-| **Explain BIOGLOW to the team** | [`docs/what-is-bioglow.md`](docs/what-is-bioglow.md) |
-| **Open a rulebook, rubric or any official PDF** | [`docs/official-materials/`](docs/official-materials/README.md) — all 29 files, linked |
-| Look up a term | [`docs/glossary.md`](docs/glossary.md) |
-| **Parents: what is this and what should I do** | [`docs/for-parents.md`](docs/for-parents.md) |
-| Work out how much an adult may help | [`docs/coaching.md`](docs/coaching.md) |
-| Find where a mission is on the field | [`robot-game/field-map.md`](robot-game/field-map.md) |
-| Fix a robot that stopped working | [`robot-design/troubleshooting.md`](robot-design/troubleshooting.md) |
-| Print one page for competition day | [`competition/quick-reference.md`](competition/quick-reference.md) |
-| **Run today's meeting** | [`docs/meeting-plan.md`](docs/meeting-plan.md) — the 26 sessions, with key dates |
-| Write up what happened | [`meetings/`](meetings/README.md) |
-| Work on a robot mission | [`robot-game/missions/`](robot-game/missions/README.md) |
-| Plan or tune a robot run | [`robot-game/runs/`](robot-game/runs/README.md) |
-| Add or change robot code | [`code/`](code/README.md) |
-| Work on the Innovation Project | [`innovation-project/`](innovation-project/README.md) |
-| Prep for judging | [`docs/judging/`](docs/judging/README.md) |
-| Know how to commit / branch | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
-
-## The four things we're judged on
-
-FLL Challenge scores four areas. Two are presented to judges in a **single
-30-minute session**, Core Values is scored through those two rubrics rather than
-separately, and the Robot Game is scored on the table.
-
-The four are weighted equally — and the Champion's Award adds up your **rank** in
-each, with the lowest total winning. So being solid in all four beats being
-outstanding in one and weak in three, and a team that only practises the robot is
-leaving most of the season on the floor.
-
-1. **Robot Game** — objective points scored in 2.5-minute matches → [`robot-game/`](robot-game/README.md)
-2. **Robot Design** — 5 minutes explaining how we built and programmed it, then Q&A → [`robot-design/`](robot-design/README.md)
-3. **Innovation Project** — we find a real problem, design a solution, share it → [`innovation-project/`](innovation-project/README.md)
-4. **Core Values** — how we work together, judged everywhere all season → [`core-values/`](core-values/README.md)
-
-The [Engineering Notebook](engineering-notebook/README.md) feeds all four. FIRST does not
-require it to be submitted — you bring it to judging and show it.
-
-## Repo layout
+## Where everything lives
 
 ```
 docs/                   Meeting plan, judging prep, glossary, official PDFs
-robot-game/             Mission analysis, run plans, scoring tracker
-code/                   SPIKE Prime Word Blocks projects + screenshots
-robot-design/           Chassis, attachments, mechanical decisions
-innovation-project/     Problem research, solution, presentation
+robot-game/             Mission analysis, run plans, points tracker
+code/                   Python for the robot: shared toolkit + one file per mission
+robot-design/           Driving base, attachments, what we changed and why
+innovation-project/     Problem research, our solution, the presentation
 core-values/            Team agreement, Core Values evidence log
-engineering-notebook/   Notebook source and exports
-meetings/               Dated meeting notes
-competition/            Tournament-day checklists and packing lists
+engineering-notebook/   The notebook
+meetings/               Notes from each meeting
+competition/            Competition-day checklists and packing lists
 ```
 
 ## Team
 
-Roster, roles, and contact info: [`docs/team-roster.md`](https://github.com/amana4/FLL2026/blob/main/docs/team-roster.md)
-(kept in the repo only — it has students' names and contacts, so it's deliberately
-not published to the website)
+Roster, roles and contact details: [`docs/team-roster.md`](https://github.com/amana4/FLL2026/blob/main/docs/team-roster.md)
+(kept in the repo only — it has students' surnames and contact details, so it is
+deliberately not published to the website)
