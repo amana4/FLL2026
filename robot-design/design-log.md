@@ -7,6 +7,9 @@ rather than got lucky.
 Add an entry whenever something changes. Failed experiments count and are often
 the most interesting entries; write those down too.
 
+Use **Kid 1** to **Kid 5** rather than real names — this page is published to the
+public website. The roster is the key and is kept off the site.
+
 ## How to write an entry
 
 Copy this block, newest at the top:
@@ -18,7 +21,7 @@ Copy this block, newest at the top:
 **Change:** what we did
 **Result:** what happened, with numbers if we have them
 **Next:** what this tells us to try next
-**Who:** names
+**Who:** Kid 1, Kid 2
 ```
 
 ---
@@ -36,7 +39,7 @@ relying on matched motor power.
 
 **Next:** Apply the same block to R1 and R3, which have the same problem.
 
-**Who:** _names_
+**Who:** _Kid 1, Kid 2_
 
 ---
 

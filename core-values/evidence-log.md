@@ -1,15 +1,18 @@
 # Core Values Evidence Log
 
-Specific moments, with dates and names. Add entries as things happen — two minutes
-at the end of each meeting is enough.
+Specific moments, with dates and who was involved. Add entries as things happen —
+two minutes at the end of each meeting is enough.
 
 At judging, these become the stories we tell. Stories beat definitions every time.
+
+Use **Kid 1** to **Kid 5** rather than real names. This page is published to the
+public website; the roster that decodes the labels is not.
 
 ## How to add an entry
 
 ```markdown
 ### YYYY-MM-DD — Value(s)
-What happened, in two or three sentences. Names included.
+What happened, in two or three sentences. Say who, using the Kid labels.
 ```
 
 ---
@@ -19,7 +22,7 @@ What happened, in two or three sentences. Names included.
 _Exploring new skills and ideas._
 
 ### YYYY-MM-DD — Example (delete when real entries exist)
-Nobody on the team had used the gyro sensor before. _Name_ spent two sessions
+Nobody on the team had used the gyro sensor before. Kid 3 spent two sessions
 testing how much it drifts over a long run and taught the rest of us what they
 found.
 

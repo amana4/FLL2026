@@ -40,7 +40,7 @@ is what judges read.
   and everyone is in the same position.
 - Ticking boxes on the website only saves to your own device. Real decisions get
   written into the markdown.
-- "I don't know, but Ananya measured it" is a good answer to a judge.
+- "I don't know, but my teammate measured it" is a good answer to a judge.
 
 ## For the team settling someone in
 

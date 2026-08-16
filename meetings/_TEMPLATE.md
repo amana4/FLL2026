@@ -3,6 +3,10 @@
 > Copy to `YYYY-MM-DD.md`. Five minutes at the end of the session is enough.
 > These notes are the raw material for the Engineering Notebook, and the evidence
 > judges ask for when they say "how did you decide that?"
+>
+> Students who jotted things down on
+> [`after-class-notes.md`](../docs/after-class-notes.md) can hit **Copy all
+> notes** there and paste straight into the sections below.
 
 **Present:** _TODO_
 **Absent:** _TODO_
@@ -46,6 +50,16 @@ Anything we agreed on, so we don't re-argue it in three weeks.
 | What we tested | Attempts | Successes | Notes |
 | --- | --- | --- | --- |
 | _TODO_ | | | |
+
+## Who did what
+
+Each person, one line. Feeds the coverage check in
+[`who-did-what.md`](../docs/who-did-what.md) — both rubrics ask for evidence that
+*all* members build and code, and judges pick who they question.
+
+| Who | What they built, coded, or worked out |
+| --- | --- |
+| _TODO_ | |
 
 ## Core Values moment
 
