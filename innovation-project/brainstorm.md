@@ -95,33 +95,50 @@ Add freely. No filtering in this section.
 
 Once you have 20+, pick 3 and pressure-test them.
 
-### Candidate 1: _TODO_
+### Candidate 1: Native bee diversity in our own backyards — **CHOSEN**
 
 | Question | Answer |
 | --- | --- |
-| What exactly is the problem? | |
-| Who's affected? | |
-| Can we talk to someone affected? | |
-| Does a good solution already exist? | |
-| Could we prototype something in 6 weeks? | |
-| Are we actually interested in it? | |
+| What exactly is the problem? | People who want to help bees plant flowers for honeybees, which are managed livestock. The native solitary bees that actually need help go uncounted, so nobody can tell whether anything they do for bees works. |
+| Who's affected? | Native bee species; families who want to help and do not know what helps; anyone relying on wild pollination. |
+| Can we talk to someone affected? | Yes — a native-bee researcher, a local native plant society, a county extension office, a beekeeper for the contrast. |
+| Does a good solution already exist? | Counting methods exist but are built for scientists, and the standard one kills the bees. Nothing measures whether a household change worked. |
+| Could we prototype something in 6 weeks? | Yes. A camera on a flower patch, a fixed counting protocol, and one change per garden. |
+| Are we actually interested in it? | Yes — the team chose it. |
 
-### Candidate 2: _TODO_
+### Candidate 2: Wildfire and biodiversity recovery
 
-_copy the table_
+Researched in week 1 and not chosen. The idea was to monitor whether wildlife
+returns to a burned area, comparing it against an unburned site nearby.
 
-### Candidate 3: _TODO_
+Rejected for two honest reasons. It needs a fire-affected site the team can
+physically visit repeatedly, plus a comparable unburned site — without both, it
+becomes a library exercise with no original data. And the measurement window is
+wrong: the strongest signal is birdsong, which peaks in spring, not in the weeks
+before a November competition.
+
+Worth recording because judges ask what else you considered, and "we dropped it
+because we could not collect our own data" is a better answer than a vague one.
+
+### Candidate 3: _TODO — record the third one the team pressure-tested_
 
 _copy the table_
 
 ## Decision
 
-**Chosen:** _TODO_
-**Date:** _TODO_
-**Why:** _TODO_
+**Chosen:** Measuring and then increasing **native bee diversity** in the team's
+own backyards.
 
-Write the full version up in [`problem.md`](problem.md), and record the
-rejected candidates there too — judges ask how you chose.
+**Date:** 16 August 2026
+
+**Why:** It is the only candidate where the team can collect original data in
+their own gardens, week after week, without travelling anywhere. Five backyards
+means five replicates. And because each garden is measured before and after a
+change, every student runs their own experiment rather than sharing one.
+
+Write the full version up in [`problem.md`](problem.md), the design in
+[`solution.md`](solution.md), and the counting method in
+[`field-protocol.md`](field-protocol.md).
 
 > **Decide by the end of week 4.** With 13 weeks total, every extra week spent
 > deciding is a week not spent building and iterating. A good-enough problem
