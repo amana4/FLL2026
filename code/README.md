@@ -1,42 +1,44 @@
-# Code — SPIKE Prime Word Blocks
+# Code — SPIKE Prime Python
 
-We program in **Word Blocks** (SPIKE's visual language), not Python. Git can't
-diff a `.llsp3` file, so our workflow trades automatic diffing for screenshots and
-good commit messages.
+For the 2026 season we program in **Python**, not Word Blocks. Last season's
+team (`code/2025-reference/`) had solid, tuned Python on the SPIKE App's native
+Python canvas, and unlike a `.llsp3` file, git can actually diff a `.py` file —
+so changes review properly instead of relying on screenshots.
 
 ```
 code/
-  spike-projects/    Exported .llsp3 files — the real programs
-  screenshots/       PNG of each program's blocks — how we review changes
-  my-blocks.md       The shared reusable blocks, documented
+  library/           Shared movement code — toolkit.py, imported by every mission
+  missions/           One folder per mission, matching robot-game/missions/
+  2025-reference/     Last season's code, kept for reuse (excluded from the site)
+  spike-projects/     Word Blocks .llsp3 files from earlier in the season, and my-blocks.md
+  screenshots/        PNG block-stack images from the Word Blocks period
 ```
 
 ## Workflow
 
-Follow this every time you change a program:
-
-1. Edit in the SPIKE app as normal.
-2. **Export** the project: `File → Save to computer` → save into `code/spike-projects/`
-   as `RX-name.llsp3` (same name as its run file).
-3. **Screenshot** the full block stack → `code/screenshots/RX-name.png`.
-   Scroll and take multiple images if it doesn't fit on one screen
-   (`RX-name-1.png`, `RX-name-2.png`).
-4. Commit both together with a message saying *what changed and why*:
-   `R2: slow approach speed to 30% — was overshooting the drop zone`
-
-The screenshot is what teammates actually review — nobody can read a `.llsp3` in a
-pull request. Skipping it means the change is invisible to everyone else.
+1. Design the approach on the mission's page in `robot-game/missions/`.
+2. Fill in `run()` in that mission's `code/missions/MXX-name/mission.py`,
+   using `library/toolkit.py` for driving and turning.
+3. Before loading onto the hub: paste `toolkit.py`'s contents above the
+   `import` line in the mission file — the SPIKE App's Python canvas runs one
+   self-contained file per slot and can't import across files. See
+   [`code/missions/README.md`](missions/README.md).
+4. Test on the hub, iterate, then commit with a message saying *what changed
+   and why*: `M07: slow approach speed to 30% — was overshooting the drop zone`.
 
 ## Naming
 
 | Thing | Pattern | Example |
 | --- | --- | --- |
-| Run program | `RX-name` | `R2-cargo-line.llsp3` |
-| Screenshot | `RX-name.png` | `R2-cargo-line.png` |
-| Test / scratch program | `test-thing` | `test-gyro-drift.llsp3` |
+| Mission program | `code/missions/MXX-slug/mission.py` | `code/missions/M07-humongous-fungus/mission.py` |
+| Shared library | `code/library/toolkit.py` | |
 
-Test programs are fine to commit — they document experiments. Delete them once the
-lesson is captured in a run file or in `my-blocks.md`.
+## Earlier this season: Word Blocks
+
+`spike-projects/`, `screenshots/`, and `my-blocks.md` document work from when
+the team was on Word Blocks, before switching to Python. Kept as the record of
+that — the Robot Design rubric's ITERATE criterion rewards showing what
+changed and why, and a documented switch is exactly that.
 
 ## Before a tournament
 
@@ -45,7 +47,9 @@ lesson is captured in a run file or in `my-blocks.md`.
 - [ ] Hub name set to our team name
 - [ ] Programs tested on the hub after loading, not just in the app
 - [ ] A second hub loaded identically as a backup, if we have one
-- [ ] `.llsp3` files in this folder match what's on the hub
+- [ ] Each mission's code in `code/missions/` matches what's actually loaded on
+      the hub (including any manual toolkit paste-in — see
+      [`code/missions/README.md`](missions/README.md))
 
 That last one matters: if the hub gets wiped at the tournament, this folder is the
 only way back.
