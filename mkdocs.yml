@@ -168,22 +168,17 @@ not_in_nav: |
 nav:
   - Home: README.md
 
-  - Start here:
-      - What is BIOGLOW?: docs/what-is-bioglow.md
-      - For parents: docs/for-parents.md
-      - How much help is allowed: docs/coaching.md
-      - Joining part-way through: docs/new-member.md
-      - Glossary: docs/glossary.md
-      - Equipment: docs/equipment.md
-      - Safety: docs/safety.md
+  # Top of the menu is what gets opened every week: write a note after a
+  # session, or look something up in FIRST's own materials. Everything a person
+  # reads once has been pushed to the bottom, not deleted — removing a page from
+  # the nav does not unpublish it, it just makes it unreachable except by search.
+  - After-class notes: docs/after-class-notes.md
+  - Season materials: docs/official-materials/README.md
 
   - This season:
       - docs/meeting-plan.md
       - Meeting logs: meetings/README.md
-      - After-class notes: docs/after-class-notes.md
       - Who did what: docs/who-did-what.md
-      - FIRST's 12 official sessions: docs/official-sessions.md
-      - Inclusion in practice: docs/inclusion.md
 
   - Robot:
       - robot-game/README.md
@@ -254,8 +249,20 @@ nav:
 
   - Notebook: engineering-notebook/README.md
 
+  # Read once, then rarely again. Kept in the menu so they stay findable, but out
+  # of the way of the pages used weekly.
+  - Start here:
+      - What is BIOGLOW?: docs/what-is-bioglow.md
+      - For parents: docs/for-parents.md
+      - How much help is allowed: docs/coaching.md
+      - Equipment: docs/equipment.md
+      - Safety: docs/safety.md
+
   - Reference:
-      - Official FIRST materials (all PDFs): docs/official-materials/README.md
+      - Glossary: docs/glossary.md
+      - Joining part-way through: docs/new-member.md
+      - Inclusion in practice: docs/inclusion.md
+      - FIRST's 12 official sessions: docs/official-sessions.md
       - How we use git: CONTRIBUTING.md
       - The website: docs/website.md
       - Retrospective: docs/retrospective.md
