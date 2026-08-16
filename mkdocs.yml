@@ -68,9 +68,11 @@ plugins:
 
 extra_css:
   - tools/print.css
+  - tools/notes.css
 
 extra_javascript:
   - tools/checkbox-state.js
+  - tools/notes.js
 
 copyright: >
   Team materials are ours. FIRST&reg;, LEGO&reg;, FIRST&reg; LEGO&reg; League and
@@ -129,6 +131,9 @@ markdown_extensions:
 # so without this MkDocs would copy ~121MB of binaries into the deploy
 # artifact, making every build slow for no benefit — nothing links to them as
 # pages. Team members read them from their local checkout.
+#
+# code/2025-reference/ is last season's code, carried over for reuse. It is
+# not documentation, so it is kept off the site rather than published as pages.
 exclude_docs: |
   .github/
   includes/
@@ -148,6 +153,7 @@ exclude_docs: |
   docs/official-materials/*.llsp3
   docs/official-materials/*.mp4
   code/spike-projects/*.llsp3
+  code/2025-reference/
 
 # not_in_nav ONLY silences the "not in nav" warning. These files ARE published;
 # they are simply kept out of the menu because they are templates or folder
@@ -176,6 +182,8 @@ nav:
   - This season:
       - docs/meeting-plan.md
       - Meeting logs: meetings/README.md
+      - After-class notes: docs/after-class-notes.md
+      - Who did what: docs/who-did-what.md
       - FIRST's 12 official sessions: docs/official-sessions.md
       - Inclusion in practice: docs/inclusion.md
 
@@ -211,7 +219,9 @@ nav:
           - Troubleshooting: robot-design/troubleshooting.md
       - Code:
           - code/README.md
-          - My Blocks: code/my-blocks.md
+          - Library: code/library/README.md
+          - Missions (Python): code/missions/README.md
+          - My Blocks (Word Blocks history): code/my-blocks.md
           - SPIKE lessons: code/spike-lessons.md
 
   - Innovation Project:

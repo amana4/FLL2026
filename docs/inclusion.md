@@ -23,8 +23,9 @@ What works:
   and supporting each other is itself what Core Values scores.
 - **Rehearse with strangers.** The mock judge at Meeting 21 should be someone they do
   not know well. Familiar adults are too kind.
-- **Practise the recovery, not just the answer.** "I don't know, but Conner measured
-  it" is a good answer, and knowing it is allowed removes most of the fear.
+- **Practise the recovery, not just the answer.** "I don't know, but my teammate
+  measured it and can tell you" is a good answer, and knowing it is allowed
+  removes most of the fear.
 
 FIRST is explicit that accommodations exist:
 

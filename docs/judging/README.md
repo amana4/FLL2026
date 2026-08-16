@@ -68,6 +68,12 @@ rubrics do not include one. **Confirm the format with your regional partner.**
 | [`robot-design-prep.md`](robot-design-prep.md) | The 5-minute explanation and its Q&A |
 | [`core-values-prep.md`](core-values-prep.md) | How Core Values scores through both, and the stories to have ready |
 
+These sheets are what you fill in *from* a season of notes. The notes themselves
+get captured week by week on
+[`after-class-notes.md`](../after-class-notes.md), and who did what is tracked in
+[`who-did-what.md`](../who-did-what.md). A prep sheet full of `TODO` in October
+usually means those two were not being kept in August.
+
 The official rubrics are in [`../official-materials/`](../official-materials/README.md).
 Read them out loud with the team once. It is the least glamorous and most
 effective hour of the season, because the rubrics say exactly what earns points.
@@ -80,7 +86,7 @@ however good the answers are. Agree roughly who covers what, then be ready to
 flex, because judges choose who they ask.
 
 **"I don't know" is a fine answer** when followed by something real: "I don't know
-the exact number, but Ananya measured it and can tell you," or "we didn't test
+the exact number, but my teammate measured it and can tell you," or "we didn't test
 that, and I'd want to before saying."
 
 **Bring the evidence.** Notebook, design log, photos of the versions that failed.

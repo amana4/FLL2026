@@ -35,7 +35,9 @@ students who each know their part.
 ## Who explains what
 
 Rotate during practice — the rubric explicitly rewards *all* members having
-building and coding skills.
+building and coding skills. The running record of who has actually done what is
+in [`who-did-what.md`](../who-did-what.md); an empty row there is a question
+somebody cannot answer in the room.
 
 | Topic | Lead | Backup |
 | --- | --- | --- |

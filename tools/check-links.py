@@ -29,6 +29,7 @@ EXCLUDED = {
     "docs/team-fund.csv",
     "docs/team-links.md",
     "CLAUDE.md",
+    "code/2025-reference/README.md",
 }
 
 SKIP_DIRS = {".git", "site", ".venv", "venv", "__pycache__", ".github", "tools"}
