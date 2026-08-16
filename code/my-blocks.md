@@ -13,13 +13,34 @@ five subtly different movements and unexplainable bugs.
 
 Drives straight, correcting heading with the gyro so it doesn't curve.
 
+**Use this instead of the ready-made movement blocks.** Those look easier and
+they drift; there is no way to hold a heading with them. This is the single
+biggest accuracy win available in code.
+
 | Parameter | Meaning | Typical |
 | --- | --- | --- |
 | `distance_cm` | How far | _TODO_ |
 | `speed` | Motor power % | _TODO_ |
 
-**How it works:** _TODO — describe the gyro correction_
-**Tuning notes:** _TODO — proportional constant, what happens if too high_
+**How it works:** zero the gyro before moving, then loop: read the heading, and
+because the target is 0°, the reading *is* the error. Multiply it by a constant
+(`kp`) and add that to one wheel's speed while subtracting it from the other, so
+the robot steers back toward 0°. Repeat every few milliseconds until the motor
+encoder says you have gone far enough. Bump a mission model mid-run and it
+steers itself back instead of carrying the error to the end of the match.
+
+**Tuning notes:** `kp` too low and it corrects too slowly and drifts wide; too
+high and it weaves back and forth past the line. Tune it at the speed you will
+actually drive at, because the right value changes with speed. Combinations that
+worked on last season's robot are in the comment above `drive_cm_gyro` in
+[`../code/library/README.md`](library/README.md)'s toolkit — 600/2.8, 500/2.6,
+400/3.2 — but they depend on weight and grip, so re-tune rather than assume.
+
+**We already have two of these.** The `Acceleration` My Block in
+`spike-projects/Acceleration.llsp3` ramps the speed up, holds the gyro heading
+through the middle, then eases off — and `drive_cm_gyro` in the Python toolkit is
+the same idea. Read one before writing a third.
+
 **Status:** ☐ built ☐ tested ☐ used in a run
 
 ---

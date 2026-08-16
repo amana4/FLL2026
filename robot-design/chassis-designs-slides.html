@@ -171,13 +171,56 @@
 <!-- ============================================================ 1. TITLE -->
 <section class="slide">
   <p class="eyebrow">BIOGLOW · Robot design</p>
-  <h1>Six teams built six robots.<br>The good ones all did<br>the same four things.</h1>
+  <h1>Six teams built six robots.<br>The good ones all made<br>the same choices.</h1>
   <p class="lede">
     Before we build ours, let's look at what other people already worked out —
     and at the mistakes they only found <em>after</em> building.
-    <strong>Every one of these designs was somebody's best idea at the time.</strong>
+    <strong>None of this is guesswork.</strong> It comes from a coach with ten
+    years of seasons behind him, through regionals and nationals to an
+    international final.
   </p>
   <p class="aside">The robot that wins is not the cleverest one. It is the one that does the same thing every single time.</p>
+</section>
+
+<!-- ================================================= 1b. MODULAR BASE -->
+<section class="slide">
+  <p class="eyebrow">The big idea</p>
+  <h2>One base. Many attachments.</h2>
+  <p class="lede">Do not build a robot per mission. Build <strong>one really good base</strong> that never changes, then build a small attachment for each job that clips onto it. The base is the thing you get reliable once; the attachments are where the cleverness goes.</p>
+
+  <svg viewBox="0 0 1120 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="modular-title modular-desc">
+    <title id="modular-title">One unchanging base with interchangeable attachments</title>
+    <desc id="modular-desc">A single driving base stays fixed while three different mission attachments connect to it in turn, so only the attachment changes between missions.</desc>
+    <defs>
+      <marker id="arrow5" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4a6357"/></marker>
+    </defs>
+
+    <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+    <!-- arrows first. Each shares a y with its target, so straight lines are correct,
+         and the three attach points are fanned 56px apart along the base's edge. -->
+    <line x1="400" y1="216" x2="632" y2="216" stroke="#4a6357" stroke-width="1.2" marker-end="url(#arrow5)"/>
+    <line x1="400" y1="272" x2="632" y2="272" stroke="#4a6357" stroke-width="1.2" marker-end="url(#arrow5)"/>
+    <line x1="400" y1="328" x2="632" y2="328" stroke="#4a6357" stroke-width="1.2" marker-end="url(#arrow5)"/>
+
+    <!-- the base: the one focal element -->
+    <rect x="160" y="160" width="240" height="224" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1.6"/>
+    <rect x="184" y="184" width="56" height="20" rx="2" fill="transparent" stroke="rgba(235,108,54,0.50)" stroke-width="0.8"/>
+    <text x="212" y="200" fill="#eb6c36" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">FIXED</text>
+    <text x="280" y="280" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">One base</text>
+    <text x="280" y="308" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif" text-anchor="middle">Never changes</text>
+
+    <rect x="632" y="184" width="288" height="64" rx="4" fill="#ffffff" stroke="rgba(22,54,43,0.30)" stroke-width="1"/>
+    <text x="776" y="220" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Attachment for one job</text>
+
+    <rect x="632" y="240" width="288" height="64" rx="4" fill="#ffffff" stroke="rgba(22,54,43,0.30)" stroke-width="1"/>
+    <text x="776" y="276" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Attachment for another</text>
+
+    <rect x="632" y="296" width="288" height="64" rx="4" fill="#ffffff" stroke="rgba(22,54,43,0.30)" stroke-width="1"/>
+    <text x="776" y="332" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">And another</text>
+
+    <text x="64" y="416" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.06em">TIME IS THE THING YOU RUN OUT OF. A BASE THAT NEVER CHANGES IS A BASE YOU ONLY DEBUG ONCE.</text>
+  </svg>
 </section>
 
 <!-- ======================================================== 2. THE LINE-UP -->
@@ -231,7 +274,7 @@
 <section class="slide">
   <p class="eyebrow">Spot the pattern</p>
   <h2>Three robots slip. Three don't. Why?</h2>
-  <p class="lede">Look back at the table and sort the six by <strong>which wheels they use</strong>. The slipping stops exactly where the wheels change.</p>
+  <p class="lede">Look back at the table and sort the six by <strong>which wheels they use</strong>. The slipping stops exactly where the wheels change — and a coach who made that swap on a real team says the accuracy improved <em>dramatically</em>, with the robot no longer slipping on turns.</p>
 
   <svg viewBox="0 0 1120 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="wheels-title wheels-desc">
     <title id="wheels-title">Wheel choice against wheel slipping</title>
@@ -285,8 +328,10 @@
     <text x="860" y="292" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">None of them</text>
     <text x="860" y="316" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">do</text>
 
-    <text x="64" y="404" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.06em">THE WHEEL IS THE ONLY PART THAT TOUCHES THE MAT. IT IS NOT A DETAIL.</text>
+    <text x="64" y="404" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.06em">THE 62.4 MM WHEEL IS ALSO BIGGER, SO IT DRIVES FASTER. BIGGER GRIP AND MORE SPEED, SAME PART.</text>
   </svg>
+
+  <p class="aside">Blue SPIKE wheels, thicker old EV3 wheels, or the 62.4&nbsp;mm LEGO wheel. The coach's pick is the 62.4, and grip is why.</p>
 </section>
 
 <!-- ==================================================== 4. THE BOX FRAME -->
@@ -340,8 +385,8 @@
 <!-- ============================================== 5. CENTRE OF GRAVITY -->
 <section class="slide">
   <p class="eyebrow">Design rule 2</p>
-  <h2>Keep the weight low</h2>
-  <p class="lede">Weight up high makes the robot rock when it starts, stops and turns. Rocking lifts weight off the wheels, and a wheel with no weight on it <strong>spins instead of driving</strong>.</p>
+  <h2>Keep the weight low — and even</h2>
+  <p class="lede">Weight up high makes the robot rock when it starts, stops and turns. Rocking lifts weight off the wheels, and a wheel with no weight on it <strong>spins instead of driving</strong>. Weight also needs spreading front to back: pile it all at one end and your turns stop being repeatable.</p>
 
   <svg viewBox="0 0 1120 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="cog-title cog-desc">
     <title id="cog-title">High versus low centre of gravity</title>
@@ -384,15 +429,17 @@
 
     <!-- legend: the dot needs explaining, the rest does not -->
     <line x1="64" y1="400" x2="1056" y2="400" stroke="rgba(22,54,43,0.10)" stroke-width="0.8"/>
-    <text x="64" y="424" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.14em">DOT = WHERE THE WEIGHT AVERAGES OUT. LOWER IS BETTER.</text>
+    <text x="64" y="424" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.14em">DOT = WHERE THE WEIGHT AVERAGES OUT. LOWER IS BETTER, AND CENTRED IS BETTER STILL.</text>
   </svg>
+
+  <p class="aside">Not all at the back, not all at the front. Even it out and the same turn command gives you the same turn.</p>
 </section>
 
 <!-- ==================================================== 6. THE WHEELS -->
 <section class="slide">
   <p class="eyebrow">Design rule 3</p>
   <h2>Hold the wheels straight</h2>
-  <p class="lede">An axle held at one end bends under load, so the wheel leans and the robot curves. Hold it at <strong>both</strong> ends and it drives where you pointed it.</p>
+  <p class="lede">Support the wheel on the motor side <em>and</em> on the far side. A heavy attachment — say you are carrying something across the table — presses down and <strong>bends the wheels slightly inward</strong>. You will not see it happen. You will only see the robot stop driving straight.</p>
 
   <svg viewBox="0 0 1120 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="axle-title axle-desc">
     <title id="axle-title">Axle supported at one end versus both ends</title>
@@ -441,7 +488,7 @@
 <section class="slide">
   <p class="eyebrow">Design rule 4</p>
   <h2>Attachments should drop on, not screw on</h2>
-  <p class="lede">In a match you get <strong>two and a half minutes</strong>. Every second spent wrestling an attachment is a second not scoring. Let gravity do the holding, and put a mount on the top <em>and</em> the front.</p>
+  <p class="lede">In a match you get <strong>two and a half minutes</strong>. Every second spent wrestling an attachment is a second not scoring. This is the <em>gravity technique</em>: a couple of small pegs to guide the attachment into place, and then its own weight holds it there. Nothing locks. It drops on in about a second and lifts straight off again.</p>
 
   <svg viewBox="0 0 1120 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="attach-title attach-desc">
     <title id="attach-title">Gravity-drop attachment mounting with two mount points</title>
@@ -487,6 +534,30 @@
     <text x="808" y="168" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">the front while another</text>
     <text x="808" y="192" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">lifts from the top.</text>
   </svg>
+
+  <p class="aside">The guide pegs only line it up. They do not clamp it. If you have to force it, redesign it.</p>
+</section>
+
+<!-- ============================================= 7b. SENSORS AND CODE -->
+<section class="slide">
+  <p class="eyebrow">Design rule 5</p>
+  <h2>The gyro does the driving, not the motor blocks</h2>
+  <p class="lede">
+    The ready-made movement blocks look easy and they will let you down. For real
+    accuracy you zero the <strong>gyro</strong> at the start and then hold the robot
+    on that heading the whole way, correcting continuously. Bump a model
+    mid-run and it steers itself back to zero instead of carrying the error to
+    the end of the match.
+  </p>
+
+  <ul class="checks">
+    <li><b>Zero the gyro, then hold the heading.</b> <span>Drive at 0&deg;, measure the error every few milliseconds, and steer by an amount proportional to how far off you are.</span></li>
+    <li><b>Motor encoders for distance.</b> <span>Exact degrees forward, exact degrees to turn. Repeatable in a way that timing never is.</span></li>
+    <li><b>One colour sensor is still worth having.</b> <span>But the black lines are disappearing from FIRST's mats, so most teams now navigate on the gyro and encoders and keep the sensor for the odd line.</span></li>
+    <li><b>Four wheels with rubber tyres.</b> <span>Not a ball-bearing castor. Four driven wheels track straighter.</span></li>
+  </ul>
+
+  <p class="aside">We already have this: the Acceleration block ramps up, holds the gyro heading, and eases off — and the same maths is in the Python toolkit as drive_cm_gyro.</p>
 </section>
 
 <!-- ======================================================== 8. OUR TURN -->
@@ -496,12 +567,14 @@
   <p class="lede">We do not have to invent a robot. We have to make these choices on purpose, and be able to say <strong>why</strong> — because that is the question the judges ask.</p>
 
   <ul class="checks">
+    <li><b>Is the base finished, and can we leave it alone?</b> <span>One base, many attachments. Every change to the base re-breaks everything built on it.</span></li>
     <li><b>Box frame or open sides?</b> <span>A frame costs LEGO and buys a square start against the wall.</span></li>
-    <li><b>Which wheels?</b> <span>The only part touching the mat. Every design that fixed slipping changed the wheel.</span></li>
-    <li><b>Where does the hub sit?</b> <span>Low and sunk into the frame keeps weight on the wheels.</span></li>
-    <li><b>Are the axles held at both ends?</b> <span>If not, the robot curves and no amount of code fixes it.</span></li>
-    <li><b>How fast can we swap an attachment?</b> <span>Time it. Two and a half minutes is the whole match.</span></li>
+    <li><b>Which wheels?</b> <span>The only part touching the mat. A coach who switched to 62.4&nbsp;mm stopped slipping on turns.</span></li>
+    <li><b>Where does the hub sit, and is the weight even?</b> <span>Low, sunk into the frame, and not piled at one end.</span></li>
+    <li><b>Are the wheels supported on both sides?</b> <span>If not, a heavy attachment bends them inward and the robot curves.</span></li>
+    <li><b>How fast can we swap an attachment?</b> <span>Time it. Guide pegs and gravity, nothing that clamps.</span></li>
     <li><b>Top mount, front mount, or both?</b> <span>Two mounts means one build can do two jobs.</span></li>
+    <li><b>Gyro and encoders, or the ready-made blocks?</b> <span>We already have a gyro-corrected drive. Use it.</span></li>
   </ul>
 
   <p class="aside">Write down what we choose and why, and photograph version one before we take it apart — that record is the thing the judges score hardest.</p>
