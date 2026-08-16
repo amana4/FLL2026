@@ -10,6 +10,11 @@ Catches four classes of problem, two of which `mkdocs build --strict` misses:
      produce a dead link for every visitor (strict does NOT, because the
      target file exists on disk)
 
+Links to `.html` files are allowed when the file exists — MkDocs copies those
+through as static assets, and the slide decks in robot-design/ are linked that
+way. Every other non-.md target is still reported, which is what catches a bare
+directory link.
+
 Usage:
     python3 tools/check-links.py
 
@@ -88,6 +93,16 @@ def main() -> int:
             if target.endswith("/"):
                 if published and not os.path.exists(os.path.join(resolved, "README.md")):
                     broken.append(f"{rel}: {link}  (directory with no README.md)")
+                continue
+
+            # A .md link must resolve to a real page. Static assets that MkDocs
+            # copies through verbatim — currently just the .html slide decks —
+            # are allowed as long as the file is actually there. Anything else
+            # non-.md is still treated as broken, because that is how a bare
+            # directory link or a stray path gets caught.
+            if published and target.endswith(".html"):
+                if not os.path.exists(resolved):
+                    broken.append(f"{rel}: {link}  (no such file)")
                 continue
 
             if published and (not target.endswith(".md") or not os.path.exists(resolved)):

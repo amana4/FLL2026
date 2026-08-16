@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why the shape of the robot matters — BIOGLOW robot design</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* BIOGLOW skin. Ink is deep rainforest green to match the team website.
+       The accent stays atomic-tangerine on purpose: a green accent on green ink
+       has no focal contrast, and the accent's whole job is to mark the one or
+       two things that matter on a slide. Forest green + one bright signal is
+       also honestly on-theme for a rainforest. */
+    --paper:        #f5f5f5;
+    --paper-2:      #ececec;
+    --ink:          #16362b;
+    --muted:        #4a6357;
+    --soft:         #7d9488;
+    --rule:         rgba(22, 54, 43, 0.12);
+    --rule-solid:   rgba(22, 54, 43, 0.28);
+    --accent:       #eb6c36;
+    --accent-tint:  rgba(235, 108, 54, 0.08);
+
+    --font-sans:  'Geist', system-ui, sans-serif;
+    --font-serif: 'Instrument Serif', serif;
+    --font-mono:  'Geist Mono', ui-monospace, monospace;
+  }
+
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Each slide is one screen. Arrow keys / space / PageDown move between them,
+     so the deck presents with no JavaScript. */
+  .slide {
+    min-height: 100vh;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 3.5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+
+  h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+
+  .lede {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 62ch;
+    margin-bottom: 2rem;
+  }
+
+  .lede strong { color: var(--ink); font-weight: 600; }
+
+  .aside {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: var(--ink);
+    border-left: 2px solid var(--accent);
+    padding-left: 1rem;
+    margin-top: 2rem;
+    max-width: 60ch;
+  }
+
+  svg { width: 100%; height: auto; display: block; }
+
+  /* ---- comparison table (slide 2) ---------------------------------------
+     The six designs with their trade-offs are a table, not a diagram. Six
+     entities x two lists of prose is exactly what a table does best, and
+     forcing it into boxes and arrows would add nothing. */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    border: 1px solid var(--rule-solid);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  th {
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+  }
+
+  td { padding: 0.6rem 0.75rem; border-top: 1px solid var(--rule); vertical-align: top; line-height: 1.45; }
+  tbody tr:nth-child(even) td { background: rgba(22, 54, 43, 0.03); }
+  td:first-child { font-weight: 600; white-space: nowrap; }
+  .win  { color: var(--muted); }
+  .cost { color: var(--muted); }
+  tr.newest td { background: var(--accent-tint) !important; }
+  tr.newest td:first-child { color: var(--accent); }
+
+  ul.checks { list-style: none; font-size: 1.0625rem; line-height: 1.5; }
+  ul.checks li { padding: 0.6rem 0 0.6rem 2.25rem; position: relative; border-bottom: 1px solid var(--rule); }
+  ul.checks li::before {
+    content: "";
+    position: absolute; left: 0; top: 0.85rem;
+    width: 1rem; height: 1rem;
+    border: 1.5px solid var(--accent);
+    border-radius: 4px;
+  }
+  ul.checks li b { font-weight: 600; }
+  ul.checks li span { color: var(--muted); }
+
+  footer {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--soft);
+    letter-spacing: 0.06em;
+    padding: 2rem 3.5rem 3rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    border-top: 1px solid var(--rule);
+  }
+
+  @media print {
+    html { scroll-snap-type: none; }
+    .slide { min-height: auto; page-break-after: always; border-bottom: 0; padding: 1.5cm; }
+    body { background: #fff; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ 1. TITLE -->
+<section class="slide">
+  <p class="eyebrow">BIOGLOW · Robot design</p>
+  <h1>Six teams built six robots.<br>The good ones all did<br>the same four things.</h1>
+  <p class="lede">
+    Before we build ours, let's look at what other people already worked out —
+    and at the mistakes they only found <em>after</em> building.
+    <strong>Every one of these designs was somebody's best idea at the time.</strong>
+  </p>
+  <p class="aside">The robot that wins is not the cleverest one. It is the one that does the same thing every single time.</p>
+</section>
+
+<!-- ======================================================== 2. THE LINE-UP -->
+<section class="slide">
+  <p class="eyebrow">The line-up</p>
+  <h2>What each one is good at, and what it costs</h2>
+  <p class="lede">Read the right-hand column carefully. That is where the lesson is.</p>
+
+  <table>
+    <thead>
+      <tr><th>Robot</th><th>What it does well</th><th>What it costs you</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>HummerOne Pro</td>
+        <td class="win">Easiest to build. One kit plus the expansion set. Simple clip-on attachments.</td>
+        <td class="cost">Wheels slip once an attachment gets heavy.</td>
+      </tr>
+      <tr>
+        <td>Xbot</td>
+        <td class="win">Frame right around the outside, so it balances well. Attachments on top <em>and</em> front.</td>
+        <td class="cost">The frame eats a lot of LEGO. Wheels can still slip at the worst moment — blue SPIKE wheels.</td>
+      </tr>
+      <tr>
+        <td>YellowBot v1</td>
+        <td class="win">Box frame lines up against walls. Attachments drop in using gravity. Colour sensor at the front.</td>
+        <td class="cost">Wheels can still slip — blue SPIKE wheels.</td>
+      </tr>
+      <tr>
+        <td>YellowBot v2</td>
+        <td class="win">Better box frame. Front-wheel drive. Hub sunk down low. Side walls can push things.</td>
+        <td class="cost">Raised frame needs extra LEGO. Needs 62.4&nbsp;mm wheels.</td>
+      </tr>
+      <tr>
+        <td>Track&#8209;X</td>
+        <td class="win">Sits very low, so it grips. Very accurate and repeatable. Fast frame swaps. Lots of teams use it.</td>
+        <td class="cost">Needs 62.4&nbsp;mm wheels. Open sides, so no walls to line up with.</td>
+      </tr>
+      <tr class="newest">
+        <td>Boxor</td>
+        <td class="win">Newest design. Low, accurate, fast to swap, <em>and</em> a box frame for lining up. Best attachment system.</td>
+        <td class="cost">Needs 62.4&nbsp;mm wheels.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="aside">Boxor is not better because it is newer. It is better because it collected the good ideas from the five before it.</p>
+</section>
+
+<!-- ================================================= 3. THE WHEEL PATTERN -->
+<section class="slide">
+  <p class="eyebrow">Spot the pattern</p>
+  <h2>Three robots slip. Three don't. Why?</h2>
+  <p class="lede">Look back at the table and sort the six by <strong>which wheels they use</strong>. The slipping stops exactly where the wheels change.</p>
+
+  <svg viewBox="0 0 1120 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="wheels-title wheels-desc">
+    <title id="wheels-title">Wheel choice against wheel slipping</title>
+    <desc id="wheels-desc">The three designs using blue SPIKE wheels all list wheel slipping as a problem; the three requiring 62.4 mm wheels list none, showing that changing the wheel removed the fault.</desc>
+    <defs>
+      <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4a6357"/></marker>
+      <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+    </defs>
+
+    <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+    <!-- arrow first, so boxes sit on top. Endpoints share y, so a straight line is correct here. -->
+    <line x1="512" y1="232" x2="600" y2="232" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#arrow-accent)"/>
+    <rect x="516" y="208" width="80" height="16" rx="2" fill="#f5f5f5"/>
+    <text x="556" y="220" fill="#eb6c36" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">WHEELS</text>
+    <rect x="516" y="192" width="80" height="16" rx="2" fill="#f5f5f5"/>
+    <text x="556" y="204" fill="#eb6c36" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">SWAP THE</text>
+
+    <!-- LEFT: blue SPIKE wheels -->
+    <rect x="64" y="64" width="448" height="288" rx="8" fill="#f5f5f5"/>
+    <rect x="64" y="64" width="448" height="288" rx="8" fill="rgba(22,54,43,0.03)" stroke="rgba(22,54,43,0.30)" stroke-width="1"/>
+    <rect x="88" y="88" width="168" height="20" rx="2" fill="transparent" stroke="rgba(22,54,43,0.40)" stroke-width="0.8"/>
+    <text x="172" y="104" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">BLUE SPIKE WHEELS</text>
+
+    <text x="88" y="156" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">HummerOne Pro</text>
+    <text x="88" y="188" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">Xbot</text>
+    <text x="88" y="220" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">YellowBot v1</text>
+
+    <!-- slipping wheel: wheel above the ground line, skid dashes behind it -->
+    <line x1="88" y1="308" x2="292" y2="308" stroke="rgba(22,54,43,0.28)" stroke-width="1.2"/>
+    <circle cx="240" cy="288" r="20" fill="#ffffff" stroke="#4a6357" stroke-width="1.2"/>
+    <line x1="120" y1="308" x2="144" y2="308" stroke="#4a6357" stroke-width="2" stroke-dasharray="6,5"/>
+    <line x1="156" y1="308" x2="196" y2="308" stroke="#4a6357" stroke-width="2" stroke-dasharray="6,5"/>
+    <text x="316" y="292" fill="#4a6357" font-size="16" font-weight="600" font-family="'Geist', sans-serif">All three</text>
+    <text x="316" y="316" fill="#4a6357" font-size="16" font-weight="600" font-family="'Geist', sans-serif">list slipping</text>
+
+    <!-- RIGHT: 62.4 mm wheels — the focal panel -->
+    <rect x="608" y="64" width="448" height="288" rx="8" fill="#f5f5f5"/>
+    <rect x="608" y="64" width="448" height="288" rx="8" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+    <rect x="632" y="88" width="152" height="20" rx="2" fill="transparent" stroke="rgba(235,108,54,0.50)" stroke-width="0.8"/>
+    <text x="708" y="104" fill="#eb6c36" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">62.4 MM WHEELS</text>
+
+    <text x="632" y="156" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">YellowBot v2</text>
+    <text x="632" y="188" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">Track-X</text>
+    <text x="632" y="220" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">Boxor</text>
+
+    <!-- gripping wheel: planted on the ground, no skid -->
+    <line x1="632" y1="308" x2="836" y2="308" stroke="rgba(22,54,43,0.28)" stroke-width="1.2"/>
+    <circle cx="784" cy="288" r="20" fill="#ffffff" stroke="#16362b" stroke-width="1.6"/>
+    <line x1="764" y1="308" x2="804" y2="308" stroke="#16362b" stroke-width="3"/>
+    <text x="860" y="292" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">None of them</text>
+    <text x="860" y="316" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">do</text>
+
+    <text x="64" y="404" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.06em">THE WHEEL IS THE ONLY PART THAT TOUCHES THE MAT. IT IS NOT A DETAIL.</text>
+  </svg>
+</section>
+
+<!-- ==================================================== 4. THE BOX FRAME -->
+<section class="slide">
+  <p class="eyebrow">Design rule 1</p>
+  <h2>A box frame lines you up for free</h2>
+  <p class="lede">Push a box flat against the wall and it can only sit one way — <strong>square</strong>. That is a free, perfect starting position, every single run, with no code at all.</p>
+
+  <svg viewBox="0 0 1120 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="frame-title frame-desc">
+    <title id="frame-title">Open-sided chassis versus a box frame against a wall</title>
+    <desc id="frame-desc">An open-sided chassis touches the border wall at only one corner and can sit crooked, while a closed box frame meets the wall along its whole edge and is therefore square every time.</desc>
+    <defs>
+      <marker id="arrow2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4a6357"/></marker>
+    </defs>
+
+    <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+    <!-- the border wall, shared by both halves -->
+    <rect x="64" y="112" width="992" height="16" fill="rgba(22,54,43,0.15)"/>
+    <text x="64" y="100" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.08em">BORDER WALL</text>
+
+    <!-- LEFT: open-sided chassis, sitting crooked. The rotation is the subject
+         of the drawing, not a connector, so it is not a diagonal-connector
+         violation. -->
+    <g transform="rotate(-6 288 216)">
+      <rect x="168" y="128" width="24" height="128" fill="#ffffff" stroke="#4a6357" stroke-width="1.2"/>
+      <rect x="384" y="128" width="24" height="128" fill="#ffffff" stroke="#4a6357" stroke-width="1.2"/>
+      <rect x="168" y="232" width="240" height="24" fill="#ffffff" stroke="#4a6357" stroke-width="1.2"/>
+    </g>
+    <text x="176" y="308" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">Open sides</text>
+    <text x="176" y="332" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">Only one corner touches.</text>
+    <text x="176" y="356" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">It can sit crooked and</text>
+    <text x="176" y="380" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">you will not notice.</text>
+
+    <!-- RIGHT: box frame, flush along the wall — the focal element -->
+    <rect x="656" y="128" width="304" height="128" rx="4" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1.6"/>
+    <rect x="688" y="160" width="240" height="64" rx="4" fill="#ffffff" stroke="rgba(22,54,43,0.30)" stroke-width="1"/>
+    <text x="808" y="196" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HUB</text>
+
+    <!-- the flush contact edge, called out -->
+    <line x1="656" y1="136" x2="960" y2="136" stroke="#eb6c36" stroke-width="3"/>
+    <text x="656" y="308" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">Box frame</text>
+    <text x="656" y="332" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">The whole edge touches, so</text>
+    <text x="656" y="356" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">it is square before it moves.</text>
+    <text x="656" y="380" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">Same start, every run.</text>
+
+    <text x="64" y="424" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.06em">TRACK-X IS FAST AND ACCURATE BUT HAS OPEN SIDES. BOXOR KEPT THE SPEED AND ADDED THE FRAME.</text>
+  </svg>
+</section>
+
+<!-- ============================================== 5. CENTRE OF GRAVITY -->
+<section class="slide">
+  <p class="eyebrow">Design rule 2</p>
+  <h2>Keep the weight low</h2>
+  <p class="lede">Weight up high makes the robot rock when it starts, stops and turns. Rocking lifts weight off the wheels, and a wheel with no weight on it <strong>spins instead of driving</strong>.</p>
+
+  <svg viewBox="0 0 1120 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="cog-title cog-desc">
+    <title id="cog-title">High versus low centre of gravity</title>
+    <desc id="cog-desc">Side view comparing a chassis with the hub stacked on top, whose centre of gravity sits high, against one with the hub recessed low, whose centre of gravity sits close to the mat and keeps weight on the wheels.</desc>
+
+    <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+    <!-- shared mat line -->
+    <line x1="64" y1="352" x2="1056" y2="352" stroke="rgba(22,54,43,0.28)" stroke-width="1.6"/>
+    <text x="64" y="376" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.08em">MAT</text>
+
+    <!-- LEFT: hub stacked on top -->
+    <rect x="152" y="288" width="248" height="48" rx="4" fill="#ffffff" stroke="#4a6357" stroke-width="1.2"/>
+    <rect x="216" y="216" width="120" height="72" rx="4" fill="rgba(22,54,43,0.05)" stroke="#4a6357" stroke-width="1.2"/>
+    <text x="276" y="256" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HUB</text>
+    <circle cx="196" cy="352" r="16" fill="#ffffff" stroke="#4a6357" stroke-width="1.2"/>
+    <circle cx="356" cy="352" r="16" fill="#ffffff" stroke="#4a6357" stroke-width="1.2"/>
+
+    <!-- height of the centre of gravity, drawn as a vertical dimension (shares x, so a straight line is correct) -->
+    <circle cx="276" cy="272" r="7" fill="#4a6357"/>
+    <line x1="440" y1="272" x2="440" y2="352" stroke="#4a6357" stroke-width="1" stroke-dasharray="4,3"/>
+    <line x1="432" y1="272" x2="448" y2="272" stroke="#4a6357" stroke-width="1"/>
+    <line x1="432" y1="352" x2="448" y2="352" stroke="#4a6357" stroke-width="1"/>
+    <text x="276" y="164" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Hub on top</text>
+    <text x="276" y="188" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif" text-anchor="middle">Weight sits high. It rocks.</text>
+
+    <!-- RIGHT: hub recessed — focal -->
+    <rect x="680" y="304" width="288" height="32" rx="4" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1.6"/>
+    <rect x="752" y="312" width="144" height="24" rx="2" fill="#ffffff" stroke="rgba(22,54,43,0.30)" stroke-width="1"/>
+    <text x="824" y="328" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HUB</text>
+    <circle cx="724" cy="352" r="16" fill="#ffffff" stroke="#16362b" stroke-width="1.6"/>
+    <circle cx="924" cy="352" r="16" fill="#ffffff" stroke="#16362b" stroke-width="1.6"/>
+
+    <circle cx="824" cy="320" r="7" fill="#eb6c36"/>
+    <line x1="1008" y1="320" x2="1008" y2="352" stroke="#4a6357" stroke-width="1" stroke-dasharray="4,3"/>
+    <line x1="1000" y1="320" x2="1016" y2="320" stroke="#4a6357" stroke-width="1"/>
+    <line x1="1000" y1="352" x2="1016" y2="352" stroke="#4a6357" stroke-width="1"/>
+    <text x="824" y="164" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Hub sunk into the frame</text>
+    <text x="824" y="188" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif" text-anchor="middle">Weight stays on the wheels.</text>
+
+    <!-- legend: the dot needs explaining, the rest does not -->
+    <line x1="64" y1="400" x2="1056" y2="400" stroke="rgba(22,54,43,0.10)" stroke-width="0.8"/>
+    <text x="64" y="424" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.14em">DOT = WHERE THE WEIGHT AVERAGES OUT. LOWER IS BETTER.</text>
+  </svg>
+</section>
+
+<!-- ==================================================== 6. THE WHEELS -->
+<section class="slide">
+  <p class="eyebrow">Design rule 3</p>
+  <h2>Hold the wheels straight</h2>
+  <p class="lede">An axle held at one end bends under load, so the wheel leans and the robot curves. Hold it at <strong>both</strong> ends and it drives where you pointed it.</p>
+
+  <svg viewBox="0 0 1120 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="axle-title axle-desc">
+    <title id="axle-title">Axle supported at one end versus both ends</title>
+    <desc id="axle-desc">Top view showing that an axle braced at only one end lets the wheel lean so the robot drifts off line, while an axle braced at both ends keeps the wheel square and the path straight.</desc>
+    <defs>
+      <marker id="arrow3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4a6357"/></marker>
+      <marker id="arrow3a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+    </defs>
+
+    <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+    <!-- LEFT: braced one side only -->
+    <rect x="88" y="88" width="24" height="144" rx="2" fill="rgba(22,54,43,0.05)" stroke="#4a6357" stroke-width="1.2"/>
+    <line x1="112" y1="160" x2="248" y2="160" stroke="#4a6357" stroke-width="2"/>
+    <g transform="rotate(7 264 160)">
+      <rect x="248" y="120" width="32" height="80" rx="4" fill="#ffffff" stroke="#4a6357" stroke-width="1.6"/>
+    </g>
+    <text x="88" y="64" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">Braced one side</text>
+    <!-- the resulting drift: label sits clear of the line -->
+    <line x1="320" y1="160" x2="464" y2="160" stroke="#4a6357" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arrow3)"/>
+    <rect x="360" y="136" width="64" height="16" rx="2" fill="#f5f5f5"/>
+    <text x="392" y="148" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">DRIFTS</text>
+    <text x="88" y="264" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">The axle flexes, the wheel</text>
+    <text x="88" y="288" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">leans, and every run ends</text>
+    <text x="88" y="312" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">somewhere slightly different.</text>
+
+    <!-- RIGHT: braced both sides — focal -->
+    <rect x="632" y="88" width="24" height="144" rx="2" fill="rgba(22,54,43,0.05)" stroke="#4a6357" stroke-width="1.2"/>
+    <rect x="824" y="88" width="24" height="144" rx="2" fill="rgba(22,54,43,0.05)" stroke="#4a6357" stroke-width="1.2"/>
+    <line x1="656" y1="160" x2="824" y2="160" stroke="#16362b" stroke-width="2"/>
+    <rect x="720" y="120" width="32" height="80" rx="4" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1.6"/>
+    <text x="632" y="64" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">Braced both sides</text>
+    <line x1="880" y1="160" x2="1024" y2="160" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#arrow3a)"/>
+    <rect x="920" y="136" width="64" height="16" rx="2" fill="#f5f5f5"/>
+    <text x="952" y="148" fill="#eb6c36" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">STRAIGHT</text>
+    <text x="632" y="264" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">The wheel stays square, so</text>
+    <text x="632" y="288" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">the same program gives the</text>
+    <text x="632" y="312" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">same result.</text>
+
+    <line x1="64" y1="352" x2="1056" y2="352" stroke="rgba(22,54,43,0.10)" stroke-width="0.8"/>
+    <text x="64" y="376" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.14em">TOP VIEW · GREY = FRAME BEAM</text>
+  </svg>
+</section>
+
+<!-- ================================================= 7. ATTACHMENTS -->
+<section class="slide">
+  <p class="eyebrow">Design rule 4</p>
+  <h2>Attachments should drop on, not screw on</h2>
+  <p class="lede">In a match you get <strong>two and a half minutes</strong>. Every second spent wrestling an attachment is a second not scoring. Let gravity do the holding, and put a mount on the top <em>and</em> the front.</p>
+
+  <svg viewBox="0 0 1120 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="attach-title attach-desc">
+    <title id="attach-title">Gravity-drop attachment mounting with two mount points</title>
+    <desc id="attach-desc">An attachment lowers straight down onto a top mount pad on the chassis, held by its own weight, with a second mount pad available on the front face so tools can be carried in two positions.</desc>
+    <defs>
+      <marker id="arrow4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+    </defs>
+
+    <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+    <!-- the attachment, above the robot, coming down. Vertical drop shares x,
+         so a straight line is the correct connector here. -->
+    <rect x="392" y="72" width="248" height="64" rx="4" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1.6"/>
+    <text x="516" y="112" fill="#eb6c36" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Attachment</text>
+
+    <line x1="516" y1="152" x2="516" y2="216" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#arrow4)"/>
+    <rect x="528" y="168" width="88" height="16" rx="2" fill="#f5f5f5"/>
+    <text x="572" y="180" fill="#eb6c36" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">DROPS IN</text>
+
+    <!-- chassis -->
+    <rect x="360" y="232" width="312" height="152" rx="6" fill="#ffffff" stroke="#16362b" stroke-width="1.6"/>
+    <text x="516" y="316" fill="#4a6357" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Chassis</text>
+
+    <!-- top mount pad -->
+    <rect x="440" y="224" width="152" height="16" rx="2" fill="rgba(22,54,43,0.15)"/>
+    <text x="700" y="236" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.08em">TOP MOUNT</text>
+
+    <!-- front mount pad -->
+    <rect x="664" y="272" width="16" height="72" rx="2" fill="rgba(22,54,43,0.15)"/>
+    <text x="700" y="312" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.08em">FRONT MOUNT</text>
+
+    <!-- wheels, for orientation -->
+    <circle cx="392" cy="400" r="14" fill="#ffffff" stroke="#4a6357" stroke-width="1.2"/>
+    <circle cx="640" cy="400" r="14" fill="#ffffff" stroke="#4a6357" stroke-width="1.2"/>
+
+    <text x="64" y="112" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">Held by its</text>
+    <text x="64" y="136" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">own weight</text>
+    <text x="64" y="168" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">No pins to line up</text>
+    <text x="64" y="192" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">under pressure.</text>
+
+    <text x="808" y="112" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif">Two mounts</text>
+    <text x="808" y="144" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">One tool can push from</text>
+    <text x="808" y="168" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">the front while another</text>
+    <text x="808" y="192" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">lifts from the top.</text>
+  </svg>
+</section>
+
+<!-- ======================================================== 8. OUR TURN -->
+<section class="slide">
+  <p class="eyebrow">Our turn</p>
+  <h2>What we are deciding this week</h2>
+  <p class="lede">We do not have to invent a robot. We have to make these choices on purpose, and be able to say <strong>why</strong> — because that is the question the judges ask.</p>
+
+  <ul class="checks">
+    <li><b>Box frame or open sides?</b> <span>A frame costs LEGO and buys a square start against the wall.</span></li>
+    <li><b>Which wheels?</b> <span>The only part touching the mat. Every design that fixed slipping changed the wheel.</span></li>
+    <li><b>Where does the hub sit?</b> <span>Low and sunk into the frame keeps weight on the wheels.</span></li>
+    <li><b>Are the axles held at both ends?</b> <span>If not, the robot curves and no amount of code fixes it.</span></li>
+    <li><b>How fast can we swap an attachment?</b> <span>Time it. Two and a half minutes is the whole match.</span></li>
+    <li><b>Top mount, front mount, or both?</b> <span>Two mounts means one build can do two jobs.</span></li>
+  </ul>
+
+  <p class="aside">Write down what we choose and why, and photograph version one before we take it apart — that record is the thing the judges score hardest.</p>
+</section>
+
+<footer>
+  BIOGLOW 2026&ndash;27 &middot; Robot design discussion deck &middot; Designs listed are community designs, described from their own published strengths and trade-offs. Arrow keys or space to move between slides.
+</footer>
+
+</body>
+</html>

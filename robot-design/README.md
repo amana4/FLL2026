@@ -9,6 +9,18 @@ show judges.
 | [`design-log.md`](design-log.md) | Dated record of what we changed and why |
 | [`attachments/`](attachments/README.md) | One file per attachment |
 
+## Before we design ours: what other teams worked out
+
+[**Six chassis designs, side by side**](chassis-designs-slides.html) — a short
+slide deck comparing HummerOne Pro, Xbot, YellowBot v1 and v2, Track-X and
+Boxor, and pulling out the four things the good ones all do. Open it on a laptop
+and talk through it together; it takes about fifteen minutes.
+
+The point is not to copy one. It is that every design on that list was somebody's
+best idea, and the newer ones are better because they collected the good bits
+from the older ones. That is exactly what the ITERATE criterion rewards, so the
+discussion doubles as judging practice.
+
 ## What Robot Design judging actually rewards
 
 Judges are not scoring "is the robot impressive." They score, roughly:
