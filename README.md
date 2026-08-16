@@ -8,6 +8,8 @@ and it works on a phone at the practice table.
 
 ## What do you want to do?
 
+<div class="actions" markdown="1">
+
 | I want to… | Go here |
 | --- | --- |
 | **Write down what we did today** | [Write today's notes](docs/after-class-notes.md) |
@@ -19,6 +21,8 @@ and it works on a phone at the practice table.
 | Fix a robot that has stopped working | [When something breaks](robot-design/troubleshooting.md) |
 | Look up a word I don't know | [Glossary](docs/glossary.md) |
 | Get ready for judging | [Judging day](docs/judging/README.md) |
+
+</div>
 
 Grown-ups: start with [For parents](docs/for-parents.md) and
 [How much can a grown-up help?](docs/coaching.md)
@@ -40,10 +44,10 @@ Champion's Award adds up your *place* in each one, and the lowest total wins. So
 being pretty good at all four beats being brilliant at one and weak at the rest.
 A team that only ever practises the robot throws away most of the season.
 
-1. **Robot Game** — points scored in 2.5-minute matches → [`robot-game/`](robot-game/README.md)
-2. **Robot Design** — 5 minutes explaining how we built and programmed it, then questions → [`robot-design/`](robot-design/README.md)
-3. **Innovation Project** — we find a real problem, design a solution, and show it to people → [`innovation-project/`](innovation-project/README.md)
-4. **Core Values** — how we treat each other, watched all season → [`core-values/`](core-values/README.md)
+1. **Robot Game** — points scored in 2.5-minute matches → [Robot Game](robot-game/README.md)
+2. **Robot Design** — 5 minutes explaining how we built and programmed it, then questions → [Robot Design](robot-design/README.md)
+3. **Innovation Project** — we find a real problem, design a solution, and show it to people → [Innovation Project](innovation-project/README.md)
+4. **Core Values** — how we treat each other, watched all season → [Core Values](core-values/README.md)
 
 Two of those happen in a **single 30-minute judging session**, and Core Values is
 scored through the other two rather than on its own.
@@ -61,20 +65,20 @@ Their season materials page:
 
 That is where the rulebook, rubrics, field setup guide, building instructions and
 the missions video live. The PDFs are also saved in this repo under
-[`docs/official-materials/`](docs/official-materials/README.md) so you get them
+[Rules and official PDFs](docs/official-materials/README.md) so you get them
 all when you clone, but their page is the real source and is worth re-checking.
 
 **Challenge Updates matter most.** FIRST publishes rule changes there after the
 season starts, and those changes beat the rulebook. Teams lose points every year
 practising an out-of-date rule. Someone should check monthly and log it in
-[`docs/official-materials/README.md`](docs/official-materials/README.md). As of
+[Rules and official PDFs](docs/official-materials/README.md). As of
 4 August 2026 there are no updates.
 
 ## What is urgent right now
 
 The kits are here, so the robot is not held up by anything. The one job with a
 long fuse is **emailing local biodiversity experts**
-([`expert-outreach.md`](innovation-project/expert-outreach.md)). Replies take two
+([Emailing experts](innovation-project/expert-outreach.md)). Replies take two
 to three weeks, and the Innovation Project rubric wants feedback from *several*
 people to score well, so those emails want to go out early.
 
@@ -94,6 +98,6 @@ competition/            Competition-day checklists and packing lists
 
 ## Team
 
-Roster, roles and contact details: [`docs/team-roster.md`](https://github.com/amana4/FLL2026/blob/main/docs/team-roster.md)
+Roster, roles and contact details: [the team roster](https://github.com/amana4/FLL2026/blob/main/docs/team-roster.md)
 (kept in the repo only — it has students' surnames and contact details, so it is
 deliberately not published to the website)

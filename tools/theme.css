@@ -1,0 +1,236 @@
+/* BIOGLOW theme.
+ *
+ * The season is BIOGLOW — "BIO = life, GLOW = light" — and the setting is a
+ * rainforest and a nearby city. So the palette is rainforest green with a
+ * bioluminescent accent: light mode is the canopy in daylight, dark mode is the
+ * forest floor at night with things glowing on it.
+ *
+ * Deliberately NOT using FIRST or LEGO logos, wordmark colours or fonts. Those
+ * are trademarks, and this is a public site. Taking the colours from the season
+ * theme instead gets the same feeling with none of that problem.
+ *
+ * The audience is 9 to 14 year olds reading on a phone at the practice table, so
+ * this also bumps text size, line spacing and tap-target size. Those are the
+ * changes that matter most for actual readability; the colours are what makes it
+ * feel like theirs.
+ *
+ * Load order matters: this file is listed BEFORE tools/print.css in mkdocs.yml so
+ * the print rules can still override anything here.
+ */
+
+/* ---------------------------------------------------------------
+   Palette
+   ---------------------------------------------------------------
+   Built on Material's own "default" and "slate" schemes rather than a
+   from-scratch custom scheme. Material's schemes set dozens of internal
+   variables for menus, code blocks, tooltips and form controls; redefining a
+   scheme by hand means missing some and getting unreadable corners of the site.
+   Overriding the handful below is far safer.
+   The mkdocs.yml palette also names green/lime, so if this file ever fails to
+   load the site is still green and still legible rather than reverting to
+   indigo. */
+
+:root {
+  --bioglow-leaf: #1b6b47;
+  --bioglow-leaf-dark: #124b32;
+  --bioglow-leaf-light: #2e8f61;
+  --bioglow-glow: #00b894;
+  --bioglow-glow-bright: #26e0b5;
+}
+
+/* Daylight in the canopy. */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: var(--bioglow-leaf);
+  --md-primary-fg-color--light: var(--bioglow-leaf-light);
+  --md-primary-fg-color--dark: var(--bioglow-leaf-dark);
+  --md-primary-bg-color: #ffffff;
+  --md-primary-bg-color--light: rgba(255, 255, 255, 0.7);
+
+  --md-accent-fg-color: #0b7a63;
+  --md-accent-bg-color: #ffffff;
+
+  /* Very slightly warm and green rather than pure white, so long pages are
+     easier on the eyes than a white wall. */
+  --md-default-bg-color: #fbfdfb;
+
+  --md-typeset-a-color: #0b7a63;
+  --md-footer-bg-color: var(--bioglow-leaf-dark);
+}
+
+/* The forest floor at night. Things glow. */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #123d2b;
+  --md-primary-fg-color--light: #2e8f61;
+  --md-primary-fg-color--dark: #0c2a1e;
+  --md-primary-bg-color: #eafff6;
+
+  --md-accent-fg-color: var(--bioglow-glow-bright);
+  --md-accent-bg-color: #06231a;
+
+  --md-default-bg-color: #0d1a14;
+  --md-default-fg-color: #e6f5ed;
+  --md-default-fg-color--light: #b9d6c8;
+  --md-default-fg-color--lighter: #7fa791;
+
+  --md-code-bg-color: #132720;
+
+  --md-typeset-a-color: var(--bioglow-glow-bright);
+  --md-footer-bg-color: #0a1510;
+}
+
+/* ---------------------------------------------------------------
+   Readability
+   --------------------------------------------------------------- */
+
+/* Material's body text is .8rem by default, which is small for a nine-year-old
+   on a phone. */
+.md-typeset {
+  font-size: 0.86rem;
+  line-height: 1.7;
+}
+
+.md-typeset h1 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.md-typeset h2 {
+  font-weight: 700;
+  margin-top: 1.9em;
+  padding-bottom: 0.25em;
+  border-bottom: 2px solid var(--md-primary-fg-color--light);
+}
+
+.md-typeset h3 {
+  font-weight: 600;
+}
+
+/* Sidebar links are tap targets, not just text. */
+.md-nav__link {
+  padding: 0.28rem 0;
+  line-height: 1.5;
+}
+
+.md-nav--primary .md-nav__title {
+  font-weight: 700;
+}
+
+/* Top-level group headings in the sidebar, since navigation.sections renders
+   them as labels rather than links. */
+.md-nav__item--section > .md-nav__link {
+  color: var(--md-primary-fg-color--light);
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ---------------------------------------------------------------
+   Softer, friendlier components
+   --------------------------------------------------------------- */
+
+.md-typeset table:not([class]) {
+  border-radius: 0.45rem;
+  overflow: hidden;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  font-size: 0.78rem;
+}
+
+.md-typeset table:not([class]) th {
+  background: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+  font-weight: 600;
+}
+
+/* Zebra striping — long mission and rubric tables are hard to track across
+   without it. */
+.md-typeset table:not([class]) tr:nth-child(even) > td {
+  background: rgba(27, 107, 71, 0.045);
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) tr:nth-child(even) > td {
+  background: rgba(38, 224, 181, 0.05);
+}
+
+.md-typeset pre > code,
+.md-typeset > .highlight {
+  border-radius: 0.45rem;
+}
+
+.md-typeset .admonition,
+.md-typeset details {
+  border-radius: 0.5rem;
+  border-left-width: 0.24rem;
+  font-size: 0.8rem;
+}
+
+/* Checkboxes get tapped constantly — the meeting plans, packing lists and
+   judging sheets are full of them, and checkbox-state.js makes them stick.
+   Small targets are the main reason a kid taps the wrong one. */
+.md-typeset .task-list-indicator::before {
+  width: 1.35em;
+  height: 1.35em;
+  top: 0.06em;
+}
+
+.md-typeset .task-list-item {
+  margin-bottom: 0.35em;
+}
+
+/* ---------------------------------------------------------------
+   The home page's "What do you want to do?" table
+   ---------------------------------------------------------------
+   Wrapped in <div class="actions" markdown="1"> in README.md so it renders as a
+   list of big tappable rows rather than a dense data table.
+   A wrapper div rather than attr_list's {: .actions }, because attr_list does not
+   reliably apply to tables in python-markdown and the failure mode is the literal
+   text "{: .actions }" appearing on the home page.
+   These rules come AFTER the table rules above deliberately: specificity is
+   equal, so source order is what makes them win. */
+
+.md-typeset .actions table {
+  display: block;
+  border: 0;
+  font-size: 0.9rem;
+}
+
+.md-typeset .actions thead {
+  display: none;
+}
+
+.md-typeset .actions tbody,
+.md-typeset .actions tr {
+  display: block;
+}
+
+.md-typeset .actions tr {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.15rem 0.2rem;
+  transition: border-color 120ms, background-color 120ms;
+}
+
+.md-typeset .actions tr:hover {
+  border-color: var(--md-accent-fg-color);
+  background: rgba(0, 184, 148, 0.06);
+}
+
+/* Beats the zebra striping and the coloured header from the table rules above. */
+.md-typeset .actions td,
+.md-typeset .actions th {
+  display: block;
+  border: 0 !important;
+  background: none !important;
+  padding: 0.35rem 0.7rem;
+}
+
+/* First cell is the question, second is the link. */
+.md-typeset .actions td:first-child {
+  font-weight: 600;
+  padding-bottom: 0;
+}
+
+.md-typeset .actions td:last-child {
+  padding-top: 0.1rem;
+  font-size: 0.85rem;
+}

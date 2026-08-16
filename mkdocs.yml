@@ -29,6 +29,12 @@ theme:
   name: material
   icon:
     repo: fontawesome/brands/github
+  # Nunito is rounded and friendly without being childish, and it stays legible
+  # at small sizes on a phone — which matters more than personality when the
+  # audience is nine.
+  font:
+    text: Nunito
+    code: JetBrains Mono
   features:
     - navigation.sections      # vertical sidebar with groups as headings
     - navigation.prune         # only expand the branch you are in, not all 55 pages
@@ -47,17 +53,21 @@ theme:
     - toc.follow
   palette:
     # Students practice in bright gyms and dark bedrooms. Offer both.
+    #
+    # green/lime here is the fallback: tools/theme.css refines these into the
+    # exact BIOGLOW rainforest hues, but if that file ever fails to load the site
+    # is still green and still readable rather than snapping back to indigo.
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: indigo
-      accent: amber
+      primary: green
+      accent: teal
       toggle:
         icon: material/weather-night
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: indigo
-      accent: amber
+      primary: green
+      accent: teal
       toggle:
         icon: material/weather-sunny
         name: Switch to light mode
@@ -67,6 +77,8 @@ plugins:
   - search
 
 extra_css:
+  # theme.css first so print.css can still override it.
+  - tools/theme.css
   - tools/print.css
 
 extra_javascript:
