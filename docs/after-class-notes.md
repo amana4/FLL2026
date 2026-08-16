@@ -7,16 +7,10 @@ easier to remember now than in October.
 Everything goes into **one shared list, ordered by date**, so the whole team can
 see it and nothing depends on one person's phone.
 
-!!! warning "Coach: this form is not connected yet"
-
-    The form below will not work until the Google Form exists. Three steps, about
-    ten minutes, in the **Setting this up** section at the bottom of this page.
-    Delete this box once it works.
-
 ## Add today's note
 
 <iframe
-  src="https://docs.google.com/forms/d/e/PASTE_FORM_ID_HERE/viewform?embedded=true"
+  src="https://docs.google.com/forms/d/e/1FAIpQLSdZLffhEKDjB5kv6IGmUgxbquTiqsvH47d2jKIVPAcYK1TXQg/viewform?embedded=true"
   width="100%"
   height="900"
   style="border:0;max-width:100%"
@@ -152,10 +146,24 @@ impressed by teams who closed the loop.
 
 ??? note "Coach: creating the form (about ten minutes, once)"
 
-    **1. Create the form.** Go to <https://forms.google.com> and start a blank
-    form. Call it "FLL BIOGLOW — After-class notes". Add these questions, in this
-    order. Only the first three are required; leaving the rest optional is what
-    keeps kids actually filling it in.
+## How this was set up
+
+The form already exists and is wired into this page. This section is here so it
+can be rebuilt — if the form gets deleted, or next season's team wants a fresh
+one without re-inventing the questions.
+
+??? note "Rebuilding the form"
+
+    **The quick way.** `tools/create-notes-form.gs` in this repo is a Google Apps
+    Script that builds the whole form in one run. Paste it into a new project at
+    <https://script.google.com>, run `createNotesForm`, and copy the embed URL it
+    prints from the execution log. That script is also the authoritative record of
+    the question list.
+
+    **By hand.** Start a blank form at <https://forms.google.com>, call it
+    "FLL BIOGLOW — After-class notes", and add these questions in order. Only the
+    first three are required; leaving the rest optional is what keeps kids
+    actually filling it in.
 
     | # | Question | Type | Required |
     | --- | --- | --- | --- |
@@ -176,32 +184,31 @@ impressed by teams who closed the loop.
     is kept off the website. Question 1 exists because the automatic timestamp is
     when the form was *submitted*, which is not always the session it describes.
 
-    **2. Check the settings.** Under **Settings**:
+    **Settings that matter.** Under **Settings**:
 
-    - **Responses**: "Collect email addresses" **off**. You do not want children's
-      email addresses in a spreadsheet, and it means no login is needed, which is
-      what lets the younger kids use it at all.
+    - **Collect email addresses**: **off**. You do not want children's email
+      addresses in a spreadsheet, and it means no login is needed, which is what
+      lets the younger kids use it at all.
     - **Allow response editing**: on, so a kid can fix a typo.
     - **Limit to 1 response**: **off** — several kids submit per session, and one
       kid may add a second note later.
+    - **Responder access**: "Anyone with the link", and the form must be
+      **published**. Google changed this in late 2024, and a form can look
+      finished while silently refusing responses.
 
-    **3. Connect it to this page.** Click **Publish** (or **Send**), then the
-    **embed** option, and copy the `src` URL out of the code Google gives you. It
-    looks like `https://docs.google.com/forms/d/e/LONG_ID/viewform?embedded=true`.
-    Replace `PASTE_FORM_ID_HERE` in this file's iframe with that `LONG_ID`, then
-    delete the warning box at the top of the page.
+    **Connecting it here.** Take the published form URL, add `?embedded=true`,
+    and put it in the `src` of the iframe near the top of this file.
 
-    **4. Create the responses sheet.** On the **Responses** tab, click the Sheets
-    icon to create a linked spreadsheet. Put it in the team Drive folder under
-    `Admin/`, and paste its link into `docs/team-links.md` in the repo — that
-    file is kept off the published website.
+    **The responses sheet.** On the **Responses** tab, click the Sheets icon to
+    create the linked spreadsheet. Put it in the team Drive folder under `Admin/`
+    and paste its link into `docs/team-links.md`, which is kept off the published
+    website.
 
     **One thing to know about embedding it here.** This website is public, so the
     form is reachable by anyone who finds the page. For a small team site that is
     very low risk, but it does mean a stranger could submit a junk response. They
     would land as obvious rubbish in the sheet and you can delete the row. If you
-    would rather not have it public at all, tell me and I will move the form
-    behind the private `team-links.md` page instead of embedding it here — the
-    trade is one extra tap for the kids.
+    would rather not have it public at all, the form can move behind the private
+    `team-links.md` page instead — the trade is one extra tap for the kids.
 
 --8<-- "includes/abbreviations.md"
