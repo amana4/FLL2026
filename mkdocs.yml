@@ -136,14 +136,21 @@ markdown_extensions:
 # repo. Anything that must stay private has to be gitignored, not just listed
 # here.
 #
-# The official-materials PDFs and .pptx decks are committed to git (so a clone
-# gets everything) but excluded from the SITE build. docs_dir is the repo root,
-# so without this MkDocs would copy ~121MB of binaries into the deploy
-# artifact, making every build slow for no benefit — nothing links to them as
-# pages. Team members read them from their local checkout.
+# FIRST's season materials ARE published, so the website can link straight to a
+# PDF instead of bouncing people to GitHub. That is ~114MB of binaries copied
+# into the deploy artifact, which is well inside GitHub Pages' 1GB limit and
+# costs a few seconds of build time. It was previously excluded to keep builds
+# lean; direct links won the trade, because a kid on a phone should be one tap
+# from the rulebook.
 #
-# code/2025-reference/ is last season's code, carried over for reuse. It is
-# not documentation, so it is kept off the site rather than published as pages.
+# IMPORTANT consequence of publishing them: the blanket `*.pdf` exclusion used to
+# hide the purchase paperwork by accident. SalesOrd*/invoice/receipt are now
+# excluded BY NAME below. They carry a billing name and a residential address,
+# .gitignore already blocks them from the repo, and this is the second line of
+# defence for anyone running `mkdocs serve` locally where untracked files exist.
+#
+# The missions video stays out at 1.37GB — it is gitignored, over GitHub's
+# per-file limit, and would dwarf everything else.
 exclude_docs: |
   .github/
   includes/
@@ -158,13 +165,21 @@ exclude_docs: |
   docs/team-fund.md
   docs/team-fund.csv
   docs/team-links.md
-  docs/official-materials/*.pdf
-  docs/official-materials/*.pptx
-  docs/official-materials/*.llsp3
+  docs/official-materials/SalesOrd*
+  docs/official-materials/*invoice*
+  docs/official-materials/*Invoice*
+  docs/official-materials/*receipt*
+  docs/official-materials/*Receipt*
   docs/official-materials/*.mp4
+  docs/official-materials/*.mov
+  docs/official-materials/scoresheet
+  docs/official-materials/wDan0826cn0
   code/spike-projects/*.llsp3
   code/2025-reference/
 
+# code/2025-reference/ above is last season's code, carried over for reuse. It is
+# not documentation, so it is kept off the site rather than published as pages.
+#
 # not_in_nav ONLY silences the "not in nav" warning. These files ARE published;
 # they are simply kept out of the menu because they are templates or folder
 # placeholders rather than pages to read top-to-bottom. Anything that must not
