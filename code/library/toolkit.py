@@ -1,12 +1,7 @@
-# Team Toolkit — shared movement library for the 2026 BIOGLOW season.
-# Ported from FLL2025's Library/toolKit.py (see code/2025-reference/).
-#
-# TODO before trusting any of this on the 2026 robot: the port assignments,
-# wheel diameter, and track width below are last year's robot, copied as a
-# starting point. Re-measure and update once this year's drive base is built.
-#
-# SPIKE App 3.5 Python (hub / motor_pair / motor / runloop), not the older
-# `spike` module. This is the API confirmed working on hardware last season.
+# Team Toolkit – Single File (SPIKE App 3.5)
+# Drive: A (left), E (right)
+# Wheels: 87 mm diameter
+# Track width: 143 mm (center-to-center distance between wheels)
 
 from hub import port, motion_sensor
 import runloop
@@ -15,27 +10,28 @@ import motor
 from math import pi
 
 # -----------------------------
-# Robot configuration — TODO: re-measure for the 2026 robot
+# Robot configuration
 # -----------------------------
 PAIR = motor_pair.PAIR_1
 
 # Main Drive motors
-LEFT_DRIVE = port.A
-RIGHT_DRIVE = port.E
+LEFT_DRIVE= port.F
+RIGHT_DRIVE = port.A
 
 # Downward color sensors
-left_color = port.F
-right_color = port.B
+left_color = port.E
+right_color = port.F
 
 # Attachment/Tool motors
 attachment1 = port.C
 attachment2 = port.D
 
 # Wheel and robot dimensions
-WHEEL_D_MM = 88.0    # wheel diameter
-TRACK_W_MM = 143.0    # track width (center-to-center distance between wheels)
-ACCEL = 1000    # deg/s^2
-DECEL = 1000
+#WHEEL_D_MM= 63.7 # 55.0 # 88.0    # wheel diameter
+WHEEL_D_MM = 62.5
+TRACK_W_MM= 130 # 143.0    # track width
+ACCEL    = 1000    # deg/s^2
+DECEL    = 1000
 
 # Calibration multiplier for effective wheel diameter. 1.0 = no change.
 CALIBRATION_SCALE = 1.0
@@ -43,16 +39,15 @@ CALIBRATION_SCALE = 1.0
 # Enable debug prints in drive routines (set False to silence)
 DEBUG = True
 
-
 # -----------------------------
 # Geometry helpers
 # -----------------------------
 def _cm_to_deg(cm: float) -> int:
     """Convert straight-line distance (cm) to motor shaft degrees."""
     effective_wheel_d = WHEEL_D_MM * CALIBRATION_SCALE
-    circ_mm = pi * effective_wheel_d          # wheel circumference (mm)
+    circ_mm = pi * effective_wheel_d        # wheel circumference (mm)
     rotations = (abs(cm) * 10.0) / circ_mm    # cm -> mm -> rotations
-    return int(round(rotations * 360.0))      # -> degrees
+    return int(round(rotations * 360.0))    # -> degrees
 
 
 def _robot_deg_to_wheel_deg(robot_deg: float) -> int:
@@ -63,19 +58,17 @@ def _robot_deg_to_wheel_deg(robot_deg: float) -> int:
     wheel_rot = travel_mm / (pi * effective_wheel_d)
     return int(round(wheel_rot * 360.0))
 
-
 def _yaw_deg() -> float:
     y_decideg, _, _ = motion_sensor.tilt_angles()
     return y_decideg / 10.0
-
 
 def _reset_yaw(deg: int = 0) -> None:
     motion_sensor.reset_yaw(int(deg * 10))
 
 
-# -----------------------------
+#------------------------------
 # Calibration
-# -----------------------------
+#-----------------------------
 def calibrate_wheel_diameter(commanded_cm: float, measured_cm: float) -> float:
     """Compute and set a calibration scale so future commands match measured travel.
 
@@ -105,12 +98,12 @@ def set_calibration_scale(scale: float) -> float:
 # -----------------------------
 # Init
 # -----------------------------
+
 async def reset_yaw():
     motion_sensor.reset_yaw(0)
     motor.reset_relative_position(LEFT_DRIVE, 0)
     motor.reset_relative_position(RIGHT_DRIVE, 0)
     await runloop.sleep_ms(500)
-
 
 async def init_robot(default_speed: int = 500):
     """
@@ -147,26 +140,24 @@ async def drive_cm(cm: float,
         acceleration=acceleration,
         deceleration=deceleration
     )
-    print("yaw_now", _yaw_deg())
+    print ("yaw_now", _yaw_deg())
 
-
+# Helper to wrap any angle to [-180, 180)
 def _wrap180(a: float) -> float:
-    """Wrap any angle to [-180, 180)."""
     a = (a + 180.0) % 360.0 - 180.0
     return a
 
-
-# Drive with gyro. Tuning combinations that worked last season, kept for
-# reference: speed 600/kp 2.8/steer-rate-limit 4; speed 500/kp 2.6/limit 6;
-# speed 400/kp 3.2/limit 10. Re-tune for the 2026 robot rather than assuming
-# these transfer — they depend on weight and wheel grip, not just geometry.
+#Drive with gyro
+# Speed: 600, kp: 2.8, steer rate limit: 4, deadband_deg: float = 0.1
+# Speed: 500, kp: 2.6, steer rate limit: 6, deadband_deg: float = 0.1, min_steer_kick = 0
+# Speed: 400, kp 3.2, steer rate limit : 10, deadband_deg: float = 0.1
 async def drive_cm_gyro(cm: float,
                         velocity: int = 500,
                         kp: float = 2.6,
                         steer_limit: int = 70,    # must be <= 100
                         deadband_deg: float = 0.1,# 0.0 to micro-correct tiny errors
                         steer_rate_limit: int = 6,# set 8–10 later for smoothness
-                        min_steer_kick: int = 0,  # 0–2 to overcome quantization
+                        min_steer_kick: int = 0,# 0–2 to overcome quantization
                         stop_mode_end: int = motor.SMART_BRAKE):
     """
     SPIKE App 3.5 gyro-straight drive using motor_pair.move().
@@ -176,6 +167,7 @@ async def drive_cm_gyro(cm: float,
     if cm == 0:
         return
 
+    # Enforce legal limits for steering
     STEER_LIMIT = int(steer_limit)
     if STEER_LIMIT < 0:
         STEER_LIMIT = 0
@@ -188,14 +180,17 @@ async def drive_cm_gyro(cm: float,
     if MIN_STEER > 2:
         MIN_STEER = 2
 
+    # Distance bookkeeping
     target_deg = abs(_cm_to_deg(cm))
     dir_sign = 1 if cm >= 0 else -1
 
+    # Reset sensors and let the IMU settle
     _reset_yaw(0)
     motor.reset_relative_position(LEFT_DRIVE, 0)
     motor.reset_relative_position(RIGHT_DRIVE, 0)
     await runloop.sleep_ms(200)
 
+    # Begin motion with persistent command
     motor_pair.move(PAIR, 0, velocity=dir_sign * velocity)
 
     def _avg_deg():
@@ -272,6 +267,7 @@ async def drive_cm_gyro(cm: float,
 # -----------------------------
 # Turn (in place)
 # -----------------------------
+
 async def turn_deg(angle_deg: float,
                 velocity: int = 400,
                 stop_mode: int = motor.BRAKE,
@@ -294,10 +290,10 @@ async def turn_deg(angle_deg: float,
     )
     await reset_yaw()
 
-
 # -----------------------------
 # Turn (in place) with gyro
 # -----------------------------
+
 async def turn_deg_gyro(angle_deg: float,
                         velocity: int = 250,
                         kp: float = 2.5,
@@ -318,14 +314,21 @@ async def turn_deg_gyro(angle_deg: float,
             motor_pair.stop(PAIR, stop=stop_mode)
             break
 
+        # Proportional control
         turn_rate = int(error * kp)
+
+        # Clamp the turn rate to the velocity
         turn_rate = max(-velocity, min(velocity, turn_rate))
 
-        await runloop.sleep_ms(10)  # Loop delay
+        # Start motors to turn. Positive turn_rate = clockwise.
+        #motor_pair.start(PAIR, steering=100, velocity=turn_rate)
+
+        await runloop.sleep_ms(10) # Loop delay
 
     motor_pair.stop(PAIR, stop=stop_mode)
-    await runloop.sleep_ms(100)  # Wait for motors to physically stop
-    _reset_yaw(0)  # Reset yaw for the next sequential move
+    await runloop.sleep_ms(100) # Wait for motors to physically stop
+    _reset_yaw(0) # Reset yaw for the next sequential move
+
 
 
 async def arc_turn(radius_cm: float,
@@ -340,6 +343,7 @@ async def arc_turn(radius_cm: float,
         return
     # Steering approximation: s ≈ (track / (2R)) * 100 (clip to [-100, 100])
     s = int(max(-100, min(100, (TRACK_W_MM / (2.0 * (radius_cm * 10.0))) * 100.0)))
+    # Arc length ≈ R * theta
     arc_len_cm = abs(radius_cm * (angle_deg * pi / 180.0))
     deg = _cm_to_deg(arc_len_cm)
     steering = s if angle_deg > 0 else -s
@@ -347,14 +351,14 @@ async def arc_turn(radius_cm: float,
 
 
 # -----------------------------
-# Attachments
+# Attachments (examples)
 # -----------------------------
 async def run_attachment_deg(which_port,
                             degrees: int,
                             velocity: int = 300,
                             stop_mode: int = motor.BRAKE):
     """Run an attachment motor by degrees (C or D typically)."""
-    if degrees > 200:
+    if(degrees > 200):
         return
     await motor.run_for_degrees(which_port, degrees, velocity, stop=stop_mode)
 
@@ -366,7 +370,6 @@ async def timed_attachment(which_port,
     """Run an attachment motor for a fixed time (ms)."""
     await motor.run_for_time(which_port, ms, velocity=velocity, stop=stop_mode)
 
-
 # -----------------------------
 # Micro moves
 # -----------------------------
@@ -374,12 +377,49 @@ async def nudge_cm(cm: float = 1.5, velocity: int = 250):
     """Small forward/backward bump to settle into models."""
     await drive_cm(cm, velocity=velocity)
 
-
 async def micro_turn_deg(angle: float = 3.0, velocity: int = 200):
     """Tiny heading adjustment."""
     await turn_deg(angle, velocity=velocity)
 
-
 async def move_attachment_deg(which_port, degrees, velocity=1000):
     """Move an attachment motor by degrees."""
     await motor.run_for_degrees(which_port, degrees, velocity=velocity)
+
+#Set Attachment height to 2 3/4 inches, these instuctions are for attachment on the back side of the robot
+async def run_mission1():
+    #print(set_calibration_scale(319/300)) # Hardwood
+    print(set_calibration_scale(179.7/180)) # Home mat Actual/ requested
+    #print(set_calibration_scale(1.0)) # No calibration
+    #await drive_cm_gyro(-190)
+    #await drive_cm_gyro(190)
+
+   # await drive_cm(30000000000000000000000000000)
+    #await drive_cm(190)
+
+    #for i in range(4):
+        #await drive_cm(-66)
+        #await turn_deg(90)
+
+
+# -----------------------------
+# Main program
+# -----------------------------
+async def main():
+    await init_robot(default_speed=500)
+
+    print (set_calibration_scale(180/180))
+    #await drive_cm(60)
+    #await drive_cm(-60)    
+
+    await turn_deg(45)
+   
+    # await turn_deg(90)
+    # await turn_deg(90)
+    # await turn_deg(90)
+
+    # await turn_deg(-90)
+
+    # await run_mission1()
+
+# Run the main loop
+runloop.run(main())
