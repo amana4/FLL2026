@@ -79,10 +79,15 @@ plugins:
 extra_css:
   # theme.css first so print.css can still override it.
   - tools/theme.css
+  - tools/spike-sim.css
   - tools/print.css
 
 extra_javascript:
   - tools/checkbox-state.js
+  # Runnable Python on the code/learn/ pages. Pyodide is fetched from a CDN on
+  # the first Run, not on page load, so pages that have no Run button cost
+  # nothing. See tools/spike-sim.js.
+  - tools/spike-sim.js
 
 copyright: >
   Team materials are ours. FIRST&reg;, LEGO&reg;, FIRST&reg; LEGO&reg; League and
@@ -104,7 +109,15 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.mark
   - pymdownx.tilde                   # ~~strikethrough~~, used on done items
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      # Mermaid powers the flowcharts in code/learn/13-flowcharts-judges.md.
+      # Material renders them, but fetches mermaid from unpkg.com at runtime, so
+      # diagrams need a connection. Without one the fence degrades to its source
+      # text rather than disappearing.
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.snippets:
       base_path: [.]
       check_paths: true              # a missing include fails the build
@@ -244,6 +257,21 @@ nav:
           - When something breaks: robot-design/troubleshooting.md
       - Code:
           - code/README.md
+          - Learn Python:
+              - code/learn/README.md
+              - 1. What is Python?: code/learn/01-what-is-python.md
+              - 2. Your first program: code/learn/02-first-program.md
+              - 3. Which motor is where: code/learn/03-ports.md
+              - 4. Driving: code/learn/04-driving.md
+              - 5. Turning: code/learn/05-turning.md
+              - 6. The maths behind a drive: code/learn/06-numbers.md
+              - 7. Loops: code/learn/07-loops.md
+              - 8. Your own functions: code/learn/08-functions.md
+              - 9. When the robot lies to you: code/learn/09-calibration.md
+              - 10. The gyro: code/learn/10-gyro.md
+              - 11. Attachments: code/learn/11-attachments.md
+              - 12. Write a real mission: code/learn/12-a-mission.md
+              - 13. Flowcharts and judges: code/learn/13-flowcharts-judges.md
           - Shared code (the toolkit): code/library/README.md
           - Mission programs: code/missions/README.md
           - Word Blocks (what we used before): code/my-blocks.md

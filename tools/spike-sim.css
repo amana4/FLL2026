@@ -1,0 +1,155 @@
+/*
+ * spike-sim.css — the runnable Python blocks on the Learn Python pages.
+ *
+ * Colours come from Material's own custom properties, so light mode, dark mode
+ * and any future palette change carry through without edits here.
+ */
+
+.spike-widget {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.3rem;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+/* The fenced code in the markdown stays in the page for printing and for
+   readers with no JavaScript, but the editor replaces it on screen. */
+.spike-source-print {
+  display: none;
+}
+
+/* Fallback: the fence did not become a <pre>, so the raw text is sitting in the
+   div. The editor has already taken a copy of it, so hide the loose text. */
+.spike-run[data-spike-raw] > *:not(.spike-widget) {
+  display: none;
+}
+
+.spike-editor {
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+  border: 0;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  padding: 0.7rem 0.8rem;
+  resize: vertical;
+  background: var(--md-code-bg-color);
+  color: var(--md-code-fg-color);
+  font-family: var(--md-code-font-family, monospace);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  /* Tabs are converted to spaces by the editor, but a pasted tab should still
+     line up with a four-space indent. */
+  tab-size: 4;
+}
+
+.spike-editor:focus {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: -2px;
+}
+
+.spike-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  padding: 0.4rem 0.6rem;
+  background: var(--md-default-bg-color);
+}
+
+.spike-btn {
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.3rem 0.9rem;
+  border: 1px solid var(--md-default-fg-color--lighter);
+  border-radius: 1rem;
+  background: var(--md-default-bg-color);
+  color: var(--md-default-fg-color);
+  cursor: pointer;
+}
+
+.spike-btn:hover:not(:disabled) {
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-accent-fg-color);
+}
+
+.spike-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.spike-btn-run {
+  background: var(--md-primary-fg-color);
+  border-color: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+}
+
+.spike-btn-run:hover:not(:disabled) {
+  color: var(--md-primary-bg-color);
+  opacity: 0.9;
+}
+
+.spike-status {
+  font-size: 0.66rem;
+  color: var(--md-default-fg-color--light);
+  margin-left: 0.3rem;
+}
+
+.spike-canvas {
+  display: block;
+  width: 100%;
+  height: 300px;
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+  background: var(--md-default-bg-color);
+}
+
+.spike-readout {
+  padding: 0.35rem 0.8rem;
+  font-family: var(--md-code-font-family, monospace);
+  font-size: 0.66rem;
+  color: var(--md-default-fg-color--light);
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.spike-offmat {
+  color: #c62828;
+}
+
+.spike-output {
+  margin: 0;
+  padding: 0.5rem 0.8rem;
+  max-height: 12rem;
+  overflow: auto;
+  background: var(--md-code-bg-color);
+  color: var(--md-code-fg-color);
+  font-size: 0.68rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.spike-output:empty {
+  display: none;
+}
+
+.spike-output details {
+  margin-top: 0.4rem;
+}
+
+.spike-output summary {
+  cursor: pointer;
+  color: var(--md-default-fg-color--light);
+}
+
+/* On paper there is no Run button, so show the code and drop the machinery. */
+@media print {
+  .spike-source-print {
+    display: block;
+  }
+
+  .spike-widget {
+    display: none;
+  }
+}

@@ -50,6 +50,9 @@ somebody cannot answer in the room.
 
 ## Questions to be ready for
 
+Worked answers for the code questions, weak version beside strong version, are in
+[`code/learn/13-flowcharts-judges.md`](../../code/learn/13-flowcharts-judges.md).
+
 | Question | Our answer |
 | --- | --- |
 | Walk us through your robot. | _TODO_ |
