@@ -24,8 +24,8 @@ M15 on ________
 | **M03** | Research flag is down | No / Yes (20) | |
 | | Bonus: rock returned to its original position | No / Yes (+10) | ___ / 30 |
 | **M04** | Leaves no longer touching the nest | 0 1 2 (10 each) | |
-| | Katydid completely in the leaf habitat | No / Yes | |
-| | Bonus: katydid remained in its original position throughout | No / Yes (+20) | ___ / 30 |
+| | Katydid at least partly in the leaf habitat | No / Yes | |
+| | Bonus: katydid stayed at least partly in the leaf habitat throughout | No / Yes (+20) | ___ / 30 |
 | **M05** | Plant root extended | No / Partially (10) / Completely (20) | ___ / 20 |
 | **M06** | Ant touching the nest | No / Yes | |
 | | Leaf fragments contained within the nest | 0 1 2 3 4 (10 each) | ___ / 40 |
@@ -63,8 +63,13 @@ and query anything that looks wrong — unclear calls go to the team.
 something you adjust once you see how the run is going.
 
 **M04 has three lines, not two.** Leaves counted, katydid in the habitat, and then
-the bonus for the katydid never having moved. Getting a leaf out but knocking the
-katydid loose is a real and expensive outcome.
+the bonus for the katydid never having left it. Getting a leaf out but pushing the
+katydid fully off the habitat is a real and expensive outcome.
+
+The three M04 lines above follow Challenge Update 01 of 2 September 2026, not the
+printed sheet. FIRST is reissuing the official scoresheet to match; replace these
+rows once that version is out. Details in
+[`missions/M04-lucky-leaves.md`](missions/M04-lucky-leaves.md).
 
 **M05 is a three-way choice**, not two rows — No, Partially, Completely.
 

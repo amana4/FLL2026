@@ -24,11 +24,11 @@ right_color = port.F
 
 # Attachment/Tool motors
 attachment1 = port.C
-attachment2 = port.D
+#attachment2 = port.E
 
 # Wheel and robot dimensions
 #WHEEL_D_MM= 63.7 # 55.0 # 88.0    # wheel diameter
-WHEEL_D_MM = 62.5
+WHEEL_D_MM = 62.4
 TRACK_W_MM= 130 # 143.0    # track width
 ACCEL    = 1000    # deg/s^2
 DECEL    = 1000
@@ -393,7 +393,7 @@ async def run_mission1():
     #await drive_cm_gyro(-190)
     #await drive_cm_gyro(190)
 
-   # await drive_cm(30000000000000000000000000000)
+# await drive_cm(30000000000000000000000000000)
     #await drive_cm(190)
 
     #for i in range(4):
@@ -407,12 +407,17 @@ async def run_mission1():
 async def main():
     await init_robot(default_speed=500)
 
-    print (set_calibration_scale(180/180))
-    #await drive_cm(60)
-    #await drive_cm(-60)    
+    print (set_calibration_scale(179/180))
+    await drive_cm(-40)
+    await drive_cm(10)
+    #await motor.run_for_degrees(port.C, 180, 200)
+    #await motor.run_for_degrees(port.D, 180, 200)
 
-    await turn_deg(45)
-   
+
+    #await drive_cm(-60)
+
+    #await turn_deg(45)
+
     # await turn_deg(90)
     # await turn_deg(90)
     # await turn_deg(90)

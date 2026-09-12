@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reading the toolkit — BIOGLOW robot code from scratch</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Same BIOGLOW skin as robot-design/chassis-designs-slides.html, so the two
+       decks look like one set. Ink is rainforest green; the accent stays
+       atomic-tangerine because a green accent on green ink has no focal
+       contrast, and the accent's job is to mark the one thing that matters. */
+    --paper:        #f5f5f5;
+    --paper-2:      #ececec;
+    --ink:          #16362b;
+    --muted:        #4a6357;
+    --soft:         #7d9488;
+    --rule:         rgba(22, 54, 43, 0.12);
+    --rule-solid:   rgba(22, 54, 43, 0.28);
+    --accent:       #eb6c36;
+    --accent-tint:  rgba(235, 108, 54, 0.08);
+
+    --font-sans:  'Geist', system-ui, sans-serif;
+    --font-serif: 'Instrument Serif', serif;
+    --font-mono:  'Geist Mono', ui-monospace, monospace;
+  }
+
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Each slide is one screen. Arrow keys / space / PageDown move between them,
+     so the deck presents with no JavaScript. */
+  .slide {
+    min-height: 100vh;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 3.5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+
+  h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+
+  .lede {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 62ch;
+    margin-bottom: 1.75rem;
+  }
+
+  .lede strong { color: var(--ink); font-weight: 600; }
+
+  .aside {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: var(--ink);
+    border-left: 2px solid var(--accent);
+    padding-left: 1rem;
+    margin-top: 1.75rem;
+    max-width: 60ch;
+  }
+
+  svg { width: 100%; height: auto; display: block; }
+
+  /* ---- code -------------------------------------------------------------
+     This deck is about a file, so the file has to be on the slides. Real
+     lines from code/library/toolkit.py, never a paraphrase — a student
+     reading along has to find the same characters in front of them. */
+  pre {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.7;
+    background: #ffffff;
+    border: 1px solid var(--rule-solid);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    color: var(--ink);
+    white-space: pre;
+  }
+
+  pre .c { color: var(--soft); }                        /* comment */
+  pre .hl { color: var(--accent); font-weight: 500; }   /* the bit being discussed */
+  pre .dim { color: var(--soft); }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--paper-2);
+    padding: 0.08em 0.32em;
+    border-radius: 3px;
+  }
+
+  /* code on the left, plain-English translation on the right */
+  .cols { display: grid; grid-template-columns: 1.15fr 1fr; gap: 2rem; align-items: start; }
+  .cols.even { grid-template-columns: 1fr 1fr; }
+
+  .note {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--soft);
+    margin-top: 1rem;
+  }
+
+  /* ---- tables ------------------------------------------------------------ */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    border: 1px solid var(--rule-solid);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  th {
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+  }
+
+  td { padding: 0.6rem 0.75rem; border-top: 1px solid var(--rule); vertical-align: top; line-height: 1.45; }
+  tbody tr:nth-child(even) td { background: rgba(22, 54, 43, 0.03); }
+  td:first-child { font-weight: 600; white-space: nowrap; font-family: var(--font-mono); font-size: 0.78rem; }
+  td.plain:first-child { font-family: var(--font-sans); font-size: 0.82rem; }
+  tr.flag td { background: var(--accent-tint) !important; }
+  tr.flag td:first-child { color: var(--accent); }
+
+  /* ---- checklists -------------------------------------------------------- */
+  ul.checks { list-style: none; font-size: 1.0625rem; line-height: 1.5; }
+  ul.checks li { padding: 0.55rem 0 0.55rem 2.25rem; position: relative; border-bottom: 1px solid var(--rule); }
+  ul.checks li::before {
+    content: "";
+    position: absolute; left: 0; top: 0.8rem;
+    width: 1rem; height: 1rem;
+    border: 1.5px solid var(--accent);
+    border-radius: 4px;
+  }
+  ul.checks li b { font-weight: 600; }
+  ul.checks li span { color: var(--muted); }
+
+  /* numbered walk-through, one idea per step */
+  ol.steps { list-style: none; counter-reset: s; font-size: 1rem; line-height: 1.5; }
+  ol.steps li {
+    counter-increment: s;
+    padding: 0.5rem 0 0.5rem 2.5rem;
+    position: relative;
+    color: var(--muted);
+  }
+  ol.steps li::before {
+    content: counter(s);
+    position: absolute; left: 0; top: 0.5rem;
+    width: 1.5rem; height: 1.5rem;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  ol.steps li b { color: var(--ink); font-weight: 600; }
+
+  .sum {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    line-height: 2;
+    color: var(--ink);
+    background: var(--accent-tint);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+  }
+  .sum b { color: var(--accent); font-weight: 500; }
+
+  footer {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--soft);
+    letter-spacing: 0.06em;
+    padding: 2rem 3.5rem 3rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    border-top: 1px solid var(--rule);
+  }
+
+  @media (max-width: 900px) {
+    .cols, .cols.even { grid-template-columns: 1fr; gap: 1.25rem; }
+    .slide { padding: 2.5rem 1.5rem; }
+  }
+
+  @media print {
+    html { scroll-snap-type: none; }
+    .slide { min-height: auto; page-break-after: always; border-bottom: 0; padding: 1.5cm; }
+    body { background: #fff; }
+    pre { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ 1. TITLE -->
+<section class="slide">
+  <p class="eyebrow">BIOGLOW · Code</p>
+  <h1>385 lines of code<br>you did not write.<br>Let's read them.</h1>
+  <p class="lede">
+    Every mission program we write this season starts by borrowing from one
+    file: <code>code/library/toolkit.py</code>. It knows how to drive a
+    distance, turn an angle, and run an attachment. <strong>You do not have to
+    memorise it.</strong> You have to be able to open it, find the line that is
+    wrong, and change it.
+  </p>
+  <p class="aside">By the end of this you will know what every part of that file does, and you will have found three real bugs in it.</p>
+  <p class="note">Assumes nothing. You have never written Python before.</p>
+</section>
+
+<!-- =============================================== 2. WHY A TOOLKIT AT ALL -->
+<section class="slide">
+  <p class="eyebrow">The point of it</p>
+  <h2>Write "drive straight" once, not fifteen times</h2>
+  <p class="lede">
+    We have 15 missions. Every one of them needs to drive forward and turn. If
+    each program writes its own driving code, we end up with 15 slightly
+    different versions of "drive straight" — and when the robot curves, we have
+    to find out <em>which</em> one is broken.
+  </p>
+
+  <div class="cols even">
+    <div>
+      <p class="note" style="margin-top:0">Without a toolkit</p>
+      <pre><span class="c"># mission 3</span>
+motor_pair.move_for_degrees(
+    PAIR, 391, 0, velocity=500)
+
+<span class="c"># mission 7 — same idea, retyped</span>
+motor_pair.move_for_degrees(
+    PAIR, 390, 0, velocity=480)
+
+<span class="c"># mission 11 — and again</span>
+motor_pair.move_for_degrees(
+    PAIR, 392, 0, velocity=500)</pre>
+    </div>
+    <div>
+      <p class="note" style="margin-top:0">With the toolkit</p>
+      <pre><span class="c"># mission 3</span>
+<span class="hl">await drive_cm(30)</span>
+
+<span class="c"># mission 7</span>
+<span class="hl">await drive_cm(30)</span>
+
+<span class="c"># mission 11</span>
+<span class="hl">await drive_cm(30)</span></pre>
+      <p class="lede" style="font-size:1rem; margin-top:1rem; margin-bottom:0">
+        Fix driving once and all 15 missions get the fix. That is the whole
+        deal.
+      </p>
+    </div>
+  </div>
+
+  <p class="aside">This is the same rule as the robot itself: one base that never changes, many attachments. One toolkit, many missions.</p>
+</section>
+
+<!-- ============================================== 3. THE SHAPE OF THE FILE -->
+<section class="slide">
+  <p class="eyebrow">Before you read a line</p>
+  <h2>The file has five parts, in this order</h2>
+  <p class="lede">Open <code>code/library/toolkit.py</code> and scroll. Every Python file you meet is laid out roughly like this, so learning the shape once pays off forever.</p>
+
+  <svg viewBox="0 0 1120 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="layers-title layers-desc">
+    <title id="layers-title">The five parts of toolkit.py in file order</title>
+    <desc id="layers-desc">Reading top to bottom: imports bring in the hub's built-in code, settings name the ports and measurements, maths helpers convert centimetres to motor degrees, the movement functions are what missions call, and the small extras sit at the end.</desc>
+
+    <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+    <!-- line-number gutter -->
+    <text x="64" y="70" fill="#7d9488" font-size="12" font-family="'Geist Mono', monospace">1–15</text>
+    <text x="64" y="148" fill="#7d9488" font-size="12" font-family="'Geist Mono', monospace">17–44</text>
+    <text x="64" y="226" fill="#7d9488" font-size="12" font-family="'Geist Mono', monospace">47–103</text>
+    <text x="64" y="304" fill="#7d9488" font-size="12" font-family="'Geist Mono', monospace">105–348</text>
+    <text x="64" y="382" fill="#7d9488" font-size="12" font-family="'Geist Mono', monospace">349–385</text>
+
+    <rect x="160" y="40" width="896" height="60" rx="4" fill="#ffffff" stroke="rgba(22,54,43,0.30)" stroke-width="1"/>
+    <text x="188" y="66" fill="#16362b" font-size="17" font-weight="600" font-family="'Geist', sans-serif">Imports</text>
+    <text x="188" y="88" fill="#4a6357" font-size="15" font-family="'Geist', sans-serif">Borrow code that already exists on the hub. You write none of this.</text>
+
+    <rect x="160" y="118" width="896" height="60" rx="4" fill="#ffffff" stroke="rgba(22,54,43,0.30)" stroke-width="1"/>
+    <text x="188" y="144" fill="#16362b" font-size="17" font-weight="600" font-family="'Geist', sans-serif">Settings</text>
+    <text x="188" y="166" fill="#4a6357" font-size="15" font-family="'Geist', sans-serif">Which ports, how big the wheels are, how wide the robot is. You change these.</text>
+
+    <rect x="160" y="196" width="896" height="60" rx="4" fill="#ffffff" stroke="rgba(22,54,43,0.30)" stroke-width="1"/>
+    <text x="188" y="222" fill="#16362b" font-size="17" font-weight="600" font-family="'Geist', sans-serif">Maths helpers</text>
+    <text x="188" y="244" fill="#4a6357" font-size="15" font-family="'Geist', sans-serif">Centimetres into motor degrees. Angles into motor degrees. Read once, trust after.</text>
+
+    <!-- the part missions actually call: the focal band -->
+    <rect x="160" y="274" width="896" height="60" rx="4" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1.6"/>
+    <text x="188" y="300" fill="#16362b" font-size="17" font-weight="600" font-family="'Geist', sans-serif">The moves</text>
+    <text x="188" y="322" fill="#4a6357" font-size="15" font-family="'Geist', sans-serif">drive_cm, drive_cm_gyro, turn_deg, arc_turn, attachments. This is what you call.</text>
+    <rect x="900" y="282" width="132" height="20" rx="2" fill="transparent" stroke="rgba(235,108,54,0.50)" stroke-width="0.8"/>
+    <text x="966" y="298" fill="#eb6c36" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">START HERE</text>
+
+    <rect x="160" y="352" width="896" height="60" rx="4" fill="#ffffff" stroke="rgba(22,54,43,0.30)" stroke-width="1"/>
+    <text x="188" y="378" fill="#16362b" font-size="17" font-weight="600" font-family="'Geist', sans-serif">Small extras</text>
+    <text x="188" y="400" fill="#4a6357" font-size="15" font-family="'Geist', sans-serif">Tiny nudges and micro-turns for lining up against a model.</text>
+  </svg>
+
+  <p class="note">Grey numbers on the left are the real line numbers in code/library/toolkit.py.</p>
+</section>
+
+<!-- ==================================================== 4. THE IMPORTS -->
+<section class="slide">
+  <p class="eyebrow">Lines 11 to 15</p>
+  <h2>Imports: borrowing code somebody else finished</h2>
+  <p class="lede">
+    The hub already contains code for spinning motors and reading the gyro. An
+    <code>import</code> line is you saying <strong>"I would like to use that,
+    please"</strong>. Nothing runs yet. You are collecting your tools before you
+    start.
+  </p>
+
+  <div class="cols">
+    <div>
+      <pre><span class="hl">from</span> hub <span class="hl">import</span> port, motion_sensor
+<span class="hl">import</span> runloop
+<span class="hl">import</span> motor_pair
+<span class="hl">import</span> motor
+<span class="hl">from</span> math <span class="hl">import</span> pi</pre>
+      <p class="note">Two shapes. <code>import x</code> takes the whole box. <code>from x import y</code> takes one thing out of the box.</p>
+    </div>
+    <div>
+      <table>
+        <thead><tr><th>What you borrowed</th><th>What it gives you</th></tr></thead>
+        <tbody>
+          <tr><td>port</td><td>The letters on the hub: A, B, C, D, E, F.</td></tr>
+          <tr><td>motion_sensor</td><td>The gyro. Which way the robot is pointing.</td></tr>
+          <tr><td>runloop</td><td>Starts the program and lets us wait for things.</td></tr>
+          <tr><td>motor_pair</td><td>Drives two wheels together, as one unit.</td></tr>
+          <tr><td>motor</td><td>Drives one motor on its own. Attachments.</td></tr>
+          <tr><td>pi</td><td>3.14159&hellip; Needed for anything round.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <p class="aside">If a line says <code>motor_pair.move()</code> later on, you can now see where <code>motor_pair</code> came from. It came from line 13.</p>
+</section>
+
+<!-- ==================================================== 5. THE SETTINGS -->
+<section class="slide">
+  <p class="eyebrow">Lines 17 to 44</p>
+  <h2>Settings: the numbers that describe our robot</h2>
+  <p class="lede">
+    A name in <strong>CAPITAL LETTERS</strong> means "this is a setting, set once
+    at the top, and the rest of the file reads it". Put them all together and
+    changing the robot means changing one block, not hunting through 385 lines.
+  </p>
+
+  <div class="cols">
+    <div>
+      <pre>PAIR = motor_pair.PAIR_1
+
+LEFT_DRIVE  = port.A
+RIGHT_DRIVE = port.E
+
+left_color  = port.F
+right_color = port.B
+
+attachment1 = port.C
+attachment2 = port.D
+
+<span class="hl">WHEEL_D_MM = 88.0</span>   <span class="c"># wheel diameter</span>
+<span class="hl">TRACK_W_MM = 143.0</span>  <span class="c"># track width</span>
+
+ACCEL = 1000
+DECEL = 1000
+CALIBRATION_SCALE = 1.0
+DEBUG = True</pre>
+    </div>
+    <div>
+      <ol class="steps">
+        <li><b>Ports</b> say which socket each motor is plugged into. Move a cable, change one line here, and everything else still works.</li>
+        <li><b>WHEEL_D_MM</b> is how far across a wheel is, in millimetres. Every distance the robot drives depends on this one number.</li>
+        <li><b>TRACK_W_MM</b> is the gap between the two drive wheels, measured middle to middle. Every turn depends on this one.</li>
+        <li><b>ACCEL / DECEL</b> are how hard it speeds up and slows down.</li>
+        <li><b>DEBUG</b> is a switch. <code>True</code> prints what the robot is thinking while it drives. Set it <code>False</code> at a competition.</li>
+      </ol>
+    </div>
+  </div>
+
+  <p class="aside">Important: these two measurements are last year's robot. Before we trust any distance this season, we measure our own wheels and our own track width and type them in here.</p>
+</section>
+
+<!-- ============================================= 6. THE ONE BIG IDEA -->
+<section class="slide">
+  <p class="eyebrow">The one big idea</p>
+  <h2>The motor has never heard of centimetres</h2>
+  <p class="lede">
+    You want to move 30 cm. The motor only understands one thing:
+    <strong>turn my shaft this many degrees</strong>. A full turn is 360
+    degrees. So the whole job is converting a distance into a number of degrees
+    — and the bridge between them is the wheel.
+  </p>
+
+  <svg viewBox="0 0 1120 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="circ-title circ-desc">
+    <title id="circ-title">One wheel turn covers one circumference of ground</title>
+    <desc id="circ-desc">A wheel of 88 millimetre diameter is unrolled along the mat; one complete 360 degree turn lays down 276.5 millimetres of travel, which is pi multiplied by the diameter.</desc>
+    <defs>
+      <marker id="a-tip" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+    </defs>
+
+    <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+    <!-- the wheel, with its diameter marked -->
+    <circle cx="200" cy="200" r="96" fill="#ffffff" stroke="#16362b" stroke-width="1.6"/>
+    <circle cx="200" cy="200" r="10" fill="#16362b"/>
+    <line x1="104" y1="200" x2="296" y2="200" stroke="#eb6c36" stroke-width="1.6"/>
+    <line x1="104" y1="188" x2="104" y2="212" stroke="#eb6c36" stroke-width="1.6"/>
+    <line x1="296" y1="188" x2="296" y2="212" stroke="#eb6c36" stroke-width="1.6"/>
+    <rect x="144" y="168" width="112" height="20" rx="2" fill="#ffffff"/>
+    <text x="200" y="184" fill="#eb6c36" font-size="13" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">88 MM ACROSS</text>
+    <text x="200" y="332" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">One wheel</text>
+    <text x="200" y="356" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif" text-anchor="middle">Turn it 360&deg;&hellip;</text>
+
+    <!-- the ground it lays down -->
+    <line x1="384" y1="296" x2="1024" y2="296" stroke="rgba(22,54,43,0.28)" stroke-width="1.6"/>
+    <text x="384" y="320" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.08em">MAT</text>
+
+    <line x1="384" y1="240" x2="1024" y2="240" stroke="#eb6c36" stroke-width="2" marker-end="url(#a-tip)"/>
+    <line x1="384" y1="228" x2="384" y2="252" stroke="#eb6c36" stroke-width="1.6"/>
+    <rect x="592" y="208" width="224" height="24" rx="2" fill="#f5f5f5"/>
+    <text x="704" y="226" fill="#eb6c36" font-size="15" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">&hellip;and you have moved 276.5 mm</text>
+
+    <text x="384" y="120" fill="#16362b" font-size="17" font-weight="600" font-family="'Geist', sans-serif">The distance round the outside of a circle</text>
+    <text x="384" y="148" fill="#4a6357" font-size="16" font-family="'Geist', sans-serif">is always pi times the distance across it.</text>
+    <text x="384" y="180" fill="#16362b" font-size="17" font-family="'Geist Mono', monospace">3.14159 &times; 88 mm = 276.5 mm = 27.6 cm</text>
+
+    <text x="64" y="424" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.06em">SO: 27.6 CM PER WHEEL TURN. WANT 30 CM? THAT IS A BIT MORE THAN ONE TURN.</text>
+  </svg>
+</section>
+
+<!-- ============================================= 7. _cm_to_deg LINE BY LINE -->
+<section class="slide">
+  <p class="eyebrow">Lines 50 to 55 · Read it slowly</p>
+  <h2>Your first function, one line at a time</h2>
+
+  <div class="cols">
+    <div>
+      <pre><span class="hl">def</span> _cm_to_deg(cm: float) -&gt; int:
+    <span class="c">"""Convert distance (cm) to motor degrees."""</span>
+    effective_wheel_d = WHEEL_D_MM * CALIBRATION_SCALE
+    circ_mm = pi * effective_wheel_d
+    rotations = (abs(cm) * 10.0) / circ_mm
+    <span class="hl">return</span> int(round(rotations * 360.0))</pre>
+      <div class="sum" style="margin-top:1.5rem">
+        _cm_to_deg(<b>30</b>)<br>
+        &rarr; circ_mm = 3.14159 &times; 88 = <b>276.5</b><br>
+        &rarr; rotations = 300 &divide; 276.5 = <b>1.085</b><br>
+        &rarr; degrees = 1.085 &times; 360 = <b>391</b>
+      </div>
+    </div>
+    <div>
+      <ol class="steps">
+        <li><b>def</b> means "I am about to teach the robot a new word". The word is <code>_cm_to_deg</code>.</li>
+        <li><b>(cm: float)</b> is what you have to hand it. <code>float</code> means a number that can have a decimal point. You can ask for 30 or for 30.5.</li>
+        <li><b>-&gt; int</b> is what it hands back: a whole number. Motors count in whole degrees.</li>
+        <li>The <b>""" line """</b> is a docstring. A note to the next human. The robot ignores it.</li>
+        <li><b>circ_mm</b> is the wheel's circumference. Pi times the diameter, exactly like the last slide.</li>
+        <li><b>abs(cm) * 10.0</b> turns centimetres into millimetres, because the wheel was measured in millimetres. <code>abs</code> throws away a minus sign, so backwards works too.</li>
+        <li><b>return</b> hands the answer back to whoever asked.</li>
+      </ol>
+    </div>
+  </div>
+
+  <p class="aside">Everything else in this file is that: take what a human means, turn it into what a motor understands.</p>
+</section>
+
+<!-- ==================================================== 8. TURNING MATHS -->
+<section class="slide">
+  <p class="eyebrow">Lines 58 to 64</p>
+  <h2>A turn is just a drive round a small circle</h2>
+  <p class="lede">
+    When the robot spins on the spot, each wheel drives round a circle. The
+    circle's width is the gap between the wheels — <code>TRACK_W_MM</code>.
+    Turning the robot 90 degrees means driving each wheel a quarter of the way
+    round that circle. <strong>Same maths as before, different circle.</strong>
+  </p>
+
+  <div class="cols">
+    <div>
+      <svg viewBox="0 0 560 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="turn-title turn-desc">
+        <title id="turn-title">The circle the wheels trace when the robot spins</title>
+        <desc id="turn-desc">Seen from above, the two drive wheels sit on opposite sides of a circle whose width equals the 143 millimetre track width, and spinning in place walks each wheel round that circle.</desc>
+        <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+        <circle cx="280" cy="170" r="120" fill="none" stroke="#eb6c36" stroke-width="1.4" stroke-dasharray="6,5"/>
+        <circle cx="280" cy="170" r="6" fill="#16362b"/>
+
+        <rect x="240" y="80" width="80" height="180" rx="6" fill="#ffffff" stroke="#16362b" stroke-width="1.4"/>
+        <rect x="146" y="146" width="28" height="48" rx="3" fill="#ffffff" stroke="#16362b" stroke-width="1.4"/>
+        <rect x="386" y="146" width="28" height="48" rx="3" fill="#ffffff" stroke="#16362b" stroke-width="1.4"/>
+        <line x1="174" y1="170" x2="386" y2="170" stroke="#16362b" stroke-width="1.2"/>
+
+        <line x1="160" y1="290" x2="400" y2="290" stroke="#eb6c36" stroke-width="1.4"/>
+        <line x1="160" y1="280" x2="160" y2="300" stroke="#eb6c36" stroke-width="1.4"/>
+        <line x1="400" y1="280" x2="400" y2="300" stroke="#eb6c36" stroke-width="1.4"/>
+        <rect x="216" y="278" width="128" height="18" rx="2" fill="#f5f5f5"/>
+        <text x="280" y="292" fill="#eb6c36" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">TRACK = 143 MM</text>
+
+        <text x="24" y="40" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.08em">TOP VIEW</text>
+        <text x="24" y="326" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.06em">DASHED = THE PATH EACH WHEEL WALKS</text>
+      </svg>
+    </div>
+    <div>
+      <pre><span class="hl">def</span> _robot_deg_to_wheel_deg(robot_deg) -&gt; int:
+    turn_circ_mm = pi * TRACK_W_MM
+    travel_mm = (abs(robot_deg) / 360.0) * turn_circ_mm
+    effective_wheel_d = WHEEL_D_MM * CALIBRATION_SCALE
+    wheel_rot = travel_mm / (pi * effective_wheel_d)
+    <span class="hl">return</span> int(round(wheel_rot * 360.0))</pre>
+
+      <div class="sum" style="margin-top:1.25rem">
+        Turn the robot <b>90&deg;</b><br>
+        &rarr; turn circle = 3.14159 &times; 143 = <b>449.3 mm</b><br>
+        &rarr; a quarter of it = <b>112.3 mm</b> of wheel travel<br>
+        &rarr; that is <b>146</b> motor degrees
+      </div>
+      <p class="note">Robot degrees and motor degrees are different things. 90 of one is 146 of the other.</p>
+    </div>
+  </div>
+
+  <p class="aside">Measure the track width badly and every turn is wrong by the same percentage, all season. It is worth measuring twice.</p>
+</section>
+
+<!-- ================================================= 9. THE UNDERSCORE -->
+<section class="slide">
+  <p class="eyebrow">A naming rule</p>
+  <h2>Why some names start with an underscore</h2>
+  <p class="lede">
+    <code>_cm_to_deg</code>, <code>_yaw_deg</code>, <code>_wrap180</code>. That
+    leading underscore is a message from one programmer to another:
+    <strong>this is machinery, not a button.</strong> It is Python's way of
+    saying "for use inside this file only".
+  </p>
+
+  <table>
+    <thead><tr><th>Name</th><th>Meaning</th><th>Do you call it from a mission?</th></tr></thead>
+    <tbody>
+      <tr><td>drive_cm</td><td>A move you ask for.</td><td>Yes. This is the point of the file.</td></tr>
+      <tr><td>turn_deg</td><td>A move you ask for.</td><td>Yes.</td></tr>
+      <tr><td>_cm_to_deg</td><td>Maths that <code>drive_cm</code> uses.</td><td>No. Let <code>drive_cm</code> use it.</td></tr>
+      <tr><td>_yaw_deg</td><td>Reads the gyro and divides by 10, because the hub reports tenths of a degree.</td><td>No.</td></tr>
+      <tr><td>_wrap180</td><td>Folds any angle back into the range &minus;180 to 180, so 350&deg; becomes &minus;10&deg;.</td><td>No.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="aside">Nothing stops you calling one. Python will not tell you off. It is a convention between people, and following it is how you write code someone else can read.</p>
+</section>
+
+<!-- ============================================== 10. ASYNC AND AWAIT -->
+<section class="slide">
+  <p class="eyebrow">The two strange words</p>
+  <h2><code>async</code> and <code>await</code>, explained once</h2>
+  <p class="lede">
+    Nearly every move in this file starts with <code>async def</code>, and every
+    time you call one you must write <code>await</code>. Forget the
+    <code>await</code> and the robot will skip the move entirely — no error, no
+    movement. It is the single most common mistake.
+  </p>
+
+  <div class="cols">
+    <div>
+      <pre><span class="hl">async def</span> drive_cm(cm, velocity=500):
+    ...
+
+<span class="c"># in your mission:</span>
+<span class="hl">await</span> drive_cm(30)      <span class="c"># drives, then continues</span>
+drive_cm(30)            <span class="c"># does nothing at all</span>
+
+<span class="c"># at the very bottom of a mission file:</span>
+runloop.run(main())</pre>
+      <p class="note">Rule: if the definition says <code>async def</code>, the call says <code>await</code>. Every time.</p>
+    </div>
+    <div>
+      <ol class="steps">
+        <li><b>Driving takes time.</b> A 30 cm move might take a second. The program has to wait for it.</li>
+        <li><b>await means "wait here until this finishes, then carry on".</b> Without it, Python builds the job and never starts it.</li>
+        <li><b>async def marks a function that can be waited on.</b> You only need it on functions that take time.</li>
+        <li><b>runloop.run(main())</b> is the starter motor. It takes your <code>main</code> function and actually runs it. One line, at the very bottom, in the mission file.</li>
+      </ol>
+      <p class="lede" style="font-size:1rem; margin-top:1.25rem; margin-bottom:0">
+        Why bother? Because waiting like this lets the hub keep reading the gyro
+        while the wheels turn. That is exactly what gyro driving needs.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================ 11. drive_cm -->
+<section class="slide">
+  <p class="eyebrow">Lines 127 to 150 · The simple drive</p>
+  <h2><code>drive_cm</code>: count the degrees and go</h2>
+
+  <div class="cols">
+    <div>
+      <pre><span class="hl">async def</span> drive_cm(cm: float,
+                   velocity: int = 500,
+                   stop_mode: int = motor.BRAKE,
+                   acceleration: int = ACCEL,
+                   deceleration: int = DECEL):
+    _reset_yaw(0)
+    deg = <span class="hl">_cm_to_deg(cm)</span>
+    vel = velocity <span class="hl">if</span> cm &gt;= 0 <span class="hl">else</span> -velocity
+    <span class="hl">await</span> motor_pair.move_for_degrees(
+        PAIR,
+        deg,
+        <span class="hl">0</span>,          <span class="c"># steering 0 = straight</span>
+        velocity=vel,
+        stop=stop_mode,
+        acceleration=acceleration,
+        deceleration=deceleration
+    )</pre>
+    </div>
+    <div>
+      <ol class="steps">
+        <li><b>Those <code>= 500</code> bits are defaults.</b> Write <code>drive_cm(30)</code> and you get velocity 500 free. Write <code>drive_cm(30, velocity=200)</code> to go slower. You only name what you want to change.</li>
+        <li><b>deg = _cm_to_deg(cm)</b> — the conversion from the last slides. 30 becomes 391.</li>
+        <li><b>The <code>if / else</code> on one line</b> reads exactly as it sounds: use <code>velocity</code> if the distance is positive, otherwise use minus it. That is how <code>drive_cm(-20)</code> reverses.</li>
+        <li><b>steering = 0</b> means both wheels the same. Straight. 100 would mean spin one way, &minus;100 the other.</li>
+        <li><b>stop=motor.BRAKE</b> means stop hard at the end rather than rolling on.</li>
+      </ol>
+    </div>
+  </div>
+
+  <p class="aside">This version trusts the wheels completely. If one wheel slips on the mat, it never finds out — it counted the degrees, so as far as it knows the job is done.</p>
+  <p class="note">Two debug print lines left out here to fit. They are in the file.</p>
+</section>
+
+<!-- =========================================== 12. WHY THE GYRO EXISTS -->
+<section class="slide">
+  <p class="eyebrow">The problem</p>
+  <h2>Counting degrees is not the same as going straight</h2>
+  <p class="lede">
+    One wheel grips slightly better than the other. A tyre is slightly softer. A
+    heavy attachment leans on one side. The motors both turn 391 degrees and are
+    perfectly happy — and the robot arrives somewhere it should not be, pointing
+    the wrong way. <strong>Small at 30 cm. Enormous by the end of a run.</strong>
+  </p>
+
+  <svg viewBox="0 0 1120 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="drift-title drift-desc">
+    <title id="drift-title">Encoder-only driving drifts while gyro driving holds the line</title>
+    <desc id="drift-desc">Counting motor degrees alone lets the robot curve away from the target and the error grows with distance, while a gyro-corrected drive keeps measuring how far off the heading is and steers back to the line.</desc>
+    <defs>
+      <marker id="d-grey" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4a6357"/></marker>
+      <marker id="d-acc" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+    </defs>
+
+    <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+    <!-- LEFT: encoders only -->
+    <text x="64" y="64" fill="#16362b" font-size="17" font-weight="600" font-family="'Geist', sans-serif">Degrees only</text>
+    <text x="64" y="88" fill="#4a6357" font-size="15" font-family="'Geist', sans-serif">Nothing is watching the heading.</text>
+
+    <rect x="64" y="120" width="16" height="80" rx="2" fill="rgba(22,54,43,0.15)"/>
+    <text x="64" y="228" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.08em">START</text>
+
+    <line x1="96" y1="160" x2="440" y2="160" stroke="rgba(22,54,43,0.20)" stroke-width="1" stroke-dasharray="4,4"/>
+    <path d="M 96 160 Q 300 160 456 236" fill="none" stroke="#4a6357" stroke-width="2" marker-end="url(#d-grey)"/>
+    <rect x="240" y="176" width="128" height="18" rx="2" fill="#f5f5f5"/>
+    <text x="304" y="190" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">CURVES AWAY</text>
+
+    <rect x="440" y="120" width="16" height="80" rx="2" fill="rgba(22,54,43,0.15)"/>
+    <text x="380" y="288" fill="#4a6357" font-size="15" font-family="'Geist', sans-serif">Misses the model.</text>
+
+    <!-- RIGHT: gyro corrected — focal -->
+    <text x="632" y="64" fill="#16362b" font-size="17" font-weight="600" font-family="'Geist', sans-serif">Degrees plus gyro</text>
+    <text x="632" y="88" fill="#4a6357" font-size="15" font-family="'Geist', sans-serif">Measures the error and steers back, all the way.</text>
+
+    <rect x="632" y="120" width="16" height="80" rx="2" fill="rgba(22,54,43,0.15)"/>
+    <text x="632" y="228" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.08em">START</text>
+
+    <line x1="664" y1="160" x2="1000" y2="160" stroke="rgba(22,54,43,0.20)" stroke-width="1" stroke-dasharray="4,4"/>
+    <path d="M 664 160 Q 720 144 776 160 Q 832 174 888 160 Q 936 150 1016 160"
+          fill="none" stroke="#eb6c36" stroke-width="2" marker-end="url(#d-acc)"/>
+    <rect x="784" y="176" width="152" height="18" rx="2" fill="#f5f5f5"/>
+    <text x="860" y="190" fill="#eb6c36" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">WANDERS, COMES BACK</text>
+
+    <rect x="1000" y="120" width="16" height="80" rx="2" fill="rgba(235,108,54,0.30)"/>
+    <text x="944" y="288" fill="#16362b" font-size="15" font-weight="600" font-family="'Geist', sans-serif">Arrives.</text>
+
+    <line x1="64" y1="336" x2="1056" y2="336" stroke="rgba(22,54,43,0.10)" stroke-width="0.8"/>
+    <text x="64" y="368" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.06em">THE GYRO ROBOT IS NEVER PERFECTLY STRAIGHT EITHER. IT IS NEVER FAR OFF FOR LONG.</text>
+  </svg>
+</section>
+
+<!-- ========================================= 13. THE CORRECTION LOOP -->
+<section class="slide">
+  <p class="eyebrow">Lines 163 to 269 · The clever one</p>
+  <h2><code>drive_cm_gyro</code> is a loop that runs 60 times a second</h2>
+  <p class="lede">
+    This function is longer than the others and it is still only one idea, done
+    over and over until the distance is used up: <strong>look, work out how
+    wrong you are, correct by that much, wait 15 milliseconds.</strong>
+  </p>
+
+  <svg viewBox="0 0 1120 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="loop-title loop-desc">
+    <title id="loop-title">The five steps of the gyro correction loop</title>
+    <desc id="loop-desc">Each pass of the loop checks whether the target distance is reached, reads the gyro error, multiplies that error by kp to get a steering amount, sends the steering to the motors, sleeps 15 milliseconds, and then returns to the start of the loop.</desc>
+    <defs>
+      <marker id="l-tip" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4a6357"/></marker>
+      <marker id="l-acc" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+    </defs>
+
+    <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+    <!-- four boxes in a row -->
+    <rect x="64" y="88" width="216" height="96" rx="6" fill="#ffffff" stroke="rgba(22,54,43,0.30)" stroke-width="1"/>
+    <text x="172" y="126" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Far enough yet?</text>
+    <text x="172" y="152" fill="#4a6357" font-size="14" font-family="'Geist Mono', monospace" text-anchor="middle">traveled &gt;= target</text>
+
+    <line x1="280" y1="136" x2="336" y2="136" stroke="#4a6357" stroke-width="1.2" marker-end="url(#l-tip)"/>
+
+    <rect x="344" y="88" width="216" height="96" rx="6" fill="#ffffff" stroke="rgba(22,54,43,0.30)" stroke-width="1"/>
+    <text x="452" y="126" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">How wrong am I?</text>
+    <text x="452" y="152" fill="#4a6357" font-size="14" font-family="'Geist Mono', monospace" text-anchor="middle">yaw_err = _yaw_deg()</text>
+
+    <line x1="560" y1="136" x2="616" y2="136" stroke="#4a6357" stroke-width="1.2" marker-end="url(#l-tip)"/>
+
+    <!-- the focal step -->
+    <rect x="624" y="88" width="216" height="96" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1.6"/>
+    <text x="732" y="126" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Correct by that much</text>
+    <text x="732" y="152" fill="#eb6c36" font-size="14" font-family="'Geist Mono', monospace" text-anchor="middle">steer = yaw_err &times; kp</text>
+
+    <line x1="840" y1="136" x2="896" y2="136" stroke="#4a6357" stroke-width="1.2" marker-end="url(#l-tip)"/>
+
+    <rect x="904" y="88" width="152" height="96" rx="6" fill="#ffffff" stroke="rgba(22,54,43,0.30)" stroke-width="1"/>
+    <text x="980" y="126" fill="#16362b" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Steer, then</text>
+    <text x="980" y="152" fill="#4a6357" font-size="14" font-family="'Geist Mono', monospace" text-anchor="middle">sleep 15 ms</text>
+
+    <!-- feedback path: down, back, up. Orthogonal segments only. -->
+    <line x1="980" y1="184" x2="980" y2="240" stroke="#4a6357" stroke-width="1.2"/>
+    <line x1="980" y1="240" x2="172" y2="240" stroke="#4a6357" stroke-width="1.2"/>
+    <line x1="172" y1="240" x2="172" y2="184" stroke="#4a6357" stroke-width="1.2" marker-end="url(#l-tip)"/>
+    <rect x="472" y="230" width="216" height="20" rx="2" fill="#f5f5f5"/>
+    <text x="580" y="245" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">AND ROUND AGAIN, ABOUT 60&times;/SEC</text>
+
+    <!-- exit -->
+    <line x1="172" y1="88" x2="172" y2="48" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#l-acc)"/>
+    <rect x="188" y="46" width="176" height="20" rx="2" fill="#f5f5f5"/>
+    <text x="276" y="61" fill="#eb6c36" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">YES &rarr; STOP THE MOTORS</text>
+
+    <line x1="64" y1="304" x2="1056" y2="304" stroke="rgba(22,54,43,0.10)" stroke-width="0.8"/>
+    <text x="64" y="336" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.06em">THE GYRO IS ZEROED AT THE START, SO THE TARGET HEADING IS ALWAYS 0. THE READING IS THE ERROR.</text>
+    <text x="64" y="364" fill="#4a6357" font-size="12" font-family="'Geist Mono', monospace" letter-spacing="0.06em">THIS IS CALLED PROPORTIONAL CONTROL. THE BIGGER THE MISTAKE, THE BIGGER THE FIX.</text>
+  </svg>
+</section>
+
+<!-- ================================== 14. THE LOOP, IN ACTUAL CODE -->
+<section class="slide">
+  <p class="eyebrow">Lines 208 to 264 · The same thing, in the file</p>
+  <h2>Now the real lines are readable</h2>
+
+  <div class="cols">
+    <div>
+      <pre><span class="hl">while True:</span>
+    traveled = _avg_deg()
+    <span class="hl">if</span> traveled &gt;= target_deg:
+        <span class="hl">break</span>
+
+    yaw_now = _yaw_deg()
+    yaw_err = _wrap180(yaw_now)
+
+    <span class="hl">if</span> dir_sign &lt; 0:
+        yaw_err = -yaw_err
+
+    <span class="hl">if</span> abs(yaw_err) &lt;= deadband_deg:
+        raw_steer = 0
+    <span class="hl">else</span>:
+        raw_steer = round(yaw_err * kp)
+        ...
+
+    motor_pair.move(PAIR, steer,
+                    velocity=dir_sign * velocity)
+
+    <span class="hl">await</span> runloop.sleep_ms(15)</pre>
+    </div>
+    <div>
+      <ol class="steps">
+        <li><b>while True:</b> means "keep doing this forever". The only way out is the <code>break</code>.</li>
+        <li><b>_avg_deg()</b> asks both wheels how far they have turned and averages the two.</li>
+        <li><b>break</b> jumps out of the loop the moment the distance is reached.</li>
+        <li><b>yaw_err</b> is how many degrees off straight we are. Because the gyro was zeroed, the reading <em>is</em> the error.</li>
+        <li><b>if dir_sign &lt; 0</b> flips the correction when reversing. Steer left going backwards and you would push further off, not back.</li>
+        <li><b>deadband</b> means "close enough". Under 0.1&deg;, do nothing, so the robot does not twitch constantly.</li>
+        <li><b>sleep_ms(15)</b> waits fifteen thousandths of a second before checking again. That is roughly 60 checks a second.</li>
+      </ol>
+    </div>
+  </div>
+
+  <p class="note">Lines shortened here to fit. Open the file and read the full version alongside this.</p>
+</section>
+
+<!-- ================================================= 15. TUNING KNOBS -->
+<section class="slide">
+  <p class="eyebrow">Lines 163 to 170 · The dials</p>
+  <h2>Five numbers you will spend a whole session tuning</h2>
+  <p class="lede">
+    There is no correct value for these. There is only the value that works on
+    <em>our</em> robot at <em>this</em> speed. Change one at a time, run it five
+    times, write down what happened.
+  </p>
+
+  <table>
+    <thead><tr><th>Setting</th><th>What it does</th><th>Too small</th><th>Too big</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>kp</td>
+        <td>How hard to correct. The error is multiplied by this.</td>
+        <td>Drifts wide and never quite comes back.</td>
+        <td>Weaves left and right past the line, like a snake.</td>
+      </tr>
+      <tr>
+        <td>velocity</td>
+        <td>Driving speed, in degrees per second.</td>
+        <td>Slow. Costs match time.</td>
+        <td>Wheels slip and corrections arrive too late.</td>
+      </tr>
+      <tr>
+        <td>deadband_deg</td>
+        <td>How close counts as straight.</td>
+        <td>Twitches constantly over nothing.</td>
+        <td>Ignores a real error and drifts.</td>
+      </tr>
+      <tr>
+        <td>steer_rate_limit</td>
+        <td>How fast the steering is allowed to change between checks.</td>
+        <td>Jerky. Corrections slam in.</td>
+        <td>Smooth but slow to react.</td>
+      </tr>
+      <tr>
+        <td>steer_limit</td>
+        <td>The biggest correction allowed at all. Never above 100.</td>
+        <td>Cannot recover from a real knock.</td>
+        <td>One bad reading spins the robot.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="lede" style="margin-top:1.5rem; margin-bottom:0">
+    Three combinations from last season are written in a comment above the
+    function: <code>600 / kp 2.8</code>, <code>500 / kp 2.6</code>,
+    <code>400 / kp 3.2</code>. Notice the pattern — slower driving needed a
+    <em>bigger</em> kp.
+  </p>
+
+  <p class="aside">Those numbers came off a different robot with different wheels and a different weight. Start from them, do not trust them.</p>
+</section>
+
+<!-- ================================================= 16. CALIBRATION -->
+<section class="slide">
+  <p class="eyebrow">Lines 79 to 102</p>
+  <h2>When 30 cm is not 30 cm</h2>
+  <p class="lede">
+    Tell it to drive 300 cm and measure what actually happened. It went 319. The
+    tyre squashes, the mat gives slightly, and the maths is a fraction off.
+    Rather than re-do every number in every program, we tell the file
+    <strong>one correction</strong> and it applies everywhere.
+  </p>
+
+  <div class="cols">
+    <div>
+      <pre><span class="hl">def</span> calibrate_wheel_diameter(commanded_cm,
+                             measured_cm):
+    <span class="hl">global</span> CALIBRATION_SCALE
+    <span class="hl">if</span> commanded_cm == 0:
+        <span class="hl">return</span> CALIBRATION_SCALE
+    CALIBRATION_SCALE = measured_cm / commanded_cm
+    <span class="hl">return</span> CALIBRATION_SCALE</pre>
+
+      <div class="sum" style="margin-top:1.25rem">
+        Asked for <b>300</b> cm, it drove <b>319</b> cm<br>
+        &rarr; scale = 319 &divide; 300 = <b>1.063</b><br>
+        &rarr; the file now pretends the wheel is<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;88 &times; 1.063 = <b>93.6 mm</b> across<br>
+        &rarr; bigger wheel &rarr; fewer degrees &rarr; <b>shorter drive</b>
+      </div>
+    </div>
+    <div>
+      <ol class="steps">
+        <li><b>global</b> means "change the real setting at the top of the file, not a private copy". Without that word the correction would be forgotten the instant the function ended.</li>
+        <li><b>The if guard</b> catches divide-by-zero. Nobody calibrates against a commanded distance of zero, but the code should not crash if they do.</li>
+        <li><b>Went too far</b> &rarr; scale above 1 &rarr; next time it drives less.</li>
+        <li><b>Fell short</b> &rarr; scale below 1 &rarr; next time it drives more.</li>
+        <li><b>Every surface is different.</b> Last season's file has one scale for the competition mat and a different one, commented out, for a hardwood floor.</li>
+      </ol>
+    </div>
+  </div>
+
+  <p class="aside">Do this on the real mat, over a long distance. Errors are easier to see over 300 cm than over 30.</p>
+</section>
+
+<!-- ================================================= 17. ATTACHMENTS -->
+<section class="slide">
+  <p class="eyebrow">Lines 349 to 385</p>
+  <h2>Attachments: one motor, on its own</h2>
+  <p class="lede">
+    Driving uses <code>motor_pair</code>, because two wheels must move together.
+    An arm or a lift is a single motor, so it uses <code>motor</code> instead.
+    Same idea, simpler.
+  </p>
+
+  <div class="cols">
+    <div>
+      <pre><span class="hl">async def</span> run_attachment_deg(which_port,
+                             degrees,
+                             velocity=300,
+                             stop_mode=motor.BRAKE):
+    <span class="hl">if degrees &gt; 200:</span>
+        <span class="hl">return</span>
+    <span class="hl">await</span> motor.run_for_degrees(
+        which_port, degrees, velocity, stop=stop_mode)
+
+
+<span class="hl">async def</span> timed_attachment(which_port,
+                           velocity=400,
+                           ms=250,
+                           stop_mode=motor.BRAKE):
+    <span class="hl">await</span> motor.run_for_time(
+        which_port, ms, velocity=velocity, stop=stop_mode)</pre>
+      <p class="note">In a mission: <code>await run_attachment_deg(attachment1, 90)</code></p>
+    </div>
+    <div>
+      <ol class="steps">
+        <li><b>which_port</b> is handed in, so one function drives either attachment motor. Pass <code>attachment1</code> for port C or <code>attachment2</code> for port D.</li>
+        <li><b>run_for_degrees</b> for anything that has a position: lift the arm 90 degrees, and it lifts the same amount every run.</li>
+        <li><b>run_for_time</b> for pushing against something. If the arm is jammed against a model, degrees will never be reached, but 250 milliseconds always ends.</li>
+        <li><b>nudge_cm and micro_turn_deg</b> at the end of the file are tiny 1.5 cm and 3&deg; moves for settling into a model.</li>
+      </ol>
+      <p class="lede" style="font-size:1rem; margin-top:1.25rem; margin-bottom:0">
+        Look hard at that <code>if degrees &gt; 200</code>. We come back to it in
+        two slides.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================== 18. PUT IT TOGETHER -->
+<section class="slide">
+  <p class="eyebrow">Your first program</p>
+  <h2>Everything above, in nine lines</h2>
+  <p class="lede">
+    This is a whole mission program. It uses the toolkit for every move and
+    contains no maths of its own. <strong>That is what a good mission file looks
+    like.</strong>
+  </p>
+
+  <div class="cols">
+    <div>
+      <pre><span class="hl">from</span> library.toolkit <span class="hl">import</span> (
+    init_robot, drive_cm_gyro, turn_deg,
+    run_attachment_deg, attachment1)
+<span class="hl">import</span> runloop
+
+
+<span class="hl">async def</span> run():
+    <span class="hl">await</span> init_robot()            <span class="c"># pair the motors, zero the gyro</span>
+    <span class="hl">await</span> drive_cm_gyro(45)       <span class="c"># out to the model</span>
+    <span class="hl">await</span> turn_deg(90)            <span class="c"># face it</span>
+    <span class="hl">await</span> run_attachment_deg(attachment1, 120)
+    <span class="hl">await</span> drive_cm_gyro(-45)      <span class="c"># straight home</span>
+
+
+runloop.run(run())</pre>
+    </div>
+    <div>
+      <ol class="steps">
+        <li><b>init_robot() first, always.</b> It pairs A and E as one drive unit and zeroes the gyro. Skip it and nothing drives.</li>
+        <li><b>Every line has await.</b> Each move finishes before the next one starts.</li>
+        <li><b>Negative distance reverses.</b> No separate function needed.</li>
+        <li><b>runloop.run(run())</b> at the bottom starts it.</li>
+        <li><b>The comments say why, not what.</b> Anyone can see it drives 45 cm. Only you know it is going to the model.</li>
+      </ol>
+      <p class="lede" style="font-size:1rem; margin-top:1.25rem; margin-bottom:0">
+        One catch: the SPIKE App cannot follow that <code>import</code> when you
+        upload. Before it runs on the hub, paste the whole toolkit above the
+        import line. Annoying, and written up in
+        <code>code/missions/README.md</code>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 19. SPOT THE BUGS -->
+<section class="slide">
+  <p class="eyebrow">The real lesson</p>
+  <h2>This file has bugs in it right now</h2>
+  <p class="lede">
+    Inherited code is not holy. It was written fast, on a deadline, by people
+    like us. Three of these are sitting in the file today, and you can find them
+    by reading. <strong>Reading code carefully beats testing code hopefully.</strong>
+  </p>
+
+  <table>
+    <thead><tr><th>Where</th><th>What is wrong</th><th>What happens to you</th></tr></thead>
+    <tbody>
+      <tr class="flag">
+        <td>turn_deg_gyro<br>line 301</td>
+        <td>It works out <code>turn_rate</code> and then never sends it to the motors. The line that starts them is missing.</td>
+        <td>The robot sits still. The angle never changes, so the loop never reaches its target and the program hangs. Use <code>turn_deg</code> instead until someone fixes it.</td>
+      </tr>
+      <tr>
+        <td>run_attachment_deg<br>line 357</td>
+        <td><code>if degrees &gt; 200: return</code> quietly does nothing at all when you ask for more.</td>
+        <td>You ask for 360 degrees, get silence, and blame the motor. Either raise the limit or make it complain.</td>
+      </tr>
+      <tr>
+        <td>init_robot<br>line 115</td>
+        <td>It takes a <code>default_speed</code> and never uses it.</td>
+        <td>You set <code>init_robot(default_speed=200)</code>, expect a slow robot, and get a fast one.</td>
+      </tr>
+      <tr>
+        <td>the settings block<br>line 35</td>
+        <td>Says the wheel is 88.0 mm. Last season's file header said 87 mm on the line above it.</td>
+        <td>Nobody knows which is right, so measure the actual wheel before trusting any distance.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="aside">Finding one of these and fixing it, with a note saying what you changed and why, is exactly the evidence the Robot Design judges ask for.</p>
+</section>
+
+<!-- ================================================= 20. WHAT TO DO NEXT -->
+<section class="slide">
+  <p class="eyebrow">Your turn</p>
+  <h2>Do these, in this order</h2>
+
+  <ul class="checks">
+    <li><b>Open the file and find five things from this deck.</b> <span>Point at the imports, the settings, <code>_cm_to_deg</code>, the <code>while True</code> loop, and the attachment functions.</span></li>
+    <li><b>Measure our wheel and our track width.</b> <span>Millimetres. Twice, by two people. Then update lines 35 and 36.</span></li>
+    <li><b>Run <code>drive_cm(50)</code> five times and measure where it lands.</b> <span>Write all five numbers down. One run tells you nothing.</span></li>
+    <li><b>Calibrate.</b> <span>Command 300 cm, measure the real distance, and set the scale from those two numbers.</span></li>
+    <li><b>Run <code>drive_cm(50)</code> against <code>drive_cm_gyro(50)</code>.</b> <span>Five runs each. Which one lands in the same place every time?</span></li>
+    <li><b>Tune kp at the speed we will actually drive.</b> <span>One number at a time, five runs, notes after each change.</span></li>
+    <li><b>Fix one of the bugs on the last slide.</b> <span>Then commit it with a message saying what changed and why.</span></li>
+  </ul>
+
+  <p class="aside">You do not need to understand every line to be useful. You need to know where to look, and to trust the measurement over the guess.</p>
+</section>
+
+<footer>
+  BIOGLOW 2026&ndash;27 &middot; Reading the toolkit &middot; Code shown is from
+  <code>code/library/toolkit.py</code>, ported from last season's
+  <code>Library/toolKit.py</code>. Line numbers refer to the 2026 file and will
+  move as it is edited. Arrow keys or space to move between slides.
+</footer>
+
+</body>
+</html>

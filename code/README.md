@@ -14,6 +14,12 @@ code/
   screenshots/        PNG block-stack images from the Word Blocks period
 ```
 
+## New to Python?
+
+Start with [**Reading the toolkit**](library/toolkit-slides.html) — a 20-slide
+walk through `library/toolkit.py` that assumes you have never written a line of
+code. Arrow keys to move between slides.
+
 ## Workflow
 
 1. Design the approach on the mission's page in `robot-game/missions/`.

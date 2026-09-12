@@ -16,7 +16,7 @@ Source for all of it:
 | Document | What it is | Pages | Size | Status |
 | --- | --- | --- | --- | --- |
 | **[Robot Game Rulebook](fll-challenge-bioglow-rgr.pdf)**<br>`fll-challenge-bioglow-rgr.pdf` | The 15 missions, all 25 rules, the glossary. The single most important document of the season. | 20 | 17M | Mined into [Robot Game](../../robot-game/README.md) |
-| **[Challenge Updates](fll-challenge-bioglow-updates.pdf)**<br>`fll-challenge-bioglow-updates.pdf` | Rule changes published after launch, which **supersede the rulebook**. Re-check monthly. | 1 | 152K | None as of 4 Aug 2026 |
+| **[Challenge Updates](fll-challenge-bioglow-updates.pdf)**<br>`fll-challenge-bioglow-updates.pdf` | Rule changes published after launch, which **supersede the rulebook**. Re-check monthly. | 1 | 152K | **Our copy is out of date.** Update 01 of 2 Sep 2026 changes M04 |
 | **[Rubrics](fll-challenge-bioglow-rubrics-color.pdf)**<br>`fll-challenge-bioglow-rubrics-color.pdf` | The two judging rubrics and the written-feedback sheet. Read these out loud with the team. | 3 | 232K | Mined into [Judging](../judging/README.md) |
 | **[Field Setup Reference](fll-challenge-bioglow-field-setup-reference-guide.pdf)**<br>`fll-challenge-bioglow-field-setup-reference-guide.pdf` | One page per mission showing exact model starting positions. Open it on a laptop while setting up. | 17 | 10M | Mined |
 | **[Scoresheet](fll-challenge-bioglow-software-scoresheet.pdf)**<br>`fll-challenge-bioglow-software-scoresheet.pdf` | The referee's actual sheet. Settles every piece count and shows how a match is scored line by line. | 1 | 540K | Mined |
@@ -99,6 +99,23 @@ One person checks on the 1st of each month and logs it here:
 | Date checked | Version | Anything affecting us? | Checked by |
 | --- | --- | --- | --- |
 | 9 Aug 2026 | 4 Aug 2026 | No updates at this time | initial scaffold |
+| 9 Sep 2026 | 2 Sep 2026 | Yes — Update 01 rewrites the M04 constraints | coach |
+
+### Update 01, 2 September 2026 — Lucky Leaves
+
+The leaves are randomized within the nest before the match and teams are not
+told where the katydid starts. To match that, the M04 constraints were relaxed:
+the bonus now survives until the katydid is **completely** outside the leaf
+habitat, and the mission only scores zero if the katydid is **completely**
+outside the habitat at the end. Old and new wording side by side:
+[`robot-game/missions/M04-lucky-leaves.md`](../../robot-game/missions/M04-lucky-leaves.md).
+
+FIRST is reissuing the Scoresheets, the Robot Game Excel Scorer and the Event Hub
+Score Calculator to match.
+
+**To do:** the `fll-challenge-bioglow-updates.pdf` in this folder is still the
+4 August version, which says there are no updates. Download the 2 September
+version from the source link above and replace it, then delete this paragraph.
 
 ## Extracting text from a PDF
 

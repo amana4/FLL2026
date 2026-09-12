@@ -117,9 +117,11 @@ the end.
 **M06 and M14 are worth 40 each**, more than they look, because they are per-item
 across four pieces.
 
-**M04 can score zero.** If the katydid ends up outside the leaf habitat, even
-partly, the whole mission scores nothing. And the referee randomises the katydid
+**M04 can score zero.** If the katydid ends up completely outside the leaf
+habitat, the whole mission scores nothing. And the referee randomises the katydid
 and leaf positions at the start of every match, so a fixed program cannot solve it.
+Challenge Update 01 (2 September 2026) relaxed both constraints — see
+[M04](M04-lucky-leaves.md) for the current wording.
 
 **M07 needs your opponent.** Up to two connections, 10 each, so up to 20 added.
 Both teams earn it if both fully extend. Mention it to your match partner before

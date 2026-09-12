@@ -8,6 +8,14 @@ every 2026 mission program builds on: `init_robot`, `drive_cm`,
 Ported from last season's `Library/toolKit.py` — see `code/2025-reference/`
 (not published to this site) for where it came from and what changed.
 
+## Never read Python before?
+
+[**Reading the toolkit**](toolkit-slides.html) is a 20-slide walk through this
+file, assuming you have never written a line of code. It covers imports, the
+settings block, why the motor only understands degrees, `async`/`await`, the
+gyro correction loop, calibration, and the three bugs sitting in the file right
+now. Arrow keys to move between slides; it prints one slide per page.
+
 ## Before trusting any of it on the 2026 robot
 
 The robot configuration block at the top of `toolkit.py` — port assignments,
