@@ -6,13 +6,14 @@ about **biodiversity** — the huge web of living things, and how it is in troub
 **Read this as a website:** <https://amana4.github.io/FLL2026/> — it searches,
 and it works on a phone at the practice table.
 
-## The three you will use most
+## The links you will use most
 
 <div class="actions" markdown="1">
 
 | | |
 | --- | --- |
-| **[Bee Field Log](innovation-project/field-log.html)** | Count bees on your phone, out in the garden. Works with no signal. Export a spreadsheet when you get home |
+| **[Bee Field Log](innovation-project/field-log.html)** | Count bees on your phone, out in the garden. Works with no signal. Send it to the team sheet when you get home |
+| **[The counts so far](innovation-project/bee-data.md)** | Every count we have done, and whether the gardens are getting better |
 | **[Rules and official PDFs](docs/official-materials/README.md)** | Everything FIRST published: the rulebook, the rubrics, the scoresheet, the Challenge Updates |
 | **[The code](https://github.com/amana4/FLL2026)** | The GitHub repository. Every file on this website lives there, and that is where changes get made |
 
@@ -31,6 +32,7 @@ lessons you can run in the page, with no hub needed.
 | **Find out what's on at the next meeting** | [All 26 meetings](docs/meeting-plan.md) |
 | Read the actual rules | [Rules and official PDFs](docs/official-materials/README.md) |
 | Count bees in the garden | [Field protocol](innovation-project/field-protocol.md) and the [field log](innovation-project/field-log.html) |
+| See how the bee counts are going | [The counts so far](innovation-project/bee-data.md) |
 | Work on a mission | [The 15 missions](robot-game/missions/README.md) |
 | Change the robot's code | [Code](code/README.md) |
 | Practise a mission without the robot | [Simulated missions](code/learn/14-simulated-missions.md) |

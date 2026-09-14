@@ -196,6 +196,10 @@ together. Decide who, before the first count.
 
 Once the CSVs are out, the numbers go into [`research.md`](research.md).
 
+Everything sent to the team sheet also shows up on
+[**the counts so far**](bee-data.md), within a minute. That page is public,
+so it deliberately leaves out garden locations and plant names.
+
 ## The schedule that makes this an experiment
 
 1. **Count before you change anything.** At least three counts on different days,

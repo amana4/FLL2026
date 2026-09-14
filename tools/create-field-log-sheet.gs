@@ -170,9 +170,101 @@ function _photoFolder(props) {
 }
 
 
-/** A GET is only ever somebody checking the URL works. */
+/**
+ * A GET returns a summary of the counts so far, for the public bee-data page.
+ *
+ * Deliberately a SUMMARY and not the rows. Garden locations, plant names and
+ * descriptions are never sent, because this endpoint is readable by anyone who
+ * has the address and the address is in a public page. What goes out is: the
+ * count date, how many wild bee groups were seen, how many wild visitors, how
+ * many honeybees, and the first names of whoever counted.
+ *
+ * First names are already public through the after-class notes form, by the
+ * decision of 15 August 2026. Garden locations are not, and must not become so.
+ */
 function doGet() {
-  return _json({ ok: true, message: 'Bee field log endpoint. POST to it.' });
+  try {
+    var id = PropertiesService.getScriptProperties().getProperty('SHEET_ID');
+    if (!id) { return _json({ ok: false, error: 'not set up yet' }); }
+
+    var sheet = SpreadsheetApp.openById(id).getSheetByName(SHEET_NAME);
+    var last = sheet.getLastRow();
+    if (last < 2) { return _json({ ok: true, sessions: [], totals: _emptyTotals() }); }
+
+    var values = sheet.getRange(2, 1, last - 1, HEADERS.length).getValues();
+    var col = {};
+    HEADERS.forEach(function (h, i) { col[h] = i; });
+
+    var byDate = {};
+    values.forEach(function (row) {
+      var date = _dateKey(row[col.date]);
+      if (!date) { return; }
+      if (!byDate[date]) {
+        byDate[date] = { date: date, groups: {}, wild: 0, honeybees: 0, who: {} };
+      }
+      var s = byDate[date];
+      var n = Number(row[col.count]) || 0;
+      var type = String(row[col.visitor_type] || '');
+      var group = String(row[col.bee_group] || '').trim();
+
+      // Honeybees are counted but kept out of the diversity total, because they
+      // are kept livestock. See innovation-project/field-protocol.md.
+      if (type === 'Honey Bee') {
+        s.honeybees += n;
+      } else {
+        s.wild += n;
+        if (group) { s.groups[group] = true; }
+      }
+      var who = String(row[col.observer] || '').trim();
+      if (who) { s.who[who] = true; }
+    });
+
+    var sessions = Object.keys(byDate).sort().map(function (d) {
+      var s = byDate[d];
+      return {
+        date: d,
+        groups: Object.keys(s.groups).length,
+        wild: s.wild,
+        honeybees: s.honeybees,
+        who: Object.keys(s.who).sort()
+      };
+    });
+
+    var allGroups = {};
+    values.forEach(function (row) {
+      if (String(row[col.visitor_type] || '') === 'Honey Bee') { return; }
+      var g = String(row[col.bee_group] || '').trim();
+      if (g) { allGroups[g] = true; }
+    });
+
+    return _json({
+      ok: true,
+      sessions: sessions,
+      totals: {
+        sessions: sessions.length,
+        groups: Object.keys(allGroups).length,
+        wild: sessions.reduce(function (a, s) { return a + s.wild; }, 0),
+        honeybees: sessions.reduce(function (a, s) { return a + s.honeybees; }, 0)
+      }
+    });
+  } catch (err) {
+    return _json({ ok: false, error: String(err) });
+  }
+}
+
+
+function _emptyTotals() {
+  return { sessions: 0, groups: 0, wild: 0, honeybees: 0 };
+}
+
+
+/** Sheet dates arrive as Date objects or as text. Normalise to YYYY-MM-DD. */
+function _dateKey(value) {
+  if (!value) { return ''; }
+  if (Object.prototype.toString.call(value) === '[object Date]') {
+    return Utilities.formatDate(value, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+  }
+  return String(value).trim();
 }
 
 

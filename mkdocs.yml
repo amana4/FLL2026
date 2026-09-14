@@ -88,6 +88,8 @@ extra_javascript:
   # the first Run, not on page load, so pages that have no Run button cost
   # nothing. See tools/spike-sim.js.
   - tools/spike-sim.js
+  # The counts-so-far page. Exits immediately on every other page.
+  - tools/bee-data.js
 
 copyright: >
   Team materials are ours. FIRST&reg;, LEGO&reg;, FIRST&reg; LEGO&reg; League and
@@ -286,6 +288,7 @@ nav:
       - The problem we picked: innovation-project/problem.md
       - Our solution: innovation-project/solution.md
       - How to count bees (print this): innovation-project/field-protocol.md
+      - The counts so far: innovation-project/bee-data.md
       - Emailing experts: innovation-project/expert-outreach.md
       - What we found out: innovation-project/research.md
       - Showing it to people: innovation-project/sharing.md
