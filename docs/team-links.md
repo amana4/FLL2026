@@ -51,6 +51,9 @@ Fill these in as they exist.
 | After-class notes form (what the kids fill in) | <https://docs.google.com/forms/d/e/1FAIpQLSdZLffhEKDjB5kv6IGmUgxbquTiqsvH47d2jKIVPAcYK1TXQg/viewform> |
 | After-class notes form — edit the questions | <https://docs.google.com/forms/d/1FrGEAl5az6Peacy8POCYNkS58cCG2dghD_3KPgBLSX8/edit> |
 | After-class notes responses (Google Sheets) | <https://docs.google.com/spreadsheets/d/1-IdeSZyUmC_o6YaDYDrApmv3IxJiKFbuYZR3TlXOy34/edit> |
+| **Bee field log data** (Google Sheets) | _paste the SHEET URL the script printed_ |
+| **Bee field log photos** (Drive folder, private) | _paste the PHOTO FOLDER URL_ |
+| Bee field log — edit the script | <https://script.google.com> — the project is called "Bee data collector" |
 | Team fund spreadsheet (Google Sheets) | _paste once imported_ |
 | WhatsApp group | _optional_ |
 | Team website (public) | <https://amana4.github.io/FLL2026/> |
@@ -71,6 +74,25 @@ gitignore this file so the link never leaves your machine.
 The **form** link is not a secret; it is embedded on the public website by design.
 The **edit** link is safe as long as the form's sharing stays restricted, which is
 the same caveat as the Drive folder above.
+
+## The bee field log
+
+The [field log](../innovation-project/field-log.html) is a page on the public
+website, and the address it posts to is in its source. That is unavoidable: a tool
+kids use on a phone in a garden cannot ask them to sign in.
+
+What that address can do is append rows. It cannot read the sheet, list anything,
+or touch a photo already in Drive. So the worst case is junk rows you can see and
+delete.
+
+**Both the sheet and the photo folder must stay Restricted.** The sheet carries
+first names, and a garden photo can catch somebody in the background. Share them
+person by person. Never "Anyone with the link" — this repository is public, so that
+setting would publish children's photos.
+
+If somebody ever does spam the sheet, the fix is Apps Script > Deploy > Manage
+deployments > Archive, then make a new deployment. The address changes, the old
+one stops working, and you paste the new one into `field-log.html`.
 
 ## Official FIRST links
 

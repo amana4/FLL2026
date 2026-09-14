@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14231C">
+<title>Operation Pollination — Field Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..700&family=Spline+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14231C; --paper:#E9ECDF; --card:#F7F8F1;
+    --sage:#7C8C6A; --sage-d:#4C5C42; --pollen:#E8A317;
+    --rust:#B4462F; --rule:rgba(20,35,28,.16);
+    --ok:#4C7A3F;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:'Spline Sans',system-ui,-apple-system,sans-serif;
+    font-weight:350;line-height:1.5;font-size:16px;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 14px 120px}
+
+  /* header */
+  header{
+    background:var(--ink);color:var(--card);
+    padding:22px 14px 18px;margin-bottom:18px;
+    border-bottom:5px solid var(--pollen);
+  }
+  header .inner{max-width:640px;margin:0 auto}
+  .eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--pollen)}
+  header h1{font-family:'Fraunces',serif;font-weight:600;font-size:30px;
+    line-height:1.02;margin:6px 0 4px;letter-spacing:-.01em}
+  header p{margin:0;font-size:13px;color:#B7C6B2}
+  header p.privacy{margin-top:7px;font-family:'Space Mono',monospace;font-size:10px;
+    letter-spacing:.07em;color:var(--pollen)}
+
+  /* cards */
+  section{
+    background:var(--card);border:1px solid rgba(20,35,28,.28);
+    box-shadow:2px 3px 0 rgba(20,35,28,.12);
+    margin:0 0 16px;
+  }
+  .sh{
+    padding:13px 15px;border-bottom:1px dashed var(--rule);
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    cursor:pointer;user-select:none;
+  }
+  .sh h2{font-family:'Fraunces',serif;font-size:19px;font-weight:600;margin:0}
+  .sh .chev{font-family:'Space Mono',monospace;font-size:12px;color:var(--sage-d)}
+  .sb{padding:14px 15px 16px}
+  .sb.hide{display:none}
+
+  label{display:block;font-family:'Space Mono',monospace;font-size:10px;
+    letter-spacing:.13em;text-transform:uppercase;color:var(--sage-d);
+    font-weight:700;margin:0 0 5px}
+  input[type=text],input[type=date],input[type=time],input[type=number],textarea,select{
+    width:100%;padding:11px 12px;font-size:16px;font-family:inherit;
+    border:1.5px solid rgba(20,35,28,.3);border-radius:5px;background:#fff;color:var(--ink);
+  }
+  textarea{min-height:62px;resize:vertical}
+  .row{display:grid;gap:12px;margin-bottom:13px}
+  .row.two{grid-template-columns:1fr 1fr}
+  .row.three{grid-template-columns:1fr 1fr 1fr}
+  .fld{margin-bottom:13px}
+
+  /* chip pickers */
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{
+    font-size:14px;padding:9px 12px;border-radius:999px;cursor:pointer;
+    border:1.5px solid rgba(20,35,28,.3);background:#fff;color:var(--ink);
+    font-family:inherit;line-height:1.2;
+  }
+  .chip:active{transform:scale(.97)}
+  .chip.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+  .chip.on.bee{background:var(--sage-d);border-color:var(--sage-d)}
+  .chip.on.hb{background:var(--rust);border-color:var(--rust)}
+
+  /* buttons */
+  button.act{
+    width:100%;padding:15px;font-size:16px;font-weight:600;font-family:inherit;
+    border:none;border-radius:6px;background:var(--ink);color:var(--card);cursor:pointer;
+  }
+  button.act.amber{background:var(--pollen);color:var(--ink)}
+  button.act:disabled{opacity:.42}
+  button.mini{
+    padding:8px 12px;font-size:13px;font-family:inherit;border-radius:5px;
+    border:1.5px solid rgba(20,35,28,.3);background:#fff;color:var(--ink);cursor:pointer;
+  }
+  button.mini.danger{border-color:var(--rust);color:var(--rust)}
+
+  /* weather verdict */
+  .verdict{padding:12px 14px;border-radius:6px;font-size:14px;margin-top:4px;line-height:1.45}
+  .verdict.good{background:rgba(76,122,63,.14);border-left:5px solid var(--ok)}
+  .verdict.bad{background:rgba(180,70,47,.12);border-left:5px solid var(--rust)}
+  .verdict b{display:block;font-family:'Space Mono',monospace;font-size:10px;
+    letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
+
+  /* photo */
+  .photobox{
+    border:2px dashed rgba(20,35,28,.32);border-radius:7px;padding:20px 14px;
+    text-align:center;background:#fff;cursor:pointer;
+  }
+  .photobox span{font-size:14px;color:var(--sage-d)}
+  .photobox img{max-width:100%;max-height:210px;border-radius:5px;display:block;margin:0 auto}
+  input[type=file]{display:none}
+
+  /* records */
+  .rec{
+    border:1px solid rgba(20,35,28,.22);border-radius:6px;background:#fff;
+    padding:12px 13px;margin-bottom:10px;
+  }
+  .rec .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+  .rec .id{font-family:'Space Mono',monospace;font-size:10.5px;color:var(--sage-d)}
+  .rec .what{font-family:'Fraunces',serif;font-size:17px;font-weight:600;margin:2px 0 3px}
+  .rec .meta{font-size:13px;color:#4A5A50}
+  .rec .cnt{
+    font-family:'Fraunces',serif;font-size:26px;font-weight:700;color:var(--pollen);
+    line-height:1;flex:none;
+  }
+  .rec .btns{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+  .rec img.thumb{width:56px;height:56px;object-fit:cover;border-radius:4px;flex:none}
+  .rec .sent{color:var(--ok);font-weight:700}
+
+  .empty{text-align:center;padding:26px 12px;color:var(--sage-d);font-size:14px}
+  .tally{
+    display:flex;gap:14px;flex-wrap:wrap;padding:12px 15px;
+    background:rgba(124,140,106,.16);border-top:1px solid var(--ink);
+  }
+  .tally div{font-size:13px}
+  .tally b{font-family:'Fraunces',serif;font-size:21px;display:block;line-height:1.1}
+
+  /* ID reference */
+  .idrow{border-bottom:1px solid var(--rule);padding:10px 0}
+  .idrow:last-child{border:none}
+  .idrow h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 3px;font-weight:600}
+  .idrow p{margin:0;font-size:13.5px;color:#42524A;line-height:1.45}
+  .idrow .code{font-family:'Space Mono',monospace;font-size:10.5px;color:var(--pollen);
+    background:var(--ink);padding:1px 6px;border-radius:3px;margin-left:5px}
+
+  .hint{font-size:12.5px;color:var(--sage-d);margin:5px 0 0;line-height:1.4}
+  footer{text-align:center;font-family:'Space Mono',monospace;font-size:10.5px;
+    color:var(--sage-d);padding:8px 0 0;line-height:1.8}
+
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;background:var(--ink);
+    padding:11px 14px calc(11px + env(safe-area-inset-bottom));
+    display:flex;gap:10px;align-items:center;justify-content:center;z-index:50;
+  }
+  .bar .t{font-family:'Space Mono',monospace;color:var(--pollen);font-size:18px;font-weight:700}
+  .bar .lbl{font-family:'Space Mono',monospace;color:#9FB58F;font-size:10px;
+    letter-spacing:.12em;text-transform:uppercase}
+  .bar button{padding:9px 14px;font-size:13.5px;font-family:inherit;border:none;
+    border-radius:5px;background:var(--pollen);color:var(--ink);font-weight:600;cursor:pointer}
+  .bar button.ghost{background:transparent;color:var(--card);border:1.5px solid #4C5C42}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="inner">
+    <div class="eyebrow">Operation Pollination · FLL 2026</div>
+    <h1>Bee Field Log</h1>
+    <p>Xerces California community-science protocol</p>
+    <p class="privacy">Saves on this phone. First names only. Sending to the team sheet is a button you press.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ============ SESSION ============ -->
+  <section id="secSession">
+    <div class="sh" onclick="tog('bSession',this)">
+      <h2>1 · Today's session</h2><div class="chev">HIDE</div>
+    </div>
+    <div class="sb" id="bSession">
+      <div class="row two">
+        <div><label>Site name</label><input type="text" id="site" placeholder="e.g. Crest Canyon"></div>
+        <div><label>Date</label><input type="date" id="date"></div>
+      </div>
+      <div class="row two">
+        <div><label>Observer</label><input type="text" id="observer" placeholder="first name only" autocomplete="off"></div>
+        <div><label>Recorder</label><input type="text" id="recorder" placeholder="first name only" autocomplete="off"></div>
+      </div>
+      <div class="fld">
+        <label>Transect length (feet)</label>
+        <input type="number" id="transect" placeholder="e.g. 250" oninput="calcDur()">
+        <p class="hint" id="durHint">Sample duration = length ÷ 10. A 250 ft transect is watched for 25 minutes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WEATHER ============ -->
+  <section id="secWx">
+    <div class="sh" onclick="tog('bWx',this)">
+      <h2>2 · Weather check</h2><div class="chev">HIDE</div>
+    </div>
+    <div class="sb" id="bWx">
+      <div class="row three">
+        <div><label>Shade temp °F</label><input type="number" id="temp" oninput="wx()" placeholder="72"></div>
+        <div><label>Wind mph</label><input type="number" id="wind" oninput="wx()" placeholder="3"></div>
+        <div><label>Start time</label><input type="time" id="tStart"></div>
+      </div>
+      <div class="fld">
+        <label>Sky</label>
+        <div class="chips" id="skyChips"></div>
+      </div>
+      <div id="wxVerdict"></div>
+      <p class="hint">Protocol: at least 70&nbsp;°F, wind under 5.6&nbsp;mph, and enough sun to see your shadow. Do not sample in overcast, rain, or wind.</p>
+    </div>
+  </section>
+
+  <!-- ============ NEW OBSERVATION ============ -->
+  <section id="secObs">
+    <div class="sh" onclick="tog('bObs',this)">
+      <h2>3 · Add an observation</h2><div class="chev">HIDE</div>
+    </div>
+    <div class="sb" id="bObs">
+
+      <div class="fld">
+        <label>What kind of visitor?</label>
+        <div class="chips" id="typeChips"></div>
+      </div>
+
+      <div class="fld" id="beeWrap" style="display:none">
+        <label>Which bee group?</label>
+        <div class="chips" id="beeChips"></div>
+        <p class="hint">Only pick a group you are sure of. If unsure, choose <b>Not a honey bee</b> and describe it below — that is still good data.</p>
+      </div>
+
+      <div class="fld" id="subWrap" style="display:none">
+        <label id="subLabel">Which kind?</label>
+        <div class="chips" id="subChips"></div>
+      </div>
+
+      <div class="row two">
+        <div><label>How many?</label><input type="number" id="count" value="1" min="1"></div>
+        <div><label>Time seen</label><input type="time" id="seenAt"></div>
+      </div>
+
+      <div class="fld">
+        <label>Plant it was visiting</label>
+        <input type="text" id="plant" placeholder="e.g. California buckwheat">
+      </div>
+
+      <div class="fld">
+        <label>Description — what did you notice?</label>
+        <textarea id="desc" placeholder="size, colour, stripes, where the pollen was, how it flew"></textarea>
+      </div>
+
+      <div class="fld">
+        <label>Photo</label>
+        <div class="photobox" id="pbox" onclick="document.getElementById('photo').click()">
+          <span id="pboxText">Tap to take a photo</span>
+        </div>
+        <input type="file" id="photo" accept="image/*" capture="environment" onchange="loadPhoto(this)">
+        <p class="hint">Photos stay on this device. Save each one after adding the record so the filename matches.</p>
+      </div>
+
+      <button class="act amber" onclick="addRec()">Add to today's log</button>
+    </div>
+  </section>
+
+  <!-- ============ LOG ============ -->
+  <section id="secLog">
+    <div class="sh" onclick="tog('bLog',this)">
+      <h2>4 · Today's log</h2><div class="chev">HIDE</div>
+    </div>
+    <div class="tally" id="tally"></div>
+    <div class="sb" id="bLog">
+      <div id="recs"></div>
+      <div class="row two" style="margin-top:14px">
+        <button class="mini" onclick="exportCSV()">Download CSV</button>
+        <button class="mini" id="btnSend" onclick="sendToSheet()">Send to team sheet</button>
+        <button class="mini danger" onclick="clearAll()">Clear all records</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ID HELP ============ -->
+  <section id="secID">
+    <div class="sh" onclick="tog('bID',this)">
+      <h2>5 · Quick ID help</h2><div class="chev">SHOW</div>
+    </div>
+    <div class="sb hide" id="bID">
+      <div class="idrow">
+        <h3>Bee or not a bee?</h3>
+        <p>Bees have four wings, long elbowed antennae, rounder bodies, and carry visible pollen loads. <b>Flies</b> have two wings, short thick antennae, big eyes at the front, and hover. <b>Wasps</b> look tougher, are barely hairy, and their stripes are on the shell, not made of hairs.</p>
+      </div>
+      <div class="idrow"><h3>Honey bee<span class="code">HB</span></h3>
+        <p>Medium to large, orange-brown to nearly black, striped abdomen, flat plates on hind legs carrying moist clumps of pollen. Flies methodically flower to flower. <b>Telling honey bees from everything else is the single most important call you make.</b></p></div>
+      <div class="idrow"><h3>Bumble bee<span class="code">BUMBLE</span></h3>
+        <p>Medium to very large, robust and entirely fuzzy, black with yellow stripes. Low buzzing sound. Note the face colour and abdomen tip.</p></div>
+      <div class="idrow"><h3>Large carpenter bee<span class="code">CARPENTER</span></h3>
+        <p>Very large and shiny — like a bumble bee that lost its hair. Usually black or dark blue; males can be golden brown. Often territorial near your head.</p></div>
+      <div class="idrow"><h3>Hairy leg bee<span class="code">HLB</span></h3>
+        <p>Medium to large, short velvety hair especially on the thorax, dry pollen often all over the body. Fast, smooth figure-eight flight. Males can have very long antennae.</p></div>
+      <div class="idrow"><h3>Green sweat bee<span class="code">GSB</span></h3>
+        <p>Medium, metallic green, narrow body, fast flier. Pollen on the hind legs.</p></div>
+      <div class="idrow"><h3>Striped sweat bee<span class="code">SSB</span></h3>
+        <p>Small to medium, narrow, looks black with faint creamy or grey stripes. Often crawls inside flowers. Jagged fast movements.</p></div>
+      <div class="idrow"><h3>Small dark bee<span class="code">SDB</span></h3>
+        <p>Small and narrow. Black, metallic grey-green, blue or brown. Faint stripes if any. Crawls deep into flowers, may swarm near them.</p></div>
+      <div class="idrow"><h3>Striped hairy belly bee<span class="code">SHBB</span></h3>
+        <p>Black with white or silvery hairs and brushes of hair <b>under</b> the abdomen. Often lifts its abdomen at flowers, showing the pollen underneath.</p></div>
+      <div class="idrow"><h3>Metallic hairy belly bee<span class="code">MHBB</span></h3>
+        <p>Small to medium, stout and round, bright metallic blue or green. Pollen brushes under the abdomen, no bold hair bands.</p></div>
+      <div class="idrow"><h3>Cuckoo bee<span class="code">CUCKOO</span></h3>
+        <p>Barely hairy, wasp-like markings made of short thick hairs. Red or black legs. Carries no pollen at all — it lays eggs in other bees' nests.</p></div>
+      <div class="idrow"><h3>Only count real visits</h3>
+        <p>Record an insect only if it is on the reproductive parts of a flower — collecting pollen or nectar. Skip anything resting on petals, leaves or stems, or just flying past. Walk so your shadow trails behind you.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    Data format follows the Xerces Society California community-science<br>
+    pollinator monitoring datasheet · Records stay on this device
+  </footer>
+</div>
+
+<div class="bar">
+  <div style="text-align:center">
+    <div class="lbl">Timer</div>
+    <div class="t" id="clock">--:--</div>
+  </div>
+  <button id="btnTimer" onclick="toggleTimer()">Start</button>
+  <button class="ghost" onclick="resetTimer()">Reset</button>
+</div>
+
+<script>
+/* ---------------- data model ---------------- */
+const SKY = ["Clear","Partly cloudy","Bright overcast","Overcast"];
+const TYPES = ["Honey Bee","Other Bee","Fly","Wasp","Moth/Butterfly","Beetle","Bug","Spider","Ant","Bird","Other","UFI"];
+const BEES = [
+  {k:"Not a honey bee (unsure)", c:"OTHERBEE", sub:null},
+  {k:"Bumble Bee", c:"BUMBLE", sub:["Black face","Yellow face","Orange tip","Four stripes","Yellow body"]},
+  {k:"Large Carpenter Bee", c:"CARPENTER", sub:null},
+  {k:"Hairy Leg Bee", c:"HLB", sub:null},
+  {k:"Green Sweat Bee", c:"GSB", sub:null},
+  {k:"Striped Sweat Bee", c:"SSB", sub:["Small","Medium"]},
+  {k:"Small Dark Bee", c:"SDB", sub:["Rounded tip","Shield tip","Yellow face / wasp-like"]},
+  {k:"Striped Hairy Belly Bee", c:"SHBB", sub:["Small","Medium"]},
+  {k:"Metallic Hairy Belly Bee", c:"MHBB", sub:["Blue / black","Green"]},
+  {k:"Cuckoo Bee", c:"CUCKOO", sub:["Red abdomen","Small","Large"]}
+];
+
+let sel = {type:null, bee:null, sub:null, sky:null};
+let photoData = null;
+let recs = [];
+
+/* ---------------- storage (degrades safely) ---------------- */
+function save(){
+  try{
+    localStorage.setItem("op_recs", JSON.stringify(recs));
+    localStorage.setItem("op_sess", JSON.stringify(sess()));
+  }catch(e){
+    // Out of space, or private browsing. Records still work for this session,
+    // but they will not survive a reload — so say so rather than losing them
+    // quietly, which is how a whole morning's counting disappears.
+    alert("This phone will not save any more records.\n\n"
+        + "Everything you have entered is still on screen. Press Export CSV now, "
+        + "before closing or reloading this page.");
+  }
+}
+function sess(){
+  return {site:v("site"),date:v("date"),observer:v("observer"),recorder:v("recorder"),
+          transect:v("transect"),temp:v("temp"),wind:v("wind"),tStart:v("tStart"),sky:sel.sky};
+}
+function restore(){
+  try{
+    const r = localStorage.getItem("op_recs");
+    if(r) recs = JSON.parse(r);
+    const s = localStorage.getItem("op_sess");
+    if(s){
+      const o = JSON.parse(s);
+      ["site","date","observer","recorder","transect","temp","wind","tStart"].forEach(k=>{
+        if(o[k]) document.getElementById(k).value = o[k];
+      });
+      if(o.sky) sel.sky = o.sky;
+    }
+  }catch(e){}
+}
+
+/* ---------------- helpers ---------------- */
+function v(id){ return document.getElementById(id).value; }
+function tog(id, hdr){
+  const el = document.getElementById(id);
+  el.classList.toggle("hide");
+  hdr.querySelector(".chev").textContent = el.classList.contains("hide") ? "SHOW" : "HIDE";
+}
+function esc(s){ return String(s||"").replace(/[<>&"]/g, c=>({ "<":"&lt;", ">":"&gt;", "&":"&amp;", '"':"&quot;" }[c])); }
+
+/* ---------------- chip builders ---------------- */
+function buildChips(){
+  const sc = document.getElementById("skyChips");
+  sc.innerHTML = "";
+  SKY.forEach(s=>{
+    const b = document.createElement("button");
+    b.className = "chip" + (sel.sky===s?" on":"");
+    b.textContent = s;
+    b.onclick = ()=>{ sel.sky = s; buildChips(); wx(); save(); };
+    sc.appendChild(b);
+  });
+
+  const tc = document.getElementById("typeChips");
+  tc.innerHTML = "";
+  TYPES.forEach(t=>{
+    const b = document.createElement("button");
+    let cls = "chip";
+    if(sel.type===t) cls += t==="Honey Bee" ? " on hb" : (t==="Other Bee" ? " on bee" : " on");
+    b.className = cls;
+    b.textContent = t;
+    b.onclick = ()=>{
+      sel.type = t; sel.bee = null; sel.sub = null;
+      document.getElementById("beeWrap").style.display = (t==="Other Bee") ? "block" : "none";
+      document.getElementById("subWrap").style.display = "none";
+      buildChips();
+    };
+    tc.appendChild(b);
+  });
+
+  const bc = document.getElementById("beeChips");
+  bc.innerHTML = "";
+  BEES.forEach(g=>{
+    const b = document.createElement("button");
+    b.className = "chip" + (sel.bee===g.c?" on bee":"");
+    b.textContent = g.k;
+    b.onclick = ()=>{
+      sel.bee = g.c; sel.sub = null;
+      const sw = document.getElementById("subWrap");
+      if(g.sub){
+        sw.style.display = "block";
+        document.getElementById("subLabel").textContent = "Which " + g.k.toLowerCase() + "?";
+        const cc = document.getElementById("subChips");
+        cc.innerHTML = "";
+        g.sub.forEach(s=>{
+          const x = document.createElement("button");
+          x.className = "chip";
+          x.textContent = s;
+          x.onclick = ()=>{
+            sel.sub = s;
+            [...cc.children].forEach(n=>n.className="chip");
+            x.className = "chip on bee";
+          };
+          cc.appendChild(x);
+        });
+      } else { sw.style.display = "none"; }
+      buildChips();
+    };
+    bc.appendChild(b);
+  });
+}
+
+/* ---------------- weather verdict ---------------- */
+function wx(){
+  const t = parseFloat(v("temp")), w = parseFloat(v("wind"));
+  const box = document.getElementById("wxVerdict");
+  if(isNaN(t) && isNaN(w) && !sel.sky){ box.innerHTML=""; return; }
+  const bad = [];
+  if(!isNaN(t) && t < 70) bad.push("too cold — needs 70 °F or warmer");
+  if(!isNaN(w) && w > 5.6) bad.push("too windy — needs under 5.6 mph");
+  if(sel.sky === "Overcast") bad.push("too overcast — you need to see your shadow");
+  if(bad.length){
+    box.innerHTML = '<div class="verdict bad"><b>Conditions are off protocol</b>' +
+      esc(bad.join(". ")) + '. Bees will be scarce and the count will not compare fairly to other days. Note it, or come back later.</div>';
+  } else {
+    box.innerHTML = '<div class="verdict good"><b>Good to sample</b>Conditions meet the protocol. Start your timer and walk the transect at about 10 feet per minute.</div>';
+  }
+  save();
+}
+function calcDur(){
+  const f = parseFloat(v("transect"));
+  const h = document.getElementById("durHint");
+  if(isNaN(f) || f<=0){ h.textContent = "Sample duration = length ÷ 10. A 250 ft transect is watched for 25 minutes."; return; }
+  const m = Math.round(f/10);
+  h.innerHTML = "<b>Sample for " + m + " minutes.</b> Keep this the same on every visit so the days can be compared.";
+  save();
+}
+
+/* ---------------- photo ---------------- */
+function loadPhoto(inp){
+  const f = inp.files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = e=>{
+    // Shrink before keeping it. A phone photo is 2-5 MB, and as base64 in
+    // localStorage two of them fill the whole 5 MB budget. At 900 px and
+    // quality 0.6 a shot is around 100 KB, which is plenty to identify a bee.
+    const img = new Image();
+    img.onload = ()=>{
+      const MAX = 900;
+      const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width * scale);
+      c.height = Math.round(img.height * scale);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      photoData = c.toDataURL("image/jpeg", 0.6);
+      document.getElementById("pbox").innerHTML = '<img src="'+photoData+'" alt="preview">';
+    };
+    img.onerror = ()=>{
+      photoData = e.target.result;
+      document.getElementById("pbox").innerHTML = '<img src="'+photoData+'" alt="preview">';
+    };
+    img.src = e.target.result;
+  };
+  r.readAsDataURL(f);
+}
+
+/* ---------------- records ---------------- */
+function addRec(){
+  if(!sel.type){ alert("Pick what kind of visitor you saw first."); return; }
+  const n = recs.length + 1;
+  const id = "OP-" + (v("date") || "nodate") + "-" + String(n).padStart(3,"0");
+  let label = sel.type;
+  if(sel.type === "Other Bee" && sel.bee){
+    const g = BEES.find(b=>b.c===sel.bee);
+    label = g.k + (sel.sub ? " · " + sel.sub : "");
+  }
+  recs.push({
+    id, type: sel.type, group: sel.bee||"", sub: sel.sub||"", label,
+    count: parseInt(v("count"))||1, seenAt: v("seenAt"),
+    plant: v("plant"), desc: v("desc"), photo: photoData
+  });
+  // reset the entry form, keep the session
+  sel.bee = null; sel.sub = null; sel.type = null;
+  photoData = null;
+  document.getElementById("pbox").innerHTML = '<span id="pboxText">Tap to take a photo</span>';
+  document.getElementById("photo").value = "";
+  document.getElementById("count").value = 1;
+  document.getElementById("plant").value = "";
+  document.getElementById("desc").value = "";
+  document.getElementById("beeWrap").style.display = "none";
+  document.getElementById("subWrap").style.display = "none";
+  buildChips(); render(); save();
+  window.scrollTo({ top: document.getElementById("secLog").offsetTop - 10, behavior: "smooth" });
+}
+
+function delRec(i){ if(confirm("Delete this record?")){ recs.splice(i,1); render(); save(); } }
+
+function savePhoto(i){
+  const r = recs[i];
+  if(!r.photo){ alert("No photo on this record."); return; }
+  const a = document.createElement("a");
+  a.href = r.photo;
+  a.download = r.id + ".jpg";
+  a.click();
+}
+
+function render(){
+  const box = document.getElementById("recs");
+  if(!recs.length){
+    box.innerHTML = '<div class="empty">No observations yet.<br>Add your first one above.</div>';
+  } else {
+    box.innerHTML = recs.map((r,i)=>{
+      const thumb = r.photo ? '<img class="thumb" src="'+r.photo+'" alt="">' : '';
+      const meta = [r.plant ? "on " + esc(r.plant) : "", r.seenAt ? esc(r.seenAt) : ""].filter(Boolean).join(" · ");
+      const sent = r.sent ? ' <span class="sent">sent</span>' : '';
+      return '<div class="rec"><div class="top">' + thumb +
+        '<div style="flex:1"><div class="id">'+esc(r.id)+sent+'</div>' +
+        '<div class="what">'+esc(r.label)+'</div>' +
+        (meta ? '<div class="meta">'+meta+'</div>' : '') +
+        (r.desc ? '<div class="meta">'+esc(r.desc)+'</div>' : '') +
+        '</div><div class="cnt">'+r.count+'</div></div>' +
+        '<div class="btns">' +
+        (r.photo ? '<button class="mini" onclick="savePhoto('+i+')">Save photo</button>' : '') +
+        '<button class="mini danger" onclick="delRec('+i+')">Delete</button></div></div>';
+    }).join("");
+  }
+  const tot = recs.reduce((a,r)=>a+r.count,0);
+  const hb = recs.filter(r=>r.type==="Honey Bee").reduce((a,r)=>a+r.count,0);
+  const nb = recs.filter(r=>r.type==="Other Bee").reduce((a,r)=>a+r.count,0);
+  const groups = new Set(recs.filter(r=>r.group).map(r=>r.group)).size;
+  document.getElementById("tally").innerHTML =
+    '<div><b>'+tot+'</b>visitors</div><div><b>'+hb+'</b>honey bees</div>' +
+    '<div><b>'+nb+'</b>native bees</div><div><b>'+groups+'</b>bee groups</div>';
+}
+
+/* ---------------- team sheet ----------------
+   Sends the day's records to the coach's Google Sheet, through the Apps Script
+   web app in tools/create-field-log-sheet.gs. Read that file to set it up.
+
+   Offline first, on purpose. Everything already works with no signal; this is a
+   separate button you press once you are back on wifi. Records that have gone up
+   are marked, so pressing it twice does not duplicate them.
+
+   Photos go too. Apps Script puts each one in a private Drive folder and writes
+   a link into the sheet's photo column. They are sent a few at a time, because a
+   phone on weak wifi will drop one big request but usually manages small ones. */
+
+var SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzN1qofXvcJOX7y-qUzxDJB1lgY5naMWkbngvGzgnuoGZ0CATdVVWf-ek0Pw2P5B04M/exec";
+
+function unsent(){
+  return recs.filter(function(r){ return !r.sent; });
+}
+
+var SEND_BATCH = 4;   // records per request, so no one request carries much
+
+function sendToSheet(){
+  if(!SHEET_ENDPOINT){
+    alert("No team sheet is set up yet.\n\n"
+        + "A grown-up needs to follow tools/create-field-log-sheet.gs and paste "
+        + "the web app address into this page. Use Download CSV for now.");
+    return;
+  }
+  var pending = unsent();
+  if(!pending.length){
+    alert(recs.length ? "Everything here has already been sent."
+                      : "Nothing to send yet.");
+    return;
+  }
+
+  var batches = [];
+  for(var i = 0; i < pending.length; i += SEND_BATCH){
+    batches.push(pending.slice(i, i + SEND_BATCH));
+  }
+
+  var btn = document.getElementById("btnSend");
+  btn.disabled = true;
+  var done = 0, photos = 0;
+
+  function step(n){
+    if(n >= batches.length){
+      btn.disabled = false;
+      btn.textContent = "Send to team sheet";
+      alert("Sent " + done + " records to the team sheet"
+          + (photos ? ", with " + photos + " photos." : "."));
+      return;
+    }
+    btn.textContent = "Sending " + (done + 1) + " of " + pending.length + "...";
+
+    // text/plain keeps this a "simple" request, so the browser does not send a
+    // preflight that Apps Script would not answer.
+    fetch(SHEET_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ session: sess(), records: batches[n] })
+    })
+    .then(function(res){ return res.json(); })
+    .then(function(out){
+      if(!out || !out.ok){ throw new Error(out && out.error ? out.error : "refused"); }
+      // Mark this batch before starting the next, so a failure halfway through
+      // does not lose what already arrived, and does not resend it either.
+      batches[n].forEach(function(r){ r.sent = true; });
+      done += out.saved;
+      photos += (out.photos || 0);
+      save();
+      render();
+      step(n + 1);
+    })
+    .catch(function(err){
+      btn.disabled = false;
+      btn.textContent = "Send to team sheet";
+      save();
+      render();
+      alert((done ? done + " records got through, then it stopped.\n\n" : "Could not send.\n\n")
+          + err.message + "\n\n"
+          + "Nothing was lost. Press it again on better wifi, and press Download "
+          + "CSV so you have a copy either way.");
+    });
+  }
+  step(0);
+}
+
+/* ---------------- export ---------------- */
+function exportCSV(){
+  if(!recs.length){ alert("Nothing to export yet."); return; }
+  const s = sess();
+  const head = ["record_id","site","date","observer","recorder","transect_ft","start_temp_F","start_wind_mph","sky",
+                "time_seen","visitor_type","bee_group","bee_subgroup","label","count","plant","description","has_photo"];
+  const rows = recs.map(r=>[r.id,s.site,s.date,s.observer,s.recorder,s.transect,s.temp,s.wind,s.sky||"",
+    r.seenAt,r.type,r.group,r.sub,r.label,r.count,r.plant,r.desc,r.photo?"yes":"no"]);
+  const csv = [head, ...rows].map(row =>
+    row.map(c => '"' + String(c==null?"":c).replace(/"/g,'""') + '"').join(",")
+  ).join("\r\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"}));
+  a.download = "bee-log-" + (s.date||"session") + ".csv";
+  a.click();
+}
+function clearAll(){
+  var waiting = unsent().length;
+  if(waiting && !confirm(waiting + " records have not been sent to the team sheet.\n\n"
+      + "Download the CSV first if you want to keep them. Clear anyway?")){ return; }
+  if(confirm("Delete every record in today's log? Export the CSV first if you need it.")){
+    recs = []; render(); save();
+  }
+}
+
+/* ---------------- timer ---------------- */
+let secs = 0, tick = null;
+function toggleTimer(){
+  const b = document.getElementById("btnTimer");
+  if(tick){ clearInterval(tick); tick = null; b.textContent = "Start"; }
+  else {
+    const f = parseFloat(v("transect"));
+    if(secs === 0 && !isNaN(f) && f>0) secs = Math.round(f/10)*60;
+    if(secs === 0) secs = 25*60;
+    tick = setInterval(()=>{
+      secs--; showClock();
+      if(secs<=0){ clearInterval(tick); tick=null; b.textContent="Start";
+        document.getElementById("clock").textContent="DONE";
+        try{ navigator.vibrate && navigator.vibrate([300,120,300]); }catch(e){}
+      }
+    },1000);
+    b.textContent = "Pause";
+  }
+  showClock();
+}
+function resetTimer(){
+  if(tick){ clearInterval(tick); tick=null; }
+  document.getElementById("btnTimer").textContent = "Start";
+  secs = 0; showClock();
+}
+function showClock(){
+  const el = document.getElementById("clock");
+  if(secs<=0 && !tick){ el.textContent = "--:--"; return; }
+  const m = Math.floor(secs/60), s = secs%60;
+  el.textContent = m + ":" + String(s).padStart(2,"0");
+}
+
+/* ---------------- init ---------------- */
+(function init(){
+  const d = new Date();
+  document.getElementById("date").value = d.toISOString().slice(0,10);
+  document.getElementById("seenAt").value = d.toTimeString().slice(0,5);
+  document.getElementById("tStart").value = d.toTimeString().slice(0,5);
+  restore();
+  buildChips(); render(); calcDur(); wx(); showClock();
+  ["site","date","observer","recorder","temp","wind","tStart"].forEach(id=>{
+    document.getElementById(id).addEventListener("change", save);
+  });
+})();
+</script>
+</body>
+</html>

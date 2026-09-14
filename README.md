@@ -6,6 +6,21 @@ about **biodiversity** — the huge web of living things, and how it is in troub
 **Read this as a website:** <https://amana4.github.io/FLL2026/> — it searches,
 and it works on a phone at the practice table.
 
+## The three you will use most
+
+<div class="actions" markdown="1">
+
+| | |
+| --- | --- |
+| **[Bee Field Log](innovation-project/field-log.html)** | Count bees on your phone, out in the garden. Works with no signal. Export a spreadsheet when you get home |
+| **[Rules and official PDFs](docs/official-materials/README.md)** | Everything FIRST published: the rulebook, the rubrics, the scoresheet, the Challenge Updates |
+| **[The code](https://github.com/amana4/FLL2026)** | The GitHub repository. Every file on this website lives there, and that is where changes get made |
+
+</div>
+
+New to Python? [**Learn Python with our robot**](code/learn/README.md) — fourteen
+lessons you can run in the page, with no hub needed.
+
 ## What do you want to do?
 
 <div class="actions" markdown="1">
@@ -15,8 +30,10 @@ and it works on a phone at the practice table.
 | **Write down what we did today** | [Write today's notes](docs/after-class-notes.md) |
 | **Find out what's on at the next meeting** | [All 26 meetings](docs/meeting-plan.md) |
 | Read the actual rules | [Rules and official PDFs](docs/official-materials/README.md) |
+| Count bees in the garden | [Field protocol](innovation-project/field-protocol.md) and the [field log](innovation-project/field-log.html) |
 | Work on a mission | [The 15 missions](robot-game/missions/README.md) |
 | Change the robot's code | [Code](code/README.md) |
+| Practise a mission without the robot | [Simulated missions](code/learn/14-simulated-missions.md) |
 | Work on our Innovation Project | [Innovation Project](innovation-project/README.md) |
 | Fix a robot that has stopped working | [When something breaks](robot-design/troubleshooting.md) |
 | Look up a word I don't know | [Glossary](docs/glossary.md) |

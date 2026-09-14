@@ -2,6 +2,10 @@
 
 Print this. Take it outside with you.
 
+Or use the [**Bee Field Log**](field-log.html) on a phone, which does the same job
+with a timer built in and exports a spreadsheet at the end. Paper still works when
+the battery does not, so take both the first few times.
+
 The whole project depends on every count being done **the same way**. If one
 person watches for ten minutes on a hot morning and someone else watches for five
 minutes on a cool evening, the two numbers cannot be compared and the experiment
@@ -108,6 +112,89 @@ Copy this per count.
 | **Number of different piles (wild bees only)** | |
 | Honeybees seen (recorded separately) | |
 | Not-sure photos | |
+
+## The Bee Field Log app
+
+[**Open the field log**](field-log.html) — works on a phone, and works with no
+signal once the page has loaded.
+
+It walks through the same five steps as this sheet: session details, weather
+check, one card per observation, the running tally, and quick ID help. There is a
+ten-minute timer so nobody has to watch a clock.
+
+| Thing | How it behaves |
+| --- | --- |
+| Where the data lives | In the browser on that phone, until you send it |
+| Names | **First name only**, for observer and recorder |
+| Getting the data out | **Download CSV**, or **Send to team sheet** |
+| Photos | Shrunk to about 100 KB, kept with the record, and sent to a private Drive folder |
+| Clearing it | **Clear all**, which warns you about anything not yet sent |
+
+Precisely, it is browser **localStorage**, under two keys: `op_recs` for the
+observations and `op_sess` for the session details. That storage belongs to one
+website address on one browser on one phone. So:
+
+- A different phone has a different log.
+- Safari and Chrome on the same phone have different logs.
+- The copy you test at `127.0.0.1` is not the copy on the real website.
+- Private or incognito browsing throws it away when you close the tab.
+
+There is about 5 MB of room in total. Photos are shrunk on the way in to protect
+that, and if it ever does fill up the log says so and tells you to export, rather
+than quietly failing to save.
+
+### Sending it to the team sheet
+
+**Send to team sheet** puts every record into one Google Sheet the coach owns, so
+five phones in five gardens end up as one table.
+
+It is deliberately a button, not automatic. The log works with no signal, and
+uploading is what you do when you get back to wifi. Records that have gone up are
+marked `sent`, so pressing it twice does not duplicate anything.
+
+**Photos go too.** Each one lands in a Drive folder and the sheet's photo column
+gets a link to it. Click the link to see the bee.
+
+That folder is **private on purpose**. A garden photo can catch somebody in the
+background, and pictures of children stay off anything public. Share the folder by
+hand with whoever needs it. Making it public would let the sheet show thumbnails
+in the cells, which is nicer to look at and not worth it.
+
+Records go up four at a time. A phone on weak wifi drops one big request but
+usually manages small ones, and if it stops halfway the records that arrived are
+marked sent. Press it again and it picks up where it left off.
+
+This follows the same idea as the
+[after-class notes](../docs/after-class-notes.md): the coach owns the data, the
+kids need no login, and the setup lives in the repo as a script rather than as
+clicks somebody has to remember.
+
+**It needs setting up once**, by a grown-up, before the button does anything. The
+instructions are at the top of
+[`tools/create-field-log-sheet.gs`](https://github.com/amana4/FLL2026/blob/main/tools/create-field-log-sheet.gs).
+Roughly: run the script to make the sheet and the photo folder, deploy it as a web
+app, paste the address into `field-log.html`. Until that is done the button says so
+and points you at Download CSV.
+
+**Export before you clear, and export the same day.** Browser storage is not a
+backup, and neither is a button you have not pressed yet. The CSV is the copy that
+is definitely yours.
+
+Two people, two jobs: one watches and calls it out, one types. The log has a field
+for each, because the Robot Design and Core Values rubrics both reward being able
+to say who did what.
+
+### Two things to know before you rely on it
+
+**Open the page before you leave the house.** Once loaded it runs with no signal,
+but it cannot load itself from nothing. The only thing it fetches is the fonts, so
+on a weak signal it will look plain and work fine.
+
+**Each phone keeps its own separate log.** There is no shared pile. If three people
+count in three gardens, that is three CSV files, and somebody has to put them
+together. Decide who, before the first count.
+
+Once the CSVs are out, the numbers go into [`research.md`](research.md).
 
 ## The schedule that makes this an experiment
 
