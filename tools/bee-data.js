@@ -78,7 +78,9 @@
   function chart(sessions) {
     var W = 760, H = 260, padL = 34, padR = 12, padT = 26, padB = 44;
     var plotW = W - padL - padR, plotH = H - padT - padB;
-    var max = Math.max(4, Math.apply(null, sessions.map(function (s) { return s.groups; })));
+    var max = sessions.reduce(function (m, s) {
+      return Math.max(m, s.groups);
+    }, 4);
     var step = plotW / sessions.length;
     var bw = Math.min(56, Math.max(10, step - 14));
 
@@ -197,14 +199,23 @@
     fetch(ENDPOINT, { method: "GET" })
       .then(function (r) { return r.json(); })
       .then(function (data) {
-        if (!data || !data.ok) { throw new Error(data && data.error ? data.error : "no data"); }
+        if (!data) { throw new Error("no answer from the sheet"); }
+        if (!data.ok) { throw new Error(data.error || "the sheet refused"); }
+        // An older deployment answers {ok:true, message:"..."} with no data in
+        // it. Saving the Apps Script does not change what the deployed URL
+        // runs, so this is the most likely thing to be wrong, and it is worth
+        // naming rather than letting it crash on a missing property.
+        if (!data.totals || !data.sessions) {
+          throw new Error("the script needs redeploying — Deploy, Manage "
+            + "deployments, pencil, Version: New version");
+        }
         render(mount, data);
       })
       .catch(function (err) {
         mount.textContent = "";
         var p = el("p", "viz-note",
-          "Could not load the counts (" + err.message + "). "
-          + "The data is still safe in the team sheet. Try reloading.");
+          "Could not load the counts: " + err.message + ". "
+          + "Nothing is lost — the data is in the team sheet.");
         mount.appendChild(p);
       });
   }
