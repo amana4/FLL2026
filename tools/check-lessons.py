@@ -32,6 +32,7 @@ warnings.filterwarnings("ignore", message="coroutine .* was never awaited")
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHIM = os.path.join(REPO, "tools", "spike-shim.py")
+MISSIONS = os.path.join(REPO, "tools", "spike-missions.py")
 TOOLKIT = os.path.join(REPO, "code", "library", "toolkit.py")
 LESSONS = os.path.join(REPO, "code", "learn")
 
@@ -69,24 +70,35 @@ def collect(path):
     return blocks
 
 
-def load_shim():
-    with open(SHIM, encoding="utf-8") as fh:
+def _as_module(name, path):
+    """Run a file and hand it back as a module, the way the website's loader does."""
+    with open(path, encoding="utf-8") as fh:
         src = fh.read()
-    ns = {"__name__": "spike_shim"}
-    exec(compile(src, SHIM, "exec"), ns)
-    # The lessons import nothing, but the toolkit does `import runloop` and so
-    # on, which the shim has just registered in sys.modules.
-    sys.modules["spike_shim"] = type(sys)("spike_shim")
+    ns = {"__name__": name}
+    exec(compile(src, path, "exec"), ns)
+    module = type(sys)(name)
     for key, value in ns.items():
-        setattr(sys.modules["spike_shim"], key, value)
-    return ns
+        setattr(module, key, value)
+    sys.modules[name] = module
+    return module
 
 
-async def run_block(shim, toolkit_src, source):
+def load_shim():
+    # The shim registers the pretend hub modules in sys.modules as it runs, which
+    # is what lets the toolkit's `import runloop` work. The mission models attach
+    # to it afterwards, exactly as tools/spike-sim.js does in the browser.
+    shim = _as_module("spike_shim", SHIM)
+    missions = _as_module("spike_missions", MISSIONS)
+    field = missions.install(shim)
+    return shim, field
+
+
+async def run_block(shim, field, toolkit_src, source):
     ns = {"__name__": "__main__"}
     exec(compile(toolkit_src, "toolkit.py", "exec"), ns)
     ns["sim"] = sys.modules["sim"]
-    shim["begin_run"]()
+    ns["field"] = field
+    shim.begin_run()
 
     # CPython has no top-level await, so wrap the block in a coroutine. Comments
     # and blank lines survive the indent untouched.
@@ -94,7 +106,8 @@ async def run_block(shim, toolkit_src, source):
     wrapper = "async def __block():\n" + body + "\n    pass\n"
     exec(compile(wrapper, "<lesson>", "exec"), ns)
     await ns["__block"]()
-    await shim["drain"]()
+    await shim.drain()
+    shim.end_run()
 
 
 def main(argv):
@@ -107,10 +120,10 @@ def main(argv):
             if name.endswith(".md")
         )
 
-    shim = load_shim()
+    shim, field = load_shim()
     # Keep the same limit the website uses, so a block that passes here is a
     # block a student can actually sit through.
-    shim["TIME_LIMIT_S"] = 20.0
+    shim.TIME_LIMIT_S = 20.0
     with open(TOOLKIT, encoding="utf-8") as fh:
         toolkit_src = fh.read()
 
@@ -128,14 +141,15 @@ def main(argv):
             wants_error = source.lstrip().startswith(EXPECT_ERROR)
             # Reset the physical robot between blocks, or one lesson's tampering
             # leaks into the next.
-            shim["sim"].set_true_wheel_diameter(62.4)
-            shim["sim"].set_true_track_width(130.0)
-            shim["sim"].set_drift(0.0)
+            shim.sim.set_true_wheel_diameter(62.4)
+            shim.sim.set_true_track_width(130.0)
+            shim.sim.set_drift(0.0)
+            field.reset(seed=1)
 
             stdout = sys.stdout
             sys.stdout = open(os.devnull, "w")
             try:
-                asyncio.run(run_block(shim, toolkit_src, source))
+                asyncio.run(run_block(shim, field, toolkit_src, source))
                 raised = None
             except Exception as exc:  # noqa: BLE001 - a lesson may raise anything
                 raised = exc

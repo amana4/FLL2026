@@ -29,20 +29,24 @@ Open [`code/library/toolkit.py`](../library/toolkit.py) and look at the first 40
 lines. Nothing there moves a robot. It is all names for numbers.
 
 ```python
-LEFT_DRIVE = port.F
-RIGHT_DRIVE = port.A
+LEFT_DRIVE = port.A
+RIGHT_DRIVE = port.B
 
 left_color = port.E
 right_color = port.F
 
-attachment1 = port.C
+attachment1 = port.C          # left attachment
+attachment2 = port.D          # right attachment
 
 WHEEL_D_MM = 62.4
 TRACK_W_MM = 130
 ```
 
-Why bother? Because if the wiring changes, you edit one line instead of hunting
-through the whole file. Everything downstream says `LEFT_DRIVE`, not `port.F`.
+Six sockets, six things, one each. That is the whole wiring diagram.
+
+Why bother naming them? Because if the wiring changes, you edit one line instead of
+hunting through the whole file. Everything downstream says `LEFT_DRIVE`, not
+`port.A`.
 
 ## Why `init_robot` matters
 
@@ -89,18 +93,63 @@ Lesson 6 is entirely about those two numbers.
 
 ## Find the problem
 
-Everything above is real. So is this. Look at the setup block again:
+Everything above is real. So is this, and it is a bug we actually found and fixed.
+
+Until 13 September 2026 the setup block read like this:
 
 ```python
 LEFT_DRIVE = port.F     # the left driving wheel
+RIGHT_DRIVE = port.A    # the right driving wheel
+
+left_color = port.E
 right_color = port.F    # the right colour sensor
+#attachment2 = port.E   # commented out
 ```
 
-Both are on port F. A socket holds one plug. One of those two lines is wrong, and
-the code cannot tell you which, because nothing in the file uses `right_color`
-yet — so nothing has ever failed.
+Two sockets claimed twice. **F** held the left drive motor and the right colour
+sensor. **E** held the left colour sensor and, the moment anybody uncommented that
+line, the second attachment motor. Meanwhile B and D sat empty.
 
-It gets worse. The comment at the very top of the file says:
+A socket holds one plug. So the file was describing a robot that cannot exist.
+
+### It was worse than a clash
+
+Somebody then read the port letters off the hub. The real wiring is:
+
+| Socket | What is plugged in | The old file said |
+| --- | --- | --- |
+| A | left drive motor | right drive motor |
+| B | right drive motor | nothing |
+| C | left attachment motor | first attachment motor |
+| D | right attachment motor | nothing |
+| E | left colour sensor | left colour sensor |
+| F | right colour sensor | left drive motor **and** right colour sensor |
+
+Read the A and F rows again. The old file paired **port F** as a drive motor, and
+port F is a colour sensor. It also called port A the *right* drive when it is the
+*left* one.
+
+So `init_robot` was asking the hub to pair a colour sensor with a motor, and to
+treat the left wheel as the right one. That does not drive slightly wrong. That
+does not drive.
+
+??? question "How did nobody notice?"
+
+    Almost certainly because the working version lived on the hub and never came
+    back to the repo. The Team Meeting Guide is blunt about this:
+
+    > "After a program is downloaded on to the controller, it cannot be transferred
+    > back to be opened and edited."
+
+    So somebody fixed the ports in the app, the robot drove, and the file in git
+    kept the old numbers. See [`code/spike-lessons.md`](../spike-lessons.md).
+
+    **The hub is not a backup.** This is what that costs: a file that looks
+    authoritative and is not.
+
+### The comment was half right
+
+The header at the top of the file used to say:
 
 ```python
 # Drive: A (left), E (right)
@@ -108,26 +157,19 @@ It gets worse. The comment at the very top of the file says:
 # Track width: 143 mm (center-to-center distance between wheels)
 ```
 
-Three claims, and the code below disagrees with all three. The code says left is
-F and right is A. It says the wheels are 62.4 mm and the track is 130 mm.
+"A (left)" turned out to be **correct**, and the code below it was wrong. "E
+(right)" is wrong — B is the right drive.
 
-??? question "Which one do you believe, the comment or the code?"
+So the comment was not simply stale. It was a fossil of an older, partly correct
+wiring, and it disagreed with the code in both directions.
 
-    The code. The robot only ever runs the code. A comment cannot be wrong in a
-    way that breaks a run, which is exactly why it drifts out of date without
-    anybody noticing.
+The wheel and track numbers are **still unsettled**. The comment says 87 mm and
+143 mm, the code says 62.4 mm and 130 mm, and nobody has put calipers on the robot.
+[Lesson 6](06-numbers.md) shows exactly what a wrong wheel diameter costs.
 
-    So the comment is stale, and the safe reading is that somebody rebuilt the
-    chassis, remeasured the wheels, updated the numbers and never came back to
-    the comment at the top.
-
-    Two jobs come out of this:
-
-    1. Check the real robot. Which ports are the drive motors actually in? Is the
-       colour sensor in E, F, or somewhere else? Measure the wheel and the track
-       width. Then make the file say that.
-    2. Fix or delete the comment. A comment that lies is worse than no comment,
-       because it is trusted.
+- [ ] Measure the wheel diameter
+- [ ] Measure the track width, wheel centre to wheel centre
+- [ ] Make the file say that, and fix the header
 
 **Do this with the real robot in front of you, at a meeting.** It is a fifteen
 minute job and it protects every distance the robot ever drives.
@@ -135,8 +177,8 @@ minute job and it protects every distance the robot ever drives.
 ## Your turn
 
 Print a line for every port the toolkit names, in the form
-`port 0 right drive motor`. There are five names to cover: `LEFT_DRIVE`,
-`RIGHT_DRIVE`, `left_color`, `right_color` and `attachment1`.
+`port 0 left drive motor`. There are six names to cover: `LEFT_DRIVE`,
+`RIGHT_DRIVE`, `attachment1`, `attachment2`, `left_color` and `right_color`.
 
 <div class="spike-run" data-view="none" markdown="1">
 
@@ -149,15 +191,17 @@ Print a line for every port the toolkit names, in the form
 ??? question "Show one answer"
 
     ```python
-    print("port", RIGHT_DRIVE, "right drive motor")
     print("port", LEFT_DRIVE, "left drive motor")
-    print("port", attachment1, "attachment motor")
+    print("port", RIGHT_DRIVE, "right drive motor")
+    print("port", attachment1, "left attachment motor")
+    print("port", attachment2, "right attachment motor")
     print("port", left_color, "left colour sensor")
     print("port", right_color, "right colour sensor")
     ```
 
-    Printing the numbers side by side makes the clash on port 5 obvious, which is
-    a fair reason to write the little program rather than read the file.
+    Six lines, and the numbers should come out 0 to 5 with no repeats. Printing
+    them side by side is how the clash on port 5 was spotted in the first place,
+    which is a fair reason to write the little program rather than read the file.
 
 ## Words from this lesson
 

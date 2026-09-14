@@ -1,7 +1,13 @@
 # Team Toolkit – Single File (SPIKE App 3.5)
-# Drive: A (left), E (right)
-# Wheels: 87 mm diameter
-# Track width: 143 mm (center-to-center distance between wheels)
+#
+# Wiring, confirmed against the hub on 13 September 2026:
+#   A  left drive motor        D  right attachment motor
+#   B  right drive motor       E  left colour sensor
+#   C  left attachment motor   F  right colour sensor
+#
+# Wheel diameter and track width below are NOT confirmed. This header used to
+# claim 87 mm and 143 mm while the code said 62.4 mm and 130 mm. Measure both and
+# fix them: code/learn/06-numbers.md explains what they change.
 
 from hub import port, motion_sensor
 import runloop
@@ -15,16 +21,16 @@ from math import pi
 PAIR = motor_pair.PAIR_1
 
 # Main Drive motors
-LEFT_DRIVE= port.F
-RIGHT_DRIVE = port.A
+LEFT_DRIVE = port.A
+RIGHT_DRIVE = port.B
 
 # Downward color sensors
 left_color = port.E
 right_color = port.F
 
 # Attachment/Tool motors
-attachment1 = port.C
-#attachment2 = port.E
+attachment1 = port.C          # left attachment
+attachment2 = port.D          # right attachment
 
 # Wheel and robot dimensions
 #WHEEL_D_MM= 63.7 # 55.0 # 88.0    # wheel diameter

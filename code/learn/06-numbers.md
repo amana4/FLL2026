@@ -51,7 +51,8 @@ print("which is          ", round(pi * WHEEL_D_MM / 10, 2), "cm")
 </div>
 
 So one wheel rotation moves the robot 19.6 cm. That is a useful number to hold in
-your head. Half the mat is six rotations.
+your head. The mat is 200 cm across, so crossing half of it is about five
+rotations.
 
 **Three.** How many rotations do we need? Distance divided by circumference. The
 `* 10.0` is there because the distance came in as centimetres and the wheel is

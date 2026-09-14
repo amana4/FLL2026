@@ -32,10 +32,23 @@
   var SCRIPT_URL = document.currentScript ? document.currentScript.src : "";
   var SITE_ROOT = SCRIPT_URL ? new URL("../", SCRIPT_URL).href : "/";
 
-  var MAT_W_CM = 236.2;
+  // Mat and robot geometry, all in centimetres. These are measured numbers, not
+  // guesses — see robot-game/field-positions.md for where each one comes from.
+  // The mat is 200 cm wide, not the 236 cm the table's inside width suggests.
+  var MAT_W_CM = 200.0;
   var MAT_H_CM = 114.3;
+  var CELL_CM = 20; // the official wireframe: columns A-J, rows 1-6
+  var HOME_R_CM = 48; // both home areas, quarter-circles on the bottom corners
   var ROBOT_L_CM = 18;
-  var ROBOT_W_CM = 15;
+  var ROBOT_W_CM = 18;
+
+  // The three lines printed on the mat, for line following and squaring up.
+  // Bounding boxes measured off the wireframe grid.
+  var MAT_LINES = [
+    { x: 59.9, y: 87.7, w: 30.4, h: 9.6 },
+    { x: 149.8, y: 89.1, w: 36.1, h: 11.1 },
+    { x: 97.5, y: 36.2, w: 8.3, h: 12.9 }
+  ];
 
   // ---------------------------------------------------------------------
   // The shared interpreter
@@ -68,16 +81,20 @@
   // The Python side of the harness. Loads the shim, keeps the toolkit source,
   // and gives JavaScript one function to call per run.
   var DRIVER = [
-    "import sys",
+    "import sys, json",
     "from pyodide.code import eval_code_async",
     "",
     "_shim = sys.modules['spike_shim']",
+    "_missions = sys.modules['spike_missions']",
+    "_field = _missions.install(_shim)",
     "_shim.set_push(_spike_push)",
+    "_missions.FIELD.on_change = lambda state: _spike_models(json.dumps(state))",
     "",
     "async def _spike_run(user_code):",
     "    ns = {'__name__': '__main__'}",
     "    exec(compile(_SPIKE_TOOLKIT_SRC, 'toolkit.py', 'exec'), ns)",
     "    ns['sim'] = sys.modules['sim']",
+    "    ns['field'] = _field",
     "    _shim.begin_run()",
     "    try:",
     "        await eval_code_async(user_code, globals=ns)",
@@ -87,7 +104,7 @@
     "        print('[stopped] %s' % stop)",
     "    finally:",
     "        _shim.ROBOT._stop_drive()",
-    "        _shim.push()",
+    "        _shim.end_run()",
     ""
   ].join("\n");
 
@@ -121,23 +138,32 @@
           onStatus("Loading the pretend robot.");
           return Promise.all([
             fetchText(SITE_ROOT + "tools/spike-shim.py"),
+            fetchText(SITE_ROOT + "tools/spike-missions.py"),
             fetchText(SITE_ROOT + "code/library/toolkit.py")
           ]);
         })
         .then(function (sources) {
           var shimSrc = sources[0];
-          var toolkitSrc = sources[1];
+          var missionsSrc = sources[1];
+          var toolkitSrc = sources[2];
 
           // The shim registers the pretend hub modules in sys.modules when it
-          // runs, so it has to run before the toolkit imports them.
+          // runs, so it has to run before the toolkit imports them. The mission
+          // models attach to the shim, so they come second.
           pyodide.FS.writeFile("/spike_shim.py", shimSrc, { encoding: "utf8" });
+          pyodide.FS.writeFile("/spike_missions.py", missionsSrc, { encoding: "utf8" });
           pyodide.runPython("import sys; sys.path.insert(0, '/')");
-          pyodide.runPython("import spike_shim");
+          pyodide.runPython("import spike_shim, spike_missions");
 
           pyodide.globals.set("_SPIKE_TOOLKIT_SRC", toolkitSrc);
           pyodide.globals.set("_spike_push", function (x, y, heading, yaw, offMat) {
             if (active) {
               active.push(x, y, heading, yaw, offMat);
+            }
+          });
+          pyodide.globals.set("_spike_models", function (json) {
+            if (active) {
+              active.setModels(json);
             }
           });
           pyodide.runPython(DRIVER);
@@ -196,6 +222,7 @@
     this.host = host;
     this.showView = host.getAttribute("data-view") !== "none";
     this.trail = [];
+    this.models = [];
     this.pose = { x: 30, y: 20, heading: 0, yaw: 0, offMat: false };
     this.running = false;
     this.build();
@@ -369,6 +396,16 @@
     this.updateReadout();
   };
 
+  Block.prototype.setModels = function (json) {
+    try {
+      this.models = JSON.parse(json);
+    } catch (e) {
+      this.models = [];
+    }
+    this.draw();
+    this.updateReadout();
+  };
+
   Block.prototype.push = function (x, y, heading, yaw, offMat) {
     this.pose = { x: x, y: y, heading: heading, yaw: yaw, offMat: !!offMat };
     var last = this.trail[this.trail.length - 1];
@@ -479,6 +516,15 @@
       "heading " + p.heading.toFixed(1) + " deg",
       "gyro " + p.yaw.toFixed(1) + " deg"
     ];
+    if (this.models && this.models.length) {
+      var got = 0;
+      var most = 0;
+      for (var i = 0; i < this.models.length; i++) {
+        got += this.models[i].points;
+        most += this.models[i].max;
+      }
+      parts.push("score " + got + "/" + most);
+    }
     this.readout.textContent = parts.join("   ");
     if (p.offMat) {
       var warn = document.createElement("strong");
@@ -520,40 +566,59 @@
     ctx.fillStyle = c.mat;
     ctx.fillRect(ox, oy, matW, matH);
 
+    // The official wireframe: 20 cm cells, columns A to J, rows 1 to 6. Row 6 is
+    // a short band, because six 20 cm rows would be 120 cm on a 114.3 cm mat.
     ctx.strokeStyle = c.grid;
     ctx.lineWidth = 1;
     ctx.beginPath();
-    for (var gx = 0; gx <= MAT_W_CM; gx += 10) {
+    for (var gx = 0; gx <= MAT_W_CM + 0.1; gx += CELL_CM) {
       ctx.moveTo(px(gx), py(0));
       ctx.lineTo(px(gx), py(MAT_H_CM));
     }
-    for (var gy = 0; gy <= MAT_H_CM; gy += 10) {
+    for (var gy = 0; gy <= MAT_H_CM; gy += CELL_CM) {
       ctx.moveTo(px(0), py(gy));
       ctx.lineTo(px(MAT_W_CM), py(gy));
     }
     ctx.stroke();
 
+    // The three printed lines. Drawn as a reminder of where they are, not to
+    // scale in shape — the sim has no colour sensor to read them yet.
+    ctx.strokeStyle = c.edge;
+    ctx.lineWidth = 3;
+    for (var mi = 0; mi < MAT_LINES.length; mi++) {
+      var L = MAT_LINES[mi];
+      ctx.beginPath();
+      ctx.moveTo(px(L.x - L.w / 2), py(L.y - L.h / 2));
+      ctx.lineTo(px(L.x + L.w / 2), py(L.y + L.h / 2));
+      ctx.stroke();
+    }
+
     ctx.strokeStyle = c.edge;
     ctx.lineWidth = 1.5;
     ctx.strokeRect(ox, oy, matW, matH);
 
-    // The launch area, drawn only as a reminder of where a run starts.
+    // Both home areas are quarter-circles of radius 48 cm on the bottom corners.
     ctx.setLineDash([4, 4]);
-    ctx.strokeRect(px(0), py(45), 45 * scale, 45 * scale);
+    ctx.beginPath();
+    ctx.arc(px(0), py(0), HOME_R_CM * scale, -Math.PI / 2, 0);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(px(MAT_W_CM), py(0), HOME_R_CM * scale, Math.PI, Math.PI * 1.5);
+    ctx.stroke();
     ctx.setLineDash([]);
 
     ctx.fillStyle = c.label;
     ctx.font = "11px " + (getComputedStyle(document.body).fontFamily || "sans-serif");
     ctx.textAlign = "center";
-    for (var lx = 0; lx <= MAT_W_CM; lx += 50) {
-      ctx.fillText(String(lx), px(lx), py(0) + 15);
+    var LETTERS = "ABCDEFGHIJ";
+    for (var ci = 0; ci < LETTERS.length; ci++) {
+      ctx.fillText(LETTERS[ci], px((ci + 0.5) * CELL_CM), py(0) + 15);
     }
     ctx.textAlign = "right";
-    for (var ly = 0; ly <= 100; ly += 50) {
-      ctx.fillText(String(ly), px(0) - 6, py(ly) + 4);
+    for (var ri = 0; ri < 6; ri++) {
+      var mid = Math.min((ri + 0.5) * CELL_CM, (MAT_H_CM + ri * CELL_CM) / 2);
+      ctx.fillText(String(ri + 1), px(0) - 6, py(mid) + 4);
     }
-    ctx.textAlign = "left";
-    ctx.fillText("cm", px(0) - 20, py(MAT_H_CM) - 8);
 
     if (this.trail.length > 1) {
       ctx.strokeStyle = c.trail;
@@ -566,7 +631,57 @@
       ctx.stroke();
     }
 
+    this.drawModels(ctx, px, py, scale, c);
     this.drawRobot(ctx, px, py, scale, c);
+  };
+
+  // Mission models. A dashed ring is how close an attachment has to get. Filled
+  // means scored; red means a fragile model that has been disturbed.
+  Block.prototype.drawModels = function (ctx, px, py, scale, c) {
+    if (!this.models || !this.models.length) {
+      return;
+    }
+    ctx.font = "10px " + (getComputedStyle(document.body).fontFamily || "sans-serif");
+    ctx.textAlign = "center";
+
+    for (var i = 0; i < this.models.length; i++) {
+      var m = this.models[i];
+      var scored = m.points > 0;
+      var lost = m.kind === "fragile" && m.done === 0;
+
+      ctx.strokeStyle = lost ? c.warn : scored ? c.trail : c.edge;
+      ctx.fillStyle = ctx.strokeStyle;
+      ctx.lineWidth = scored || lost ? 2 : 1;
+
+      ctx.setLineDash(scored || lost ? [] : [3, 3]);
+      ctx.beginPath();
+      ctx.arc(px(m.x), py(m.y), Math.max(3, m.reach * scale), 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.globalAlpha = 0.75;
+      ctx.beginPath();
+      ctx.arc(px(m.x), py(m.y), 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // M04 carries a katydid, which is the whole difficulty of that mission.
+      if (m.kx !== undefined) {
+        ctx.strokeStyle = c.label;
+        ctx.setLineDash([2, 4]);
+        ctx.beginPath();
+        ctx.arc(px(m.x), py(m.y), m.habitat * scale, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = c.warn;
+        ctx.beginPath();
+        ctx.arc(px(m.kx), py(m.ky), 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = c.label;
+      ctx.fillText(m.key, px(m.x), py(m.y) - Math.max(6, m.reach * scale) - 3);
+    }
   };
 
   Block.prototype.drawRobot = function (ctx, px, py, scale, c) {

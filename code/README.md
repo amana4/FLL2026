@@ -16,11 +16,11 @@ code/
 
 ## New to Python?
 
-Start with [**Learn Python with our robot**](learn/README.md) — thirteen short
+Start with [**Learn Python with our robot**](learn/README.md) — fourteen short
 lessons with code you can change and run in the page, watching a robot move on a
 mat. No hub needed, and it uses this repo's real `library/toolkit.py`. Lesson 1
-assumes you have never written a line of code; the last one is about explaining
-your program to a judge.
+assumes you have never written a line of code. The last one puts mission models on
+the mat and keeps score.
 
 Also here: [**Reading the toolkit**](library/toolkit-slides.html), a 20-slide walk
 through `library/toolkit.py` that assumes you have never written a line of code.

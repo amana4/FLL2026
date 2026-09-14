@@ -9,6 +9,10 @@ Drawn from the field map on page 8 of the Robot Game Rulebook and the Mission Mo
 Placement page of the Field Setup Reference Guide. It is our own diagram, not a
 copy of theirs — so check it against the real mat, and trust the mat.
 
+Actual measured positions in centimetres, for every model, are in
+[`field-positions.md`](field-positions.md). Use this page to understand the layout
+and that one to get a number.
+
 ## The layout
 
 The mat is landscape, roughly twice as wide as it is deep. Both home areas are

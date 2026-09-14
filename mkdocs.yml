@@ -229,6 +229,7 @@ nav:
       - robot-game/README.md
       - Which missions we'll try: robot-game/strategy.md
       - Where things are on the mat: robot-game/field-map.md
+      - Measured field positions: robot-game/field-positions.md
       - Run plans: robot-game/runs/README.md
       - Scoresheet: robot-game/scoresheet.md
       - Points tracker: robot-game/scoring-tracker.md
@@ -253,6 +254,7 @@ nav:
           - robot-design/README.md
           - The driving base: robot-design/chassis.md
           - Attachments: robot-design/attachments/README.md
+          - BOXOR frame attachment: robot-design/attachments/boxor-frame.md
           - Design log — what we changed: robot-design/design-log.md
           - When something breaks: robot-design/troubleshooting.md
       - Code:
@@ -272,6 +274,7 @@ nav:
               - 11. Attachments: code/learn/11-attachments.md
               - 12. Write a real mission: code/learn/12-a-mission.md
               - 13. Flowcharts and judges: code/learn/13-flowcharts-judges.md
+              - 14. Simulated missions: code/learn/14-simulated-missions.md
           - Shared code (the toolkit): code/library/README.md
           - Mission programs: code/missions/README.md
           - Word Blocks (what we used before): code/my-blocks.md

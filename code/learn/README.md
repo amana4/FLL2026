@@ -1,8 +1,8 @@
 # Learn Python with our robot
 
-Thirteen short lessons, starting from "what is a program" and ending at "explain it
-to a judge". Every one has code you can change and run right here in the page, most
-with a top-down view of the robot moving on the mat.
+Fourteen short lessons, starting from "what is a program" and ending at scoring real
+missions on a simulated mat. Every one has code you can change and run right here in
+the page, most with a top-down view of the robot moving.
 
 The code is not a toy version. Each page loads our real
 [`code/library/toolkit.py`](../library/toolkit.py) and calls the same
@@ -26,12 +26,17 @@ toolkit, these pages change with it.
 | 11 | [Attachments](11-attachments.md) | Run a motor on port C by degrees or by time |
 | 12 | [Write a real mission](12-a-mission.md) | Turn a plan into a mission program |
 | 13 | [Flowcharts, and explaining your code](13-flowcharts-judges.md) | Draw a mission, and answer a judge with a number in it |
+| 14 | [Simulated missions](14-simulated-missions.md) | Score real missions on the mat, and plan a route that avoids wrecking one |
 
 Roughly one lesson per meeting, alongside everything else.
 
 Start at 1 if you have never coded. Start at 2 if you have. Lessons 2 to 5 are the
 ones everybody needs. Lessons 6, 9 and 10 are where the interesting arguments are.
 Lesson 13 is worth doing twice, once early and once in the week before the event.
+
+Lesson 14 is the practice ground for lesson 12. It puts all fifteen missions on
+the mat, 460 points of them, and keeps score. A route can be tried and argued
+about before anybody touches the real robot.
 
 ## How the Run button works
 
@@ -51,12 +56,25 @@ almost always a loop with no way out.
 
 ## What the picture shows
 
-The grey rectangle is a mat, 236 cm by 114 cm, the size of a real one. Grid lines
-are every 10 cm and the numbers are centimetres. The dashed square in the bottom
-left is roughly where home is.
+The grey rectangle is a mat, **200 cm by 114.3 cm**, the size of a real one. The
+grid is FIRST's own wireframe: columns A to J across, rows 1 to 6 up, cells 20 cm
+square. That is the same grid printed on the real mat, so you can compare the
+screen with the table directly.
 
-The green block is the robot, and the pointed end is the front. The line behind it
-is where it has been. Under the picture:
+Row 6 is a short band. Six full 20 cm rows would need 120 cm, and the mat is only
+114.3 cm deep.
+
+The dashed quarter-circles in the bottom corners are the two home areas, radius
+48 cm. Every run starts inside one of them.
+
+The three straight marks are the lines printed on the mat, for line following and
+squaring up. They are drawn as reminders; the simulator has no colour sensor yet.
+
+Where all these numbers come from, and which still need a tape measure, is in
+[`robot-game/field-positions.md`](../../robot-game/field-positions.md).
+
+The green block is the robot, 18 cm square, and the pointed end is the front. The
+line behind it is where it has been. Under the picture:
 
 | Reading | Meaning |
 | --- | --- |
@@ -83,7 +101,9 @@ What it does not do:
   than they really are.
 - No colour sensors yet. `color_sensor` gives a clear error rather than a wrong
   answer. Line following has to be practised on the real robot.
-- No mission models, and nothing to collide with.
+- Nothing to collide with. The robot drives through models rather than into them.
+- The mission models are in the right **places**, but how each one *moves* is a
+  guess. [Lesson 14](14-simulated-missions.md) says exactly which parts to trust.
 
 Use it to understand the code. Use the mat to find out what is true.
 
@@ -101,7 +121,7 @@ exercise. Those are the ones worth doing as a group, with the file open:
 
 | Lesson | The problem it lands on |
 | --- | --- |
-| [3](03-ports.md) | Port F is claimed by both the left drive motor and the right colour sensor, and the header comment contradicts the code on three counts |
+| [3](03-ports.md) | The port map was wrong: `port.F` was paired as a drive motor when it holds a colour sensor. Found and fixed 13 Sep 2026, and told as the story of why |
 | [6](06-numbers.md) | `arc_turn` has a missing term, so it turns 121 degrees when asked for 90 |
 | [10](10-gyro.md) | `turn_deg_gyro` never commands the motors, and hangs |
 | [11](11-attachments.md) | `run_attachment_deg` silently ignores anything over 200 degrees |
@@ -115,7 +135,12 @@ How the machinery works, if you need to change it:
 | File | Job |
 | --- | --- |
 | `tools/spike-shim.py` | The pretend `hub`, `motor`, `motor_pair` and `runloop`, and the robot model |
+| `tools/spike-missions.py` | The mission models, their trigger zones, and the scoring |
 | `tools/spike-sim.js` | Builds the editor and the drawing, and boots Python |
 | `tools/spike-sim.css` | Styling, taken from the site's own colours |
+| `tools/check-lessons.py` | Runs every example on every page. Use it before pushing |
+
+Both Python files are plain stdlib, with no reference to a browser. That is what
+lets `check-lessons.py` run all 133 examples under CPython in a few minutes.
 
 --8<-- "includes/abbreviations.md"

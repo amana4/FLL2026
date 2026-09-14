@@ -19,7 +19,7 @@ the attachment (e.g. `gripper.md`, `lever-arm.md`).
 
 | Attachment | Run | Missions | Motor | Swap time | Status |
 | --- | --- | --- | --- | --- | --- |
-| _TODO_ | | | | | ☐ |
+| [BOXOR frame](boxor-frame.md) | _TODO_ | _TODO_ | C | _TODO_ | Built, gear ratio not yet measured |
 
 ## Version history
 

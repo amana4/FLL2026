@@ -28,9 +28,22 @@ import time
 import types
 
 # ---------------------------------------------------------------------------
-# The mat, in centimetres. A real FLL mat is 2362 mm by 1143 mm.
+# The mat, in centimetres.
+#
+# Measured, not assumed. The BIOGLOW mat is about 200 x 114 cm, which is NOT the
+# 236 cm the FLL table's inside width would suggest — the mat is narrower than
+# the table. Two independent official documents agree:
+#
+#   The wireframe grid is 10 columns (A-J) of 20 cm cells, so 200 cm across, and
+#   its 28.3 cm diagonal label confirms the cells are square.
+#
+#   The Mission Model Placement photo measures to an aspect ratio of 1.75, and
+#   2000/1143 = 1.750. A 236 cm mat would measure 2.07.
+#
+# Survey data and the method are in robot-game/field-positions.md. Confirm with a
+# tape measure on the real mat before anything depends on the last millimetre.
 # ---------------------------------------------------------------------------
-MAT_W_CM = 236.2
+MAT_W_CM = 200.0
 MAT_H_CM = 114.3
 
 # Bottom-left home area, near where a real run starts.
@@ -200,10 +213,12 @@ class Robot:
         dt = t - self.last_t
         self.last_t = t
         if dt <= 0:
+            ROBOT_STEP_DT[0] = 0.0
             return
         # A backgrounded tab can hand back a huge gap. Do not teleport.
         if dt > 0.25:
             dt = 0.25
+        ROBOT_STEP_DT[0] = dt
 
         self._step_drive(dt)
         self._step_attachments(dt)
@@ -288,6 +303,17 @@ class Robot:
 
 ROBOT = Robot()
 
+# The most recent physics timestep, in seconds, in a one-element list so other
+# modules can read it without importing anything. tools/spike-missions.py uses it
+# to work out how far an attachment motor turned during a step.
+ROBOT_STEP_DT = [0.0]
+
+# Extension points, so mission models can attach without this file knowing about
+# them. See tools/spike-missions.py.
+step_hooks = []      # run after every physics step
+end_hooks = []       # run when a run finishes
+reset_hooks = []     # run at the start of each run
+
 # The drawing callback, supplied by tools/spike-sim.js. Left as None under
 # CPython, where there is nothing to draw on.
 _push = None
@@ -302,7 +328,9 @@ def set_push(fn):
 
 
 def push():
-    """Hand the current pose to whatever is drawing it."""
+    """Run the step hooks, then hand the current pose to whatever draws it."""
+    for hook in step_hooks:
+        hook()
     if _push is None:
         return
     r = ROBOT
@@ -718,6 +746,15 @@ def begin_run():
     ROBOT.run_started = _now()
     ROBOT.last_t = _now()
     ROBOT.stop_requested = False
+    for hook in reset_hooks:
+        hook()
+    push()
+
+
+def end_run():
+    """Called when a run finishes: apply any end-of-match checks."""
+    for hook in end_hooks:
+        hook()
     push()
 
 
