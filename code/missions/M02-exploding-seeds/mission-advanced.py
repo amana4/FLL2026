@@ -1184,25 +1184,26 @@ async def gyro_backwards(speed_pct, degrees, **kwargs):
 # -----------------------------
 # Main program
 # -----------------------------
+# -----------------------------
+# Main program
+# -----------------------------
 async def main():
-    await init_robot(default_speed=500)
-
-    motor.run_for_degrees(port.C, 180, 500)
+    await init_robot(default_speed=1000)
     print (set_calibration_scale(179/180))
-    await drive_cm(-44)
-    await drive_cm(44)
-    #await motor.run_for_degrees(port.D, 180, 200)
-
-
+    #drive towards the mission
+    await turn_deg(52.5)
+    #lift the key up
+    motor.run_for_degrees(port.C, -150, 1000)
+    #go back towards the base
+    await drive_cm(-45)
+    #align itself
+    await motor.run_for_degrees(port.C, 150, 1000)
+    await drive_cm(44.9)
+    await turn_deg(-52.5)
+    #motor.run_for_degrees(port.C, 180, 500)
+    #print (set_calibration_scale(179/180))
     #await drive_cm(-60)
-
     #await turn_deg(45)
-
-    # await turn_deg(90)
-    # await turn_deg(90)
-    # await turn_deg(90)
-
-    # await turn_deg(-90)
 
     # await run_mission1()
 
