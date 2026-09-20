@@ -258,20 +258,28 @@ Twenty seconds, and the robot never moves. Open
     `motor_pair.move`, which is exactly what `drive_cm_gyro` uses two hundred lines
     further up.
 
-    **Three. The direction is probably backwards.** The function computes
+    **Three. The direction is backwards.** The function computes
     `error = target_angle - current_angle` and steers by `error * kp`.
     `drive_cm_gyro` steers by `+yaw_err * kp` and works, which means the gyro and
-    the steering count in opposite directions. If that is right, then
-    `turn_deg_gyro` fights itself and runs away from its target.
+    the steering count in opposite directions. So `turn_deg_gyro` fights itself
+    and runs away from its target.
 
-    Check that on the real hub before fixing it. Print `_yaw_deg()` before and
-    after a known `turn_deg(90)` and see which sign comes back. That one experiment
-    settles it, and it is a five minute job with the robot on the table.
+    **This was measured on the hub on 20 September 2026.** The gyro counts up
+    anticlockwise. `drive_cm_gyro` and this page's simulator had it right; the
+    two Word Blocks programs in the SPIKE App have it backwards.
+
+    It got settled by accident. `code/library/advanced.py` was written with the
+    Word Blocks sign, and on the robot a 44 cm drive spun on the spot instead of
+    driving. Its debug trace showed yaw sliding through 180 and wrapping, which
+    is what a heading loop pushing the wrong way looks like. That library now
+    keeps the answer in one constant, `YAW_SIGN = -1`, and stops the robot if a
+    straight drive gets more than 45 degrees off course.
 
     **What to do.** `turn_deg` works and is used everywhere. `turn_deg_gyro` has
-    never been called by anything. Either finish it properly and test it, or delete
-    it. Leaving a broken function next to a working one is how somebody loses a
-    match at 4 pm on a Saturday.
+    never been called by anything. There is now a working version of it in
+    [`../library/advanced.py`](../library/advanced.py), so either copy that one
+    in or delete this one. Leaving a broken function next to a working one is how
+    somebody loses a match at 4 pm on a Saturday.
 
 ## Your turn
 

@@ -136,17 +136,20 @@ DEBUG = False
 # -----------------------------
 # Which way does the gyro count?
 # -----------------------------
-# +1 means the gyro reads more positive as the robot turns clockwise. That is
-# what Advanced-Coding-26.llsp3 assumes, and what Gyro-Drive-Straight assumes.
+# -1 means the gyro reads more positive as the robot turns ANTICLOCKWISE.
 #
-# It DISAGREES with toolkit.py:223, which steers by +yaw_err * kp, and with
-# tools/spike-shim.py:193, whose own docstring says its minus sign is there only
-# to match the toolkit. code/learn/10-gyro.md:262-269 flags the same conflict.
+# SETTLED ON THE HUB, 20 September 2026. It used to be +1, which is what
+# Advanced-Coding-26.llsp3 and Gyro-Drive-Straight both assume. On the robot
+# that made the heading loop push the wrong way, so a drive_cm(-44) spun on the
+# spot instead of driving. The debug trace showed yaw falling straight through
+# 180 and wrapping, which is what positive feedback looks like.
 #
-# Nobody has measured it. Run bench_check_yaw_sign() on the hub, then set this
-# once. Every correction in this file is written in terms of it, so flipping
-# this line is the whole fix.
-YAW_SIGN = +1
+# So the two Word Blocks programs have the sign wrong, and toolkit.py:223 and
+# tools/spike-shim.py:193 had it right all along.
+#
+# Every correction in this file is written in terms of this, so this line is the
+# whole setting. bench_check_yaw_sign() re-measures it after any rebuild.
+YAW_SIGN = -1
 
 # -----------------------------
 # Tuning, carried over from the blocks
@@ -205,6 +208,15 @@ TURN_PID_MAX_DEG_S = int(60 * MAX_DEG_S / 100)     # 630
 # How long any loop is allowed to run before it gives up, in milliseconds.
 DEFAULT_TIMEOUT_MS = 8000
 LOOP_MS = 15
+
+# How far off straight a "straight" drive is allowed to get before it gives up.
+#
+# A drive that is meant to hold a heading should never be tens of degrees off.
+# If it is, the loop is pushing the wrong way and the robot is spinning, not
+# driving. That happened on 20 September 2026 with YAW_SIGN set the wrong way.
+# Without this guard the robot spun until the distance counter filled up, which
+# took it right off the table.
+RUNAWAY_DEG = 45.0
 
 # Cruise speed for drive_cm, in deg/s. None means "work it out per move", the
 # way the .Forward block did. init_robot(default_speed=...) sets it.
@@ -568,6 +580,16 @@ async def _drive_ramp_cm(cm,
         correction = -(kp * error + kd * (error - last_error))
         last_error = error
 
+        if abs(error) > RUNAWAY_DEG:
+            motor_pair.stop(PAIR, stop=motor.BRAKE)
+            raise RuntimeError(
+                "Straight drive is %.0f degrees off course, so it stopped. The "
+                "heading loop is pushing the wrong way. Either YAW_SIGN is "
+                "wrong, or LEFT_DRIVE and RIGHT_DRIVE are swapped. Run "
+                "bench_check_yaw_sign() and watch which way the robot turns."
+                % error
+            )
+
         base = direction * _pct_to_deg_s(base_pct)
         trim = _pct_to_deg_s(correction)
         _tank(base + trim, base - trim)
@@ -715,6 +737,14 @@ async def gyro_backward_deg(speed_pct, degrees,
         error = _wrap180(_yaw_cw())
         correction = -(kp * error + kd * (error - last_error))
         last_error = error
+
+        if abs(error) > RUNAWAY_DEG:
+            motor_pair.stop(PAIR, stop=motor.BRAKE)
+            raise RuntimeError(
+                "Reverse drive is %.0f degrees off course, so it stopped. See "
+                "the note on RUNAWAY_DEG, and run bench_check_yaw_sign()."
+                % error
+            )
 
         base = -_pct_to_deg_s(abs(speed_pct))
         trim = _pct_to_deg_s(correction)

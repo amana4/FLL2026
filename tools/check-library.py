@@ -297,9 +297,14 @@ async def _(shim, field, lib):
     # RUNAWAY_DEG guard the robot spins until the distance counter fills up.
     # _drive_degrees() averages abs() of both encoders, so a spin reads as
     # forward progress and the drive never notices.
+    #
+    # Needs drift to reproduce. Positive feedback amplifies an error, and with a
+    # perfect simulator and no drift the error stays exactly 0, so there is
+    # nothing to amplify. On the real robot, mismatched motors seed it.
     lib["YAW_SIGN"] = -lib["YAW_SIGN"]
     try:
-        start, end = await drive(shim, field, lib, lib["drive_cm"](44))
+        start, end = await drive(shim, field, lib, lib["drive_cm"](44),
+                                 drift=8.0)
     except RuntimeError as exc:
         if "off course" not in str(exc):
             raise Failure("wrong message: %s" % exc)

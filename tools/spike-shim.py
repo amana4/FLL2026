@@ -186,9 +186,12 @@ class Robot:
         counter-clockwise as positive. That is the convention `drive_cm_gyro`
         in the toolkit is built around: it steers by `+yaw_err * kp`, which only
         pulls the robot back towards straight if the two signs are opposite.
-        That function is the one the team has tuned on a real mat, so it is the
-        one this file matches. If the real hub ever proves otherwise, change
-        this method rather than the toolkit.
+
+        Confirmed against the real hub on 20 September 2026, so this is no
+        longer an assumption. code/library/advanced.py was written with the
+        opposite sign, copied out of the Word Blocks, and on the robot a 44 cm
+        drive spun on the spot instead of driving. That library now sets
+        YAW_SIGN = -1 to agree with this file.
         """
         return _wrap180(-(self.heading - self.yaw_ref) + self.yaw_set)
 

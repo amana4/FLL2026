@@ -62,16 +62,31 @@ this takes centimetres, so `.Forward 300` is `drive_cm(30)`. Copying the 300
 across asks for three metres. `drive_cm` refuses anything longer than the mat
 and says what you probably meant.
 
-## The two files disagree about the gyro
+## Which way the gyro counts — settled
 
-`toolkit.py` steers by `+yaw_err * kp`. `advanced.py` defaults to the opposite,
-because both Word Blocks programs it came from assume the gyro counts up
-clockwise. The pretend hub in `tools/spike-shim.py` matches `toolkit.py`, and
-says in its own docstring that this is only because the toolkit was there first.
+**The gyro counts up anticlockwise.** `YAW_SIGN = -1` in `advanced.py`.
 
-Nobody has measured it on the hub. Until somebody does, run
-`bench_check_yaw_sign()` from `advanced.py` — it spins the robot a quarter turn
-and prints which value to use. Then set `YAW_SIGN` at the top of that file.
+This was an open argument for a while. Three files assumed one thing and two
+assumed the other, and nobody had measured it.
+
+Measured on the hub on **20 September 2026**, the hard way. `advanced.py`
+shipped with `YAW_SIGN = +1`, copied from the Word Blocks, and a `drive_cm(-44)`
+spun on the spot instead of driving. The debug trace showed yaw sliding straight
+through 180 and wrapping, which is what a heading loop pushing the wrong way
+looks like.
+
+So `toolkit.py:223` and `tools/spike-shim.py:193` were right all along, and both
+Word Blocks programs — `Advanced-Coding-26.llsp3` and `Gyro-Drive-Straight` —
+have the sign wrong. Do not copy a correction sign out of the blocks.
+
+Re-measure with `bench_check_yaw_sign()` after any rebuild that moves the hub.
+`tools/check-library.py` fails if the library and the simulator disagree.
+
+**A wrong sign now stops the robot** rather than spinning it. Any straight drive
+more than `RUNAWAY_DEG` (45 degrees) off course brakes and raises. Without that
+guard the robot spun until the distance counter filled, because
+`_drive_degrees()` averages `abs()` of both encoders and a spin reads as forward
+progress.
 
 `code/learn/10-gyro.md` has the long version.
 
