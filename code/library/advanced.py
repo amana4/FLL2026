@@ -1,0 +1,1079 @@
+# Advanced library – Python port of the word-blocks library (SPIKE App 3.5)
+#
+# This is a port of Advanced-Coding-26.llsp3, the team's Word Blocks library,
+# last saved 2 August 2026. Fourteen My Blocks, carried across to Python.
+#
+# It sits NEXT TO code/library/toolkit.py. It does not replace it. Missions that
+# already inline the toolkit keep working. Reach for this file when you want the
+# ramped drives, the PID turns, or the line blocks.
+#
+# THE FUNCTION NAMES ARE toolkit.py's NAMES. Same names, same meaning, same
+# order of arguments for the ones that matter. A mission written against the
+# toolkit reads the same against this file. What changes is what happens
+# underneath: every drive here ramps up and down, and every turn here uses the
+# gyro.
+#
+# Block                              Function here
+# ---------------------------------  -------------------------------------
+# .Forward (Mm)                      drive_cm(cm)          positive cm
+# .Backward (mm)                     drive_cm(-cm)         negative cm
+# zEnd Speed / zBackwards Acc        _drive_ramp_cm(...)   (one function)
+# .Left (PID) / .Right (PID)         turn_deg_gyro(-deg) / turn_deg_gyro(deg)
+# Left (simple) / Right (simple)     turn_deg(-deg) / turn_deg(deg)
+# Gyro Backwards (degrees) basic     gyro_backward_deg(speed_pct, degrees)
+# Line Square                        line_square()             HUB ONLY
+# Line Follow                        line_follow(side, secs)   HUB ONLY
+# zFind Line / zAcquire Line /       _find_line / _acquire_line /
+#   zFollowing a line                  _follow_line
+#
+# There are also aliases named after the palette — forward, backward, left_pid,
+# right_pid, left_simple, right_simple, gyro_backwards — at the bottom of the
+# file. Same functions. They exist for reading the SPIKE App and this side by
+# side, not for mission code.
+#
+# Two toolkit functions behave differently here, and both are improvements:
+#   drive_cm      holds a heading with the gyro. The toolkit's does not.
+#   turn_deg_gyro works. The toolkit's never moves the motors, see
+#                 code/learn/10-gyro.md:241-274.
+#
+# Some of the toolkit's tuning arguments do not exist here, because they
+# describe a control loop this file does not have: steer_limit, deadband_deg,
+# steer_rate_limit, min_steer_kick, acceleration and deceleration. Passing one
+# raises a TypeError rather than being quietly ignored. The ramp does the job
+# acceleration and deceleration used to.
+#
+# Units: the blocks work in millimetres and speed percent. This file works in
+# centimetres and deg/s, so it matches toolkit.py. Speeds given as a percent in
+# the blocks go through _pct_to_deg_s() once.
+#
+# Eight things the blocks got wrong, fixed here. Each is noted again at the
+# function that had it, so the blocks and this file can be reconciled later.
+#
+#   1. The blocks use 3.146 for pi. That is 0.14 percent long. This file uses
+#      math.pi, so measured distances shift very slightly. Re-measure the wheel
+#      calibration after switching.
+#   2. zEnd Speed phase 1 sets "Gyro last error.." to 0 inside the loop, so its
+#      D term collapsed into extra P gain. zBackwards Acc did not do this.
+#   3. The D term flipped sign between phase 1 and phases 2 and 3. One form is
+#      used in all three phases here.
+#   4. zEnd Speed counted motor B, zBackwards Acc counted motor A. That was not
+#      arbitrary: the two encoders are mirrored, so each one counts up in one
+#      direction only. This file averages abs() of both, the way
+#      toolkit.py:202-205 already does, and works in either direction.
+#   5. Gyro Backwards basic never zeroed its last-error variable, so its first
+#      step used whatever the previously run block left behind.
+#   6. .Right (PID) stopped about a degree early and .Left (PID) did not. Both
+#      now take stop_early_deg, defaulting to 0.
+#   7. The PID turns never clamped Output or guarded the integral against
+#      windup. Both are clamped here.
+#   8. Every "wait until" in the line blocks was unbounded. A missed line hung
+#      the robot for the rest of the match. Everything here has a timeout.
+#
+# Wiring is copied from toolkit.py, confirmed against the hub on
+# 13 September 2026. Wheel diameter and track width are NOT confirmed.
+
+from hub import port, motion_sensor
+import runloop
+import motor_pair
+import motor
+from math import pi
+
+# The colour sensor is not in the pretend hub used by the lesson pages, so
+# importing it has to be allowed to fail. See tools/spike-shim.py, which
+# registers runloop, motor, motor_pair and hub but no color_sensor.
+try:
+    import color_sensor
+    _HAS_COLOUR = True
+except ImportError:
+    _HAS_COLOUR = False
+
+# -----------------------------
+# Robot configuration
+# -----------------------------
+PAIR = motor_pair.PAIR_1
+
+# Main drive motors
+LEFT_DRIVE = port.A
+RIGHT_DRIVE = port.B
+
+# Downward colour sensors
+left_color = port.E
+right_color = port.F
+
+# Attachment motors
+attachment1 = port.C           # left attachment
+attachment2 = port.D           # right attachment
+
+# Wheel and robot dimensions
+WHEEL_D_MM = 62.4              # the blocks agree: WheelDia = 62.4
+TRACK_W_MM = 130.0
+ACCEL = 1000                   # deg/s^2, matches the blocks' 1000 1000
+DECEL = 1000
+
+# Calibration multiplier for effective wheel diameter. 1.0 = no change.
+CALIBRATION_SCALE = 1.0
+
+# Enable debug prints (set False to silence)
+DEBUG = False
+
+# -----------------------------
+# Which way does the gyro count?
+# -----------------------------
+# +1 means the gyro reads more positive as the robot turns clockwise. That is
+# what Advanced-Coding-26.llsp3 assumes, and what Gyro-Drive-Straight assumes.
+#
+# It DISAGREES with toolkit.py:223, which steers by +yaw_err * kp, and with
+# tools/spike-shim.py:193, whose own docstring says its minus sign is there only
+# to match the toolkit. code/learn/10-gyro.md:262-269 flags the same conflict.
+#
+# Nobody has measured it. Run bench_check_yaw_sign() on the hub, then set this
+# once. Every correction in this file is written in terms of it, so flipping
+# this line is the whole fix.
+YAW_SIGN = +1
+
+# -----------------------------
+# Tuning, carried over from the blocks
+# -----------------------------
+# Straight driving, from zEnd Speed and zBackwards Acc.
+KP_STRAIGHT = 1.8
+KD_STRAIGHT = 0.5
+
+# Gyro Backwards basic used its own, slightly softer pair.
+KP_BACK = 1.5
+KD_BACK = 1.0
+
+# The PID turns. Kp is passed in by the caller; the main block program used 0.7.
+KP_TURN = 0.7
+KI_TURN = 0.001
+KD_TURN = 0.1
+
+# Stop compensation, in cm. The blocks called this StopComp and subtracted it
+# from the target so the robot's coast landed on the mark.
+STOP_COMP_FWD_CM = 1.4         # blocks: 14 mm
+STOP_COMP_REV_CM = 1.5         # blocks: 15 mm
+
+# .Forward and .Backward picked these for you.
+RAMP_FRACTION = 4.0            # ramp = distance / 4
+RAMP_MIN_CM = 3.0              # blocks: 30 mm
+RAMP_MAX_CM = 10.0             # blocks: 100 mm
+TOP_SPEED_PCT = 60
+TOP_SPEED_SHORT_PCT = 30       # used under SHORT_RUN_CM
+SHORT_RUN_CM = 30.0            # blocks: 300 mm
+START_SPEED_PCT = 25
+
+# The mat is 200 cm by 114 cm. A single straight drive cannot be longer than
+# that, so anything bigger is almost always millimetres typed in by mistake.
+MAX_SENSIBLE_CM = 200.0
+
+# Line thresholds. The blocks had these as bare numbers in six places.
+LINE_DARK = 15                 # zFind Line: dark enough to be on the line
+LINE_ACQUIRE = 50              # zAcquire Line: light enough to have swung off
+LINE_TARGET = 45               # zFollowing a line: the edge it holds
+LINE_KP = 2.0
+LINE_SPEED_PCT = 30
+SQUARE_DARK = 20               # Line Square, coarse pass
+SQUARE_LIGHT = 55              # Line Square, fine pass
+
+# 100 percent in the Word Blocks is full motor speed. Confirm this against the
+# motors actually on the drive base; a large motor is nearer 1050 than 1110.
+MAX_DEG_S = 1050
+
+# Default speeds, in deg/s, so the arguments read the same as toolkit.py.
+# The numbers come from the blocks: 15 percent for a quick turn, 60 percent for
+# the PID turn's ceiling. The toolkit's defaults of 400 and 250 are not used,
+# because overshoot_deg below was tuned against 15 percent and nothing else.
+TURN_SIMPLE_DEG_S = int(15 * MAX_DEG_S / 100)      # 157
+TURN_PID_MAX_DEG_S = int(60 * MAX_DEG_S / 100)     # 630
+
+# How long any loop is allowed to run before it gives up, in milliseconds.
+DEFAULT_TIMEOUT_MS = 8000
+LOOP_MS = 15
+
+# Cruise speed for drive_cm, in deg/s. None means "work it out per move", the
+# way the .Forward block did. init_robot(default_speed=...) sets it.
+DEFAULT_DRIVE_DEG_S = None
+
+# -----------------------------
+# Geometry helpers
+# -----------------------------
+# These are the same helpers as toolkit.py:51-73 and toolkit.py:152-154. They
+# are copied rather than imported because the SPIKE App's Python canvas cannot
+# import, so this file has to stand alone. See code/library/README.md.
+
+
+def _cm_to_deg(cm):
+    """Convert straight-line distance (cm) to motor shaft degrees."""
+    effective_wheel_d = WHEEL_D_MM * CALIBRATION_SCALE
+    circ_mm = pi * effective_wheel_d
+    rotations = (abs(cm) * 10.0) / circ_mm
+    return int(round(rotations * 360.0))
+
+
+def _robot_deg_to_wheel_deg(robot_deg):
+    """Convert a robot in-place rotation (degrees) to wheel shaft degrees."""
+    turn_circ_mm = pi * TRACK_W_MM
+    travel_mm = (abs(robot_deg) / 360.0) * turn_circ_mm
+    effective_wheel_d = WHEEL_D_MM * CALIBRATION_SCALE
+    wheel_rot = travel_mm / (pi * effective_wheel_d)
+    return int(round(wheel_rot * 360.0))
+
+
+def _yaw_deg():
+    """Raw gyro yaw, in degrees. The sensor reports tenths."""
+    y_decideg, _, _ = motion_sensor.tilt_angles()
+    return y_decideg / 10.0
+
+
+def _yaw_cw():
+    """Yaw in degrees, counting up clockwise, whatever the hub does.
+
+    Everything in this file steers off this, not off _yaw_deg(). That is what
+    makes YAW_SIGN a one-line change.
+    """
+    return YAW_SIGN * _yaw_deg()
+
+
+def _reset_yaw(deg=0):
+    motion_sensor.reset_yaw(int(deg * 10))
+
+
+def _wrap180(a):
+    """Wrap any angle into -180 to 180."""
+    return (a + 180.0) % 360.0 - 180.0
+
+
+def _clamp(value, low, high):
+    if value < low:
+        return low
+    if value > high:
+        return high
+    return value
+
+
+def _pct_to_deg_s(pct):
+    """Word Blocks speed percent to deg/s.
+
+    The blocks talk in -100 to 100. The SPIKE Python API and toolkit.py talk in
+    deg/s. The pretend hub does not clamp velocity, so this does.
+    """
+    return int(round(_clamp(pct, -100.0, 100.0) * MAX_DEG_S / 100.0))
+
+
+def _deg_s_to_pct(deg_s):
+    """deg/s back to Word Blocks speed percent.
+
+    The other direction. Arguments named `velocity` arrive in deg/s, because
+    that is what toolkit.py and the real SPIKE API use, but the ramp and the
+    turns were tuned in percent.
+    """
+    return _clamp(float(deg_s) * 100.0 / MAX_DEG_S, -100.0, 100.0)
+
+
+def _drive_degrees():
+    """How far the drive wheels have turned since the last reset, in degrees.
+
+    abs() on both, then averaged. The two encoders are mirrored, so one counts
+    up going forward and the other counts up going back. That is why the blocks
+    used motor B for the forward ramp and motor A for the reverse one. Taking
+    the size of both instead works in either direction, and does not care which
+    motor is mounted which way round.
+    """
+    left = abs(motor.relative_position(LEFT_DRIVE))
+    right = abs(motor.relative_position(RIGHT_DRIVE))
+    return (left + right) // 2
+
+
+# -----------------------------
+# The tank primitive
+# -----------------------------
+def _tank(left_deg_s, right_deg_s):
+    """Drive the two wheels at independent speeds.
+
+    This is the blocks' "start moving  left=A  right=B", which every block in
+    the library uses and toolkit.py has no equivalent for.
+
+    It cannot be two motor.run() calls. On a paired base those fight each other,
+    and the pretend hub models a single paired motor as steering plus or minus
+    50 (tools/spike-shim.py:490-493). So the wheel speeds are turned back into
+    the steering-and-velocity pair that motor_pair.move() wants, by inverting
+    the LEGO steering curve at tools/spike-shim.py:165-180:
+
+        steering >= 0:  left = v,               right = v * (1 - s / 50)
+        steering <  0:  left = v * (1 + s / 50), right = v
+
+    Whichever wheel is turning faster becomes the velocity, and the other one
+    sets the steering. Exact both here and on the hub.
+    """
+    left = float(left_deg_s)
+    right = float(right_deg_s)
+
+    if left == 0.0 and right == 0.0:
+        motor_pair.move(PAIR, 0, velocity=0)
+        return
+
+    # A big correction on top of a fast base speed can ask for more than the
+    # motor has. Scale both wheels down together rather than clipping one, so
+    # the robot keeps steering the way it meant to and just does it slower.
+    fastest = max(abs(left), abs(right))
+    if fastest > MAX_DEG_S:
+        scale = MAX_DEG_S / fastest
+        left *= scale
+        right *= scale
+
+    if abs(left) >= abs(right):
+        velocity = left
+        steering = 50.0 * (1.0 - right / left)
+    else:
+        velocity = right
+        steering = 50.0 * (left / right - 1.0)
+
+    motor_pair.move(PAIR, int(round(_clamp(steering, -100.0, 100.0))),
+                    velocity=int(round(velocity)))
+
+
+# -----------------------------
+# Init
+# -----------------------------
+async def reset_yaw():
+    """Zero the gyro and both drive encoders, then let the gyro settle.
+
+    Same name and same job as toolkit.py:108.
+    """
+    motion_sensor.reset_yaw(0)
+    motor.reset_relative_position(LEFT_DRIVE, 0)
+    motor.reset_relative_position(RIGHT_DRIVE, 0)
+    await runloop.sleep_ms(500)
+
+
+async def init_robot(default_speed=None):
+    """Pair the drive motors and zero everything. Call this once, first.
+
+    Same name as toolkit.py:114. `default_speed` is in deg/s and is the cruise
+    speed drive_cm uses when it is not given one.
+
+    Leave it out and drive_cm picks the speed itself, the way .Forward did: 60
+    percent, or 30 percent for anything under 30 cm. That is usually what you
+    want. Pass a number to force one speed for the whole run, which is how the
+    toolkit behaves.
+    """
+    global DEFAULT_DRIVE_DEG_S
+    DEFAULT_DRIVE_DEG_S = None if default_speed is None else int(default_speed)
+    motor_pair.pair(PAIR, LEFT_DRIVE, RIGHT_DRIVE)
+    await reset_yaw()
+
+
+async def _settle():
+    """The blocks' "wait 0.3 seconds" before zeroing the gyro.
+
+    The hub's gyro drifts for a moment after the motors stop. Zeroing it while
+    it is still settling bakes that error into the whole next move.
+    """
+    await runloop.sleep_ms(300)
+
+
+def set_calibration_scale(scale):
+    """Set the calibration scale directly. Must be above 0. Returns the scale."""
+    global CALIBRATION_SCALE
+    value = float(scale)
+    if value > 0:
+        CALIBRATION_SCALE = value
+    return CALIBRATION_SCALE
+
+
+def calibrate_wheel_diameter(commanded_cm, measured_cm):
+    """Set the scale from one measured run. Returns the new scale."""
+    global CALIBRATION_SCALE
+    if commanded_cm == 0:
+        return CALIBRATION_SCALE
+    CALIBRATION_SCALE = float(measured_cm) / float(commanded_cm)
+    return CALIBRATION_SCALE
+
+
+# -----------------------------
+# Straight driving, with a ramp
+# -----------------------------
+async def _drive_ramp_cm(cm,
+                         top_pct=TOP_SPEED_PCT,
+                         start_pct=START_SPEED_PCT,
+                         ramp_cm=RAMP_MIN_CM,
+                         stop_comp_cm=None,
+                         kp=KP_STRAIGHT,
+                         kd=KD_STRAIGHT,
+                         stop_mode=motor.BRAKE,
+                         timeout_ms=DEFAULT_TIMEOUT_MS):
+    """Drive straight with a trapezoid speed profile, held straight by the gyro.
+
+    Positive cm is forward, negative is backward. This is zEnd Speed and
+    zBackwards Acc merged: they were the same three phases with the signs
+    flipped, so keeping them apart only let them drift apart.
+
+    Three phases, exactly as the blocks had them:
+      1. ramp from start_pct up to top_pct over the first ramp_cm
+      2. hold top_pct until ramp_cm is left
+      3. ramp back down to start_pct over the last ramp_cm
+
+    Fixes 1 to 4 in the header live here. math.pi instead of 3.146; the D term
+    keeps its memory in every phase; the D term keeps one sign in every phase;
+    both encoders are counted instead of one.
+    """
+    if cm == 0:
+        return
+
+    direction = 1.0 if cm > 0 else -1.0
+    if stop_comp_cm is None:
+        stop_comp_cm = STOP_COMP_FWD_CM if cm > 0 else STOP_COMP_REV_CM
+        # The blocks subtracted a flat 14 or 15 mm, which is right at their 60
+        # percent cruise and wrong everywhere else. Coasting distance goes with
+        # speed, so scale it. Without this a 1.5 cm nudge loses almost all of
+        # itself, and anything under 1.4 cm does not move at all.
+        stop_comp_cm *= top_pct / float(TOP_SPEED_PCT)
+        # And never give away more than a quarter of a short move.
+        stop_comp_cm = min(stop_comp_cm, abs(cm) * 0.25)
+
+    target_cm = abs(cm) - stop_comp_cm
+    if target_cm <= 0:
+        return
+
+    dist_deg = _cm_to_deg(target_cm)
+    ramp_deg = _cm_to_deg(abs(ramp_cm))
+    if ramp_deg < 1:
+        ramp_deg = 1
+    # Two ramps cannot be longer than the whole move.
+    if ramp_deg * 2 > dist_deg:
+        ramp_deg = max(1, dist_deg // 2)
+
+    motor.reset_relative_position(LEFT_DRIVE, 0)
+    motor.reset_relative_position(RIGHT_DRIVE, 0)
+    await _settle()
+    _reset_yaw(0)
+    await runloop.sleep_ms(100)
+
+    last_error = 0.0
+    steps = 0
+    max_steps = int(timeout_ms / LOOP_MS)
+
+    while True:
+        travelled = _drive_degrees()
+        if travelled >= dist_deg:
+            break
+        steps += 1
+        if steps > max_steps:
+            if DEBUG:
+                print("ramp drive timed out at", travelled, "of", dist_deg)
+            break
+
+        # Which phase are we in, and how fast should the base speed be?
+        if travelled < ramp_deg:
+            fraction = travelled / ramp_deg
+            base_pct = (top_pct - start_pct) * fraction + start_pct
+        elif travelled < (dist_deg - ramp_deg):
+            base_pct = top_pct
+        else:
+            remaining = dist_deg - travelled
+            fraction = remaining / ramp_deg
+            base_pct = (top_pct - start_pct) * fraction + start_pct
+
+        error = _wrap180(_yaw_cw())
+        correction = -(kp * error + kd * (error - last_error))
+        last_error = error
+
+        base = direction * _pct_to_deg_s(base_pct)
+        trim = _pct_to_deg_s(correction)
+        _tank(base + trim, base - trim)
+
+        if DEBUG:
+            print("deg:", travelled, "of", dist_deg,
+                  "base%:", round(base_pct, 1),
+                  "yaw:", round(error, 2))
+
+        await runloop.sleep_ms(LOOP_MS)
+
+    motor_pair.stop(PAIR, stop=stop_mode)
+    await runloop.sleep_ms(200)
+
+
+def _auto_ramp_cm(cm):
+    """The ramp length .Forward and .Backward worked out for you."""
+    ramp = abs(cm) / RAMP_FRACTION
+    return _clamp(ramp, RAMP_MIN_CM, RAMP_MAX_CM)
+
+
+def _auto_top_pct(cm):
+    """The top speed .Forward and .Backward worked out for you."""
+    if abs(cm) < SHORT_RUN_CM:
+        return TOP_SPEED_SHORT_PCT
+    return TOP_SPEED_PCT
+
+
+def _check_sensible(cm):
+    """Catch millimetres typed into a centimetres argument.
+
+    The blocks take mm, this file takes cm, and ".Forward 300" copied straight
+    across becomes three metres. The mat is only two metres wide, so a straight
+    drive longer than that is a mistake every time.
+    """
+    if abs(cm) > MAX_SENSIBLE_CM:
+        raise ValueError(
+            "%g cm is longer than the mat. The Word Blocks take millimetres "
+            "and this takes centimetres, so .Forward 300 is drive_cm(30)."
+            % cm
+        )
+
+
+async def drive_cm(cm,
+                   velocity=None,
+                   stop_mode=motor.BRAKE,
+                   start_velocity=None,
+                   ramp_cm=None,
+                   kp=KP_STRAIGHT,
+                   kd=KD_STRAIGHT):
+    """Drive straight, ramping up and down, holding the heading with the gyro.
+
+    Same name as toolkit.py:126. Positive cm is forward, negative is backward,
+    which is the toolkit's rule too. This is ".Forward" and ".Backward" in one
+    function, because the sign already says which.
+
+    Unlike the toolkit's drive_cm, this one corrects its heading. There is no
+    separate plain version, so drive_cm_gyro below is the same function.
+
+    velocity is deg/s, as in the toolkit. Leave it out and the speed is picked
+    the way the block did: 60 percent, or 30 percent under 30 cm. Ramp length is
+    a quarter of the distance, between 3 and 10 cm.
+
+    The toolkit's acceleration and deceleration arguments are not here. The ramp
+    replaces them.
+    """
+    _check_sensible(cm)
+    if cm == 0:
+        return
+
+    distance = abs(cm)
+    if velocity is None:
+        velocity = DEFAULT_DRIVE_DEG_S
+    if velocity is None:
+        top_pct = _auto_top_pct(distance)
+    else:
+        top_pct = abs(_deg_s_to_pct(velocity))
+
+    if start_velocity is None:
+        start_pct = min(START_SPEED_PCT, top_pct)
+    else:
+        start_pct = abs(_deg_s_to_pct(start_velocity))
+
+    if ramp_cm is None:
+        ramp_cm = _auto_ramp_cm(distance)
+
+    await _drive_ramp_cm(distance if cm > 0 else -distance,
+                         top_pct=top_pct,
+                         start_pct=start_pct,
+                         ramp_cm=ramp_cm,
+                         kp=kp,
+                         kd=kd,
+                         stop_mode=stop_mode)
+
+
+async def drive_cm_gyro(cm, velocity=None, kp=KP_STRAIGHT, kd=KD_STRAIGHT,
+                        stop_mode=motor.BRAKE, **kwargs):
+    """The same function as drive_cm. Both names exist, both hold a heading.
+
+    Same name as toolkit.py:160. In the toolkit these are two different
+    functions, one with gyro correction and one without. Here there is only the
+    corrected one, so the name you reach for does not change what happens.
+
+    The toolkit's steer_limit, deadband_deg, steer_rate_limit and
+    min_steer_kick are not here. They tune a steering loop this file does not
+    use; it drives the two wheels at independent speeds instead.
+    """
+    await drive_cm(cm, velocity=velocity, kp=kp, kd=kd, stop_mode=stop_mode,
+                   **kwargs)
+
+
+async def gyro_backward_deg(speed_pct, degrees,
+                            kp=KP_BACK,
+                            kd=KD_BACK,
+                            timeout_ms=DEFAULT_TIMEOUT_MS):
+    """Reverse at a fixed speed for a number of MOTOR degrees, held straight.
+
+    The blocks' "Gyro Backwards (degrees) basic". It is the odd one out in the
+    library: it counts motor degrees, not distance. Kept that way so a mission
+    ported from the blocks still reads the same.
+
+    Fix 5 lives here. The block never zeroed its last-error variable, so its
+    first step corrected using whatever the previous block had left in it.
+    """
+    target_deg = abs(degrees)
+    if target_deg == 0:
+        return
+
+    motor.reset_relative_position(LEFT_DRIVE, 0)
+    motor.reset_relative_position(RIGHT_DRIVE, 0)
+    await _settle()
+    _reset_yaw(0)
+
+    last_error = 0.0          # fix 5: the block left this holding stale data
+    steps = 0
+    max_steps = int(timeout_ms / LOOP_MS)
+
+    while _drive_degrees() < target_deg:
+        steps += 1
+        if steps > max_steps:
+            if DEBUG:
+                print("gyro_backward_deg timed out")
+            break
+
+        error = _wrap180(_yaw_cw())
+        correction = -(kp * error + kd * (error - last_error))
+        last_error = error
+
+        base = -_pct_to_deg_s(abs(speed_pct))
+        trim = _pct_to_deg_s(correction)
+        _tank(base + trim, base - trim)
+
+        await runloop.sleep_ms(LOOP_MS)
+
+    motor_pair.stop(PAIR, stop=motor.BRAKE)
+    await runloop.sleep_ms(200)
+
+
+# -----------------------------
+# Turns, PID
+# -----------------------------
+async def turn_deg_gyro(angle_deg,
+                        velocity=TURN_PID_MAX_DEG_S,
+                        kp=KP_TURN,
+                        ki=KI_TURN,
+                        kd=KD_TURN,
+                        tolerance=1.0,
+                        stop_early_deg=0.0,
+                        stop_mode=motor.BRAKE,
+                        min_pct=12,
+                        integral_limit=500.0,
+                        timeout_ms=DEFAULT_TIMEOUT_MS):
+    """Spin in place to a gyro angle, using full PID.
+
+    Same name as toolkit.py:303, and unlike that one this actually turns the
+    robot. The toolkit's version has its motor call commented out and has never
+    worked; code/learn/10-gyro.md:241-274 walks through why.
+
+    Positive angle_deg turns clockwise (right), negative turns counter-clockwise
+    (left), matching the toolkit's documented rule. This is ".Left (PID)" and
+    ".Right (PID)" merged, because they were the same loop with the target
+    negated.
+
+    velocity is deg/s and caps how hard the turn pushes.
+
+    Fixes 6 and 7 live here.
+
+    Fix 6: the right-hand block exited on abs((Degrees - 1) - yaw) < 1 while
+    driving on Error = Degrees - yaw, so it stopped about a degree short. The
+    left-hand block was symmetric. Stopping short is now stop_early_deg, it is
+    off by default, and it applies to both directions.
+
+    Fix 7: Output was never clamped and Integral never guarded. On a stall the
+    integral grew without limit. min_pct is new as well: below roughly 12
+    percent the motors stall, which is what the block's 1 degree fudge was
+    quietly working around.
+    """
+    if angle_deg == 0:
+        return
+
+    max_pct = abs(_deg_s_to_pct(velocity))
+    facing = 1.0 if angle_deg > 0 else -1.0
+    target = angle_deg - (stop_early_deg * facing)
+
+    _reset_yaw(0)
+    await _settle()
+
+    previous_error = 0.0
+    integral = 0.0
+    steps = 0
+    max_steps = int(timeout_ms / LOOP_MS)
+
+    while True:
+        error = target - _wrap180(_yaw_cw())
+        if abs(error) < tolerance:
+            break
+        steps += 1
+        if steps > max_steps:
+            if DEBUG:
+                print("turn_deg_gyro timed out", round(error, 2), "short")
+            break
+
+        integral = _clamp(integral + error, -integral_limit, integral_limit)
+        derivative = error - previous_error
+        previous_error = error
+
+        output = kp * error + ki * integral + kd * derivative
+        output = _clamp(output, -max_pct, max_pct)
+        # Below the stall speed the wheels buzz and do not move.
+        if 0 < abs(output) < min_pct:
+            output = min_pct if output > 0 else -min_pct
+
+        power = _pct_to_deg_s(output)
+        _tank(power, -power)
+
+        if DEBUG:
+            print("turn err:", round(error, 2), "out%:", round(output, 1))
+
+        await runloop.sleep_ms(LOOP_MS)
+
+    motor_pair.stop(PAIR, stop=stop_mode)
+    await runloop.sleep_ms(100)
+
+
+# -----------------------------
+# Turns, simple
+# -----------------------------
+async def turn_deg(angle_deg,
+                   velocity=TURN_SIMPLE_DEG_S,
+                   stop_mode=motor.BRAKE,
+                   overshoot_deg=None,
+                   timeout_ms=DEFAULT_TIMEOUT_MS):
+    """Spin in place at one fixed speed until the gyro is nearly there.
+
+    Same name as toolkit.py:277. Positive angle_deg turns clockwise, negative
+    counter-clockwise. This is "Left (simple)" and "Right (simple)" merged.
+
+    Cruder than turn_deg_gyro and quite a lot quicker, which is why the blocks
+    kept both. It stops overshoot_deg short and lets momentum finish the turn.
+    The blocks used 5 going right and 4 going left, and so does this.
+
+    Unlike the toolkit's turn_deg, this steers off the gyro rather than counting
+    wheel degrees, so it does not depend on TRACK_W_MM being right.
+    """
+    if angle_deg == 0:
+        return
+
+    facing = 1.0 if angle_deg > 0 else -1.0
+    if overshoot_deg is None:
+        overshoot_deg = 5 if angle_deg > 0 else 4
+
+    target = abs(angle_deg)
+    if target <= overshoot_deg:
+        # Asking for less than the overshoot means the exit test is already
+        # true, and the robot would not move at all. Fall back to the PID turn.
+        await turn_deg_gyro(angle_deg, stop_mode=stop_mode)
+        return
+
+    motor_pair.move(PAIR, 0, velocity=0, acceleration=ACCEL)
+    _reset_yaw(0)
+    await _settle()
+
+    power = abs(int(velocity))
+    _tank(facing * power, -facing * power)
+
+    steps = 0
+    max_steps = int(timeout_ms / LOOP_MS)
+    while abs(_wrap180(_yaw_cw())) < (target - overshoot_deg):
+        steps += 1
+        if steps > max_steps:
+            if DEBUG:
+                print("turn_deg timed out")
+            break
+        await runloop.sleep_ms(LOOP_MS)
+
+    motor_pair.stop(PAIR, stop=stop_mode)
+    await runloop.sleep_ms(100)
+
+
+# -----------------------------
+# Arcs, attachments and micro moves
+# -----------------------------
+# The blocks have none of these. They are carried over from toolkit.py so that
+# the two files offer the same set of names, and a mission can move between
+# them without hunting for a missing function.
+
+
+async def arc_turn(radius_cm, angle_deg, velocity=400, stop_mode=motor.BRAKE):
+    """Smooth arc using constant steering (approximate).
+
+    Same as toolkit.py:340. For precise arcs, use per-wheel degrees instead.
+    """
+    if radius_cm <= 0:
+        return
+    # Steering approximation: s = (track / (2R)) * 100, clipped to -100 to 100.
+    s = int(_clamp((TRACK_W_MM / (2.0 * (radius_cm * 10.0))) * 100.0,
+                   -100.0, 100.0))
+    arc_len_cm = abs(radius_cm * (angle_deg * pi / 180.0))
+    deg = _cm_to_deg(arc_len_cm)
+    steering = s if angle_deg > 0 else -s
+    await motor_pair.move_for_degrees(PAIR, deg, steering,
+                                      velocity=velocity, stop=stop_mode)
+
+
+async def run_attachment_deg(which_port, degrees, velocity=300,
+                             stop_mode=motor.BRAKE):
+    """Run an attachment motor by degrees (C or D typically).
+
+    Same as toolkit.py:362, including its 200 degree guard.
+    """
+    if degrees > 200:
+        return
+    await motor.run_for_degrees(which_port, degrees, velocity, stop=stop_mode)
+
+
+async def timed_attachment(which_port, velocity=400, ms=250,
+                           stop_mode=motor.BRAKE):
+    """Run an attachment motor for a fixed time (ms). Same as toolkit.py:372."""
+    await motor.run_for_time(which_port, ms, velocity=velocity, stop=stop_mode)
+
+
+async def move_attachment_deg(which_port, degrees, velocity=1000):
+    """Move an attachment motor by degrees, with no guard. Same as toolkit.py:390."""
+    await motor.run_for_degrees(which_port, degrees, velocity=velocity)
+
+
+async def nudge_cm(cm=1.5, velocity=250):
+    """Small forward or backward bump to settle into models. Same as toolkit.py:382."""
+    await drive_cm(cm, velocity=velocity)
+
+
+async def micro_turn_deg(angle=3.0, velocity=200):
+    """Tiny heading adjustment. Same as toolkit.py:386.
+
+    Anything this small goes through turn_deg_gyro, because the quick turn
+    cannot resolve a few degrees.
+    """
+    await turn_deg_gyro(angle, velocity=velocity)
+
+
+# -----------------------------
+# Line blocks. Hub only.
+# -----------------------------
+def _need_colour():
+    """Stop with something readable when there is no colour sensor."""
+    if not _HAS_COLOUR:
+        raise RuntimeError(
+            "This needs the colour sensors, so it only runs on the real hub. "
+            "The pretend hub used by the lesson pages has no color_sensor "
+            "module. Paste this file into the SPIKE App and run it there."
+        )
+
+
+def _reflect(which_port):
+    return color_sensor.reflection(which_port)
+
+
+async def _wait_until(test, timeout_ms=DEFAULT_TIMEOUT_MS):
+    """Wait for a condition, but give up eventually.
+
+    Fix 8. Every "wait until" in the blocks was unbounded. Miss the line once
+    and the robot sits there for the rest of the match.
+
+    Returns True if the condition came true, False if it timed out.
+    """
+    steps = 0
+    max_steps = int(timeout_ms / LOOP_MS)
+    while not test():
+        steps += 1
+        if steps > max_steps:
+            return False
+        await runloop.sleep_ms(LOOP_MS)
+    return True
+
+
+async def _find_line(timeout_ms=DEFAULT_TIMEOUT_MS):
+    """Drive forward until the left sensor sees the line. The blocks' zFind Line."""
+    speed = _pct_to_deg_s(LINE_SPEED_PCT)
+    _tank(speed, speed)
+    found = await _wait_until(lambda: _reflect(left_color) < LINE_DARK,
+                              timeout_ms)
+    motor_pair.stop(PAIR, stop=motor.BRAKE)
+    return found
+
+
+async def _acquire_line(side, timeout_ms=DEFAULT_TIMEOUT_MS):
+    """Swing until the left sensor comes back off the line. The blocks' zAcquire Line.
+
+    side is 1 to swing right, -1 to swing left.
+    """
+    speed = _pct_to_deg_s(20)
+    _tank(side * speed, -side * speed)
+    found = await _wait_until(lambda: _reflect(left_color) > LINE_ACQUIRE,
+                              timeout_ms)
+    motor_pair.stop(PAIR, stop=motor.BRAKE)
+    return found
+
+
+async def _follow_line(side, seconds):
+    """Follow the line edge for a time. The blocks' zFollowing a line.
+
+    One sensor, proportional. It holds the reading at LINE_TARGET, which is the
+    grey halfway between the black line and the white mat. Steer is the error
+    times LINE_KP, and side decides which edge of the line it rides.
+    """
+    speed = _pct_to_deg_s(LINE_SPEED_PCT)
+    steps = int((seconds * 1000) / LOOP_MS)
+    for _ in range(steps):
+        error = _reflect(left_color) - LINE_TARGET
+        steering = _clamp(error * LINE_KP * side * -1, -100.0, 100.0)
+        motor_pair.move(PAIR, int(round(steering)), velocity=speed)
+        await runloop.sleep_ms(LOOP_MS)
+    motor_pair.stop(PAIR, stop=motor.BRAKE)
+
+
+async def line_follow(side, seconds):
+    """Find a line, get onto its edge, then follow it. HUB ONLY.
+
+    The blocks' "Line Follow". side is 1 to swing right, -1 to swing left.
+    """
+    _need_colour()
+    if not await _find_line():
+        raise RuntimeError("Drove the whole way and never found a line.")
+    if not await _acquire_line(side):
+        raise RuntimeError("Found the line but could not swing off its edge.")
+    await _follow_line(side, seconds)
+
+
+async def _nudge_until(which_motor, speed_pct, test, timeout_ms=3000):
+    """Creep one wheel until a sensor says stop. Used by line_square."""
+    motor.run(which_motor, _pct_to_deg_s(speed_pct))
+    reached = await _wait_until(test, timeout_ms)
+    motor.stop(which_motor, stop=motor.BRAKE)
+    return reached
+
+
+async def line_square():
+    """Square up on a line using both colour sensors. HUB ONLY.
+
+    The blocks' "Line Square". Two passes. First drive on until either sensor
+    sees black, then creep each wheel forward until both do. Then back each
+    wheel off until both read light again, which lands the robot square on the
+    edge rather than square on the middle.
+    """
+    _need_colour()
+
+    speed = _pct_to_deg_s(15)
+    _tank(speed, speed)
+    seen = await _wait_until(
+        lambda: _reflect(left_color) < SQUARE_DARK
+        or _reflect(right_color) < SQUARE_DARK)
+    motor_pair.stop(PAIR, stop=motor.BRAKE)
+    if not seen:
+        raise RuntimeError("Drove the whole way and never found a line to square on.")
+
+    # Coarse pass: bring whichever side is lagging onto the black.
+    if _reflect(left_color) > SQUARE_DARK:
+        await _nudge_until(LEFT_DRIVE, -20,
+                           lambda: _reflect(left_color) < SQUARE_DARK)
+    if _reflect(right_color) > SQUARE_DARK:
+        await _nudge_until(RIGHT_DRIVE, 20,
+                           lambda: _reflect(right_color) < SQUARE_DARK)
+
+    # Fine pass: back off until each sensor reads the light side of the edge.
+    await _nudge_until(RIGHT_DRIVE, -10,
+                       lambda: _reflect(right_color) > SQUARE_LIGHT)
+    await _nudge_until(LEFT_DRIVE, 10,
+                       lambda: _reflect(left_color) > SQUARE_LIGHT)
+    await runloop.sleep_ms(200)
+
+    # And once more, gently, for anything that crept past.
+    if _reflect(left_color) > SQUARE_LIGHT:
+        await _nudge_until(LEFT_DRIVE, -8,
+                           lambda: _reflect(left_color) < SQUARE_LIGHT)
+    if _reflect(right_color) > SQUARE_LIGHT:
+        await _nudge_until(RIGHT_DRIVE, 8,
+                           lambda: _reflect(right_color) < SQUARE_LIGHT)
+    await runloop.sleep_ms(100)
+
+
+# -----------------------------
+# Settling YAW_SIGN
+# -----------------------------
+async def bench_check_yaw_sign():
+    """Work out which way the gyro counts. Run this on the hub, once.
+
+    Put the robot on the table with room to spin. It turns clockwise about a
+    quarter turn and prints what the gyro did.
+
+    Then set YAW_SIGN at the top of this file to the number it tells you, and
+    write the answer into code/learn/10-gyro.md so nobody has to ask again.
+    """
+    await init_robot()
+    _reset_yaw(0)
+    await runloop.sleep_ms(300)
+
+    before = _yaw_deg()
+    power = _pct_to_deg_s(15)
+    _tank(power, -power)               # clockwise, by definition of _tank
+    await runloop.sleep_ms(1200)
+    motor_pair.stop(PAIR, stop=motor.BRAKE)
+    await runloop.sleep_ms(400)
+    after = _yaw_deg()
+
+    change = _wrap180(after - before)
+    print("yaw before:", round(before, 1))
+    print("yaw after: ", round(after, 1))
+    print("the robot turned clockwise, and the gyro changed by", round(change, 1))
+    if change > 0:
+        print("=> the gyro counts UP clockwise. Set YAW_SIGN = +1")
+    elif change < 0:
+        print("=> the gyro counts DOWN clockwise. Set YAW_SIGN = -1")
+    else:
+        print("=> it did not move. Check the motors are paired and try again.")
+    return change
+
+
+# -----------------------------
+# Names closer to the block palette
+# -----------------------------
+# The functions above are named after toolkit.py, so the two Python files read
+# the same. These wrappers are named after the SPIKE App palette instead, for
+# anybody reading the blocks and this file side by side. Same functions.
+#
+# Prefer the toolkit names in mission code. These take CENTIMETRES where the
+# block took millimetres, which is exactly the trap drive_cm already guards
+# against.
+
+
+async def forward(cm, **kwargs):
+    """The blocks' ".Forward". Centimetres here, millimetres in the block."""
+    await drive_cm(abs(cm), **kwargs)
+
+
+async def backward(cm, **kwargs):
+    """The blocks' ".Backward". Centimetres here, millimetres in the block."""
+    await drive_cm(-abs(cm), **kwargs)
+
+
+async def left_pid(degrees, **kwargs):
+    """The blocks' ".Left (PID)". Degrees, same as the block."""
+    await turn_deg_gyro(-abs(degrees), **kwargs)
+
+
+async def right_pid(degrees, **kwargs):
+    """The blocks' ".Right (PID)". Degrees, same as the block."""
+    await turn_deg_gyro(abs(degrees), **kwargs)
+
+
+async def left_simple(degrees, **kwargs):
+    """The blocks' "Left (simple)". Degrees, same as the block."""
+    await turn_deg(-abs(degrees), **kwargs)
+
+
+async def right_simple(degrees, **kwargs):
+    """The blocks' "Right (simple)". Degrees, same as the block."""
+    await turn_deg(abs(degrees), **kwargs)
+
+
+async def gyro_backwards(speed_pct, degrees, **kwargs):
+    """The blocks' "Gyro Backwards (degrees) basic". Motor degrees, not distance."""
+    await gyro_backward_deg(speed_pct, degrees, **kwargs)
+
+
+# -----------------------------
+# Demo
+# -----------------------------
+# This mirrors the "when program starts" stack in Advanced-Coding-26.llsp3:
+# forward 300 mm, left 90, right 90, backward 300 mm.
+#
+# It is NOT called at the bottom of this file, on purpose. toolkit.py:436 calls
+# runloop.run(main()) at the top level, and tools/check-lessons.py execs the
+# toolkit for every lesson block, so that program is queued and drained on every
+# single one. To run this, call runloop.run(demo()) yourself.
+async def demo():
+    await init_robot()
+    await drive_cm(30)
+    await turn_deg_gyro(-90)
+    await turn_deg_gyro(90)
+    await drive_cm(-30)
