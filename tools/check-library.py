@@ -108,21 +108,17 @@ def sideways(start, end):
 
 
 async def detect_yaw_sign(shim, field, lib):
-    """Work out which way the pretend gyro counts, and tell the library.
+    """Check the library's YAW_SIGN against the pretend gyro.
 
-    This is the software twin of bench_check_yaw_sign(). It exists because the
-    simulator and the Word Blocks library disagree about the sign, and nobody
-    has settled it on the real hub yet:
+    This is the software twin of bench_check_yaw_sign(). The question it used to
+    settle is now settled: on 20 September 2026 the hub was measured, and it
+    counts yaw up ANTICLOCKWISE, so YAW_SIGN is -1.
 
-      - Advanced-Coding-26.llsp3 and Gyro-Drive-Straight both assume the gyro
-        counts up clockwise, which is YAW_SIGN = +1, the default in the library.
-      - tools/spike-shim.py:182-193 models it counting up anticlockwise, to
-        match toolkit.py:223.
+    That agrees with tools/spike-shim.py:182-193 and toolkit.py:223. It means
+    Advanced-Coding-26.llsp3 and Gyro-Drive-Straight both have the sign wrong.
 
-    See code/learn/10-gyro.md:262-269. Until somebody runs
-    bench_check_yaw_sign() on the hub, this file measures the simulator and
-    matches it, so the rest of the checks test the control loops rather than
-    re-testing the argument.
+    So this no longer overrides anything. If the library and the simulator ever
+    disagree again, that is a failure, not a note.
     """
     shim.sim.set_drift(0.0)
     field.reset(seed=1)
@@ -294,6 +290,26 @@ async def _(shim, field, lib):
             raise Failure("asked %.1f cm, moved only %.2f cm" % (asked, moved))
 
 
+@check("a wrong YAW_SIGN stops instead of spinning")
+async def _(shim, field, lib):
+    # This is the 20 September 2026 failure, reproduced on purpose. With the
+    # sign inverted the heading loop pushes the wrong way, and without the
+    # RUNAWAY_DEG guard the robot spins until the distance counter fills up.
+    # _drive_degrees() averages abs() of both encoders, so a spin reads as
+    # forward progress and the drive never notices.
+    lib["YAW_SIGN"] = -lib["YAW_SIGN"]
+    try:
+        start, end = await drive(shim, field, lib, lib["drive_cm"](44))
+    except RuntimeError as exc:
+        if "off course" not in str(exc):
+            raise Failure("wrong message: %s" % exc)
+        return
+    finally:
+        lib["YAW_SIGN"] = -lib["YAW_SIGN"]
+    raise Failure("spun to %.0f degrees without stopping"
+                  % heading_error(end[2], start[2]))
+
+
 @check("millimetres typed into a centimetres argument is refused")
 async def _(shim, field, lib):
     for name, args in [("drive_cm", (300,)), ("drive_cm", (-300,)),
@@ -341,16 +357,16 @@ async def run_all():
     sign, change, turned = await detect_yaw_sign(shim, field, lib)
     print("pretend gyro: turning clockwise %.1f degrees changed yaw by %.1f"
           % (turned, change))
-    if sign == lib["YAW_SIGN"]:
-        print("YAW_SIGN = %+d in the library, which matches. Nothing overridden."
-              % lib["YAW_SIGN"])
-    else:
-        print("YAW_SIGN = %+d in the library; the simulator wants %+d."
+    if sign != lib["YAW_SIGN"]:
+        print("")
+        print("YAW_SIGN = %+d in the library, but the gyro wants %+d."
               % (lib["YAW_SIGN"], sign))
-        print("Overriding for these checks only. Run bench_check_yaw_sign() on")
-        print("the hub to settle it, then edit the library. See the plan and")
-        print("code/learn/10-gyro.md:262-269.")
-        lib["YAW_SIGN"] = sign
+        print("With the sign wrong, a straight drive spins instead of driving.")
+        print("That happened on the hub on 20 September 2026. Fix the library,")
+        print("do not override it here.")
+        return 1
+    print("YAW_SIGN = %+d, which matches. Measured on the hub 20 Sep 2026."
+          % lib["YAW_SIGN"])
     print("")
 
     failures = []

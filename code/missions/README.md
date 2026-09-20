@@ -38,7 +38,41 @@ across files. So the `import` line above works for editing and reviewing here
 in git, but before a mission program actually runs on the hub, paste
 `toolkit.py`'s contents above the import line (replacing it), the way last
 season's `Missions/` files did — see `code/2025-reference/` (not published to
-this site). If a tool ever automates that concatenation step, update this note.
+this site).
+
+## The concatenation step is now a tool
+
+For the advanced library there is no pasting. A mission that uses
+[`../library/advanced.py`](../library/README.md) is called
+`mission-advanced.py`, and it is built:
+
+```
+python3 tools/build-mission.py
+```
+
+Everything above this marker line is a copy of `advanced.py`:
+
+```
+# ===== MISSION CODE BELOW. THE GENERATOR DOES NOT TOUCH THIS =====
+```
+
+Everything below it is yours. Edit there. Then rebuild, and paste the whole
+file onto the hub.
+
+**Port assignments go below the marker, not above.** Python runs the file top to
+bottom, and every function reads `LEFT_DRIVE` when it is called rather than when
+it is defined. So reassigning it after the library body works, and it survives a
+rebuild.
+
+`python3 tools/build-mission.py --check` fails if a built file has fallen behind
+the library. Run it before pushing.
+
+This is worth having because the hand-copied version went wrong.
+`M03-flip-the-rock/mission.py` still carries a header reading
+`Drive: A (left), E (right)` while its own code says `port.F` and `port.A`. Two
+lines apart, disagreeing, for weeks.
+
+`M03-flip-the-rock/mission-advanced.py` is the first one built this way.
 
 ## Workflow
 

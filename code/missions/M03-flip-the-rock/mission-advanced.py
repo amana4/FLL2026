@@ -1,3 +1,12 @@
+# GENERATED FILE — do not edit above the marker.
+#
+# The part above the marker is a copy of code/library/advanced.py. Refresh it
+# with:
+#
+#     python3 tools/build-mission.py code/missions/M03-flip-the-rock/mission-advanced.py
+#
+# Edit below the marker. That is where the ports and the mission live.
+
 # Advanced library – Python port of the word-blocks library (SPIKE App 3.5)
 #
 # This is a port of Advanced-Coding-26.llsp3, the team's Word Blocks library,
@@ -127,20 +136,17 @@ DEBUG = False
 # -----------------------------
 # Which way does the gyro count?
 # -----------------------------
-# -1 means the gyro reads more positive as the robot turns ANTICLOCKWISE.
+# +1 means the gyro reads more positive as the robot turns clockwise. That is
+# what Advanced-Coding-26.llsp3 assumes, and what Gyro-Drive-Straight assumes.
 #
-# SETTLED ON THE HUB, 20 September 2026. It used to be +1, which is what
-# Advanced-Coding-26.llsp3 and Gyro-Drive-Straight both assume. On the robot
-# that made the heading loop push the wrong way, so a drive_cm(-44) spun on the
-# spot instead of driving. The debug trace showed yaw falling straight through
-# 180 and wrapping, which is what positive feedback looks like.
+# It DISAGREES with toolkit.py:223, which steers by +yaw_err * kp, and with
+# tools/spike-shim.py:193, whose own docstring says its minus sign is there only
+# to match the toolkit. code/learn/10-gyro.md:262-269 flags the same conflict.
 #
-# So the two Word Blocks programs have the sign wrong, and toolkit.py:223 and
-# tools/spike-shim.py:193 had it right all along.
-#
-# Every correction in this file is written in terms of this, so this line is the
-# whole setting. bench_check_yaw_sign() re-measures it after any rebuild.
-YAW_SIGN = -1
+# Nobody has measured it. Run bench_check_yaw_sign() on the hub, then set this
+# once. Every correction in this file is written in terms of it, so flipping
+# this line is the whole fix.
+YAW_SIGN = +1
 
 # -----------------------------
 # Tuning, carried over from the blocks
@@ -199,15 +205,6 @@ TURN_PID_MAX_DEG_S = int(60 * MAX_DEG_S / 100)     # 630
 # How long any loop is allowed to run before it gives up, in milliseconds.
 DEFAULT_TIMEOUT_MS = 8000
 LOOP_MS = 15
-
-# How far off straight a "straight" drive is allowed to get before it gives up.
-#
-# A drive that is meant to hold a heading should never be tens of degrees off.
-# If it is, the loop is pushing the wrong way and the robot is spinning, not
-# driving. That happened on 20 September 2026 with YAW_SIGN set the wrong way.
-# Without this guard the robot spun until the distance counter filled up, which
-# took it right off the table.
-RUNAWAY_DEG = 45.0
 
 # Cruise speed for drive_cm, in deg/s. None means "work it out per move", the
 # way the .Forward block did. init_robot(default_speed=...) sets it.
@@ -571,16 +568,6 @@ async def _drive_ramp_cm(cm,
         correction = -(kp * error + kd * (error - last_error))
         last_error = error
 
-        if abs(error) > RUNAWAY_DEG:
-            motor_pair.stop(PAIR, stop=motor.BRAKE)
-            raise RuntimeError(
-                "Straight drive is %.0f degrees off course, so it stopped. The "
-                "heading loop is pushing the wrong way. Either YAW_SIGN is "
-                "wrong, or LEFT_DRIVE and RIGHT_DRIVE are swapped. Run "
-                "bench_check_yaw_sign() and watch which way the robot turns."
-                % error
-            )
-
         base = direction * _pct_to_deg_s(base_pct)
         trim = _pct_to_deg_s(correction)
         _tank(base + trim, base - trim)
@@ -728,14 +715,6 @@ async def gyro_backward_deg(speed_pct, degrees,
         error = _wrap180(_yaw_cw())
         correction = -(kp * error + kd * (error - last_error))
         last_error = error
-
-        if abs(error) > RUNAWAY_DEG:
-            motor_pair.stop(PAIR, stop=motor.BRAKE)
-            raise RuntimeError(
-                "Reverse drive is %.0f degrees off course, so it stopped. See "
-                "the note on RUNAWAY_DEG, and run bench_check_yaw_sign()."
-                % error
-            )
 
         base = -_pct_to_deg_s(abs(speed_pct))
         trim = _pct_to_deg_s(correction)
@@ -1198,3 +1177,127 @@ async def demo():
     await turn_deg_gyro(-90)
     await turn_deg_gyro(90)
     await drive_cm(-30)
+
+
+# ===== MISSION CODE BELOW. THE GENERATOR DOES NOT TOUCH THIS =====
+#
+# M03 — Flip the Rock, on the advanced library.
+#
+# Scoring, from robot-game/missions/M03-flip-the-rock.md:
+#   research flag down                      20
+#   bonus: rock back where it started      +10
+#
+# The approach on that page is still TODO, so main() below is NOT a mission
+# solution. It is the calibration run carried over from mission.py, ported to
+# this library. Write the real run once the approach is designed.
+
+
+# -----------------------------
+# This robot's ports
+# -----------------------------
+# These override the library above. Python runs top to bottom, and every
+# function reads these globals when it is called, so reassigning here works.
+#
+# Reference wiring, from mission.py:17-18. Ports A and B raised
+# OSError: [Errno 19] ENODEV on 20 September 2026, which is how we know.
+LEFT_DRIVE = port.F
+RIGHT_DRIVE = port.A
+
+attachment1 = port.C
+
+# Colour sensors are still unknown. Port F holds the left drive motor, so
+# right_color cannot be F. Run scan_ports() and fill these in. line_square()
+# and line_follow() refuse until then.
+left_color = port.E
+right_color = port.F
+
+# The mat this was measured on. 179 cm actual for 180 cm commanded.
+MAT_CALIBRATION = 179 / 180
+
+DEBUG = True
+
+
+# -----------------------------
+# Check the robot before trusting a run
+# -----------------------------
+async def check_robot():
+    """Run this once after any rebuild. Prints, does not drive.
+
+    Three things nobody has settled yet, in the order they matter.
+    """
+    print("--- ports ---")
+    scan_ports()
+    print("")
+    print("--- gyro direction ---")
+    await bench_check_yaw_sign()
+    print("")
+    print("Then: measure a drive_cm(180) with a tape and set MAT_CALIBRATION.")
+
+
+# -----------------------------
+# The calibration run
+# -----------------------------
+async def calibration_run():
+    """Drive out and back. The robot should finish where it started.
+
+    This is mission.py's main(), line for line, on this library:
+
+        motor.run_for_degrees(port.C, 180, 500)
+        print(set_calibration_scale(179/180))
+        await drive_cm(-44)
+        await drive_cm(44)
+
+    Two things changed on the way across.
+
+    The attachment call had no `await`, so it never ran. Nothing in mission.py
+    turned motor C at all. It does now.
+
+    drive_cm holds a heading here. In mission.py it does not, so a crooked
+    return was normal. Now it means something is actually wrong.
+    """
+    await move_attachment_deg(attachment1, 180, velocity=500)
+
+    print("calibration scale:", set_calibration_scale(MAT_CALIBRATION))
+
+    await drive_cm(-44)
+    await drive_cm(44)
+
+
+# -----------------------------
+# The mission
+# -----------------------------
+async def run_mission():
+    """TODO. Design the approach on robot-game/missions/M03-flip-the-rock.md first.
+
+    What it has to do:
+      1. Leave base and reach the rock, at 9.7, 68.0 on the mat
+         (robot-game/field-positions.md:78). Far left, mid-depth.
+      2. Flip the rock, which drops the research flag.        20 points
+      3. Put the rock back where it was.                     +10 points
+      4. Return to base.
+
+    Step 3 is a second, separate action. Budget the time for it or skip the
+    bonus on purpose, per the mission page.
+    """
+    raise NotImplementedError(
+        "M03 has no approach yet. See robot-game/missions/M03-flip-the-rock.md.")
+
+
+# -----------------------------
+# Main program
+# -----------------------------
+async def main():
+    # default_speed=500 matches mission.py:409, and that is not cosmetic.
+    # MAT_CALIBRATION was measured at 500 deg/s, and coasting distance goes with
+    # speed, so re-checking it at any other speed gives a different answer.
+    # Leave this out and drive_cm picks its own speed per move.
+    await init_robot(default_speed=500)
+
+    await calibration_run()
+
+    # Swap these in as the mission comes together.
+    # await check_robot()
+    # await run_mission()
+
+
+runloop.run(main())
