@@ -11,9 +11,9 @@ Ported from last season's `Library/toolKit.py` — see `code/2025-reference/`
 (not published to this site) for where it came from and what changed.
 
 `advanced.py` is a Python port of the Word Blocks library, **Advanced Coding
-26**. All fourteen My Blocks: ramped straight drives, PID turns, quick turns,
-line squaring and line following. See [`../my-blocks.md`](../my-blocks.md) for
-the block-by-block mapping.
+26**: ramped straight drives, PID turns and quick turns. The line-following
+blocks were ported and then removed, because the team is not using the colour
+sensors. See [`../my-blocks.md`](../my-blocks.md) for the block-by-block mapping.
 
 ## Which one do I use?
 
@@ -22,20 +22,29 @@ the block-by-block mapping.
 | What the missions already use | `toolkit.py` |
 | The same movement as the Word Blocks | `advanced.py` |
 | A drive that ramps up and down | `advanced.py`, `drive_cm` |
-| A gyro turn that actually works | `advanced.py`, `turn_deg_gyro` |
-| To follow or square on a line | `advanced.py`, hub only |
+| A gyro turn that actually works | `advanced.py`, `turn_deg` |
+| Turns whose errors do not pile up | `advanced.py`, `face` |
 
 Neither imports the other. They disagree in one place, described below.
 
 ## Same names in both files
 
-`advanced.py` uses `toolkit.py`'s function names. `init_robot`, `reset_yaw`,
+`advanced.py` uses `toolkit.py`'s function names: `init_robot`, `reset_yaw`,
 `drive_cm`, `drive_cm_gyro`, `turn_deg`, `turn_deg_gyro`, `arc_turn`,
-`run_attachment_deg`, `timed_attachment`, `move_attachment_deg`, `nudge_cm`,
-`micro_turn_deg`, `calibrate_wheel_diameter`, `set_calibration_scale`.
+`run_attachment_deg`, `move_attachment_deg`, `calibrate_wheel_diameter` and
+`set_calibration_scale`.
 
-A mission can move between the two files without hunting for a renamed
-function. `tools/check-library.py` fails if a name goes missing.
+**Three toolkit names are deliberately missing.** `nudge_cm`, `micro_turn_deg`
+and `timed_attachment` were dropped on 20 September 2026, because the team does
+not use them. `code/learn/` still teaches all three against `toolkit.py`, so
+calling one here raises a `NameError`. Use `drive_cm` for a nudge and
+`turn_deg` for a tiny turn.
+
+**And `turn_deg` means something better here.** The toolkit has a slow open-loop
+`turn_deg` and a gyro `turn_deg_gyro`. We measured the open-loop one: 1.54
+seconds and 4.26 degrees out, against 1.18 seconds and 0.58 degrees for the gyro
+turn. It was slower *and* worse, so it was deleted. `turn_deg` now is the gyro
+turn, and `turn_deg_gyro` is a second name for the same function.
 
 What changes is what happens underneath:
 
@@ -44,7 +53,7 @@ What changes is what happens underneath:
 | `drive_cm` | constant speed, no gyro | ramps up and down, holds the heading |
 | `drive_cm_gyro` | steering loop with five tuning knobs | the same function as `drive_cm` |
 | `turn_deg` | counts wheel degrees, needs `TRACK_W_MM` | spins on the gyro |
-| `turn_deg_gyro` | never moves the motors, see `code/learn/10-gyro.md` | works |
+| `turn_deg_gyro` | never moves the motors, see `code/learn/10-gyro.md` | the same function as `turn_deg` |
 
 Some toolkit arguments are gone, because they describe a control loop
 `advanced.py` does not have: `steer_limit`, `deadband_deg`, `steer_rate_limit`,
@@ -52,10 +61,10 @@ Some toolkit arguments are gone, because they describe a control loop
 `TypeError` rather than being quietly ignored. The ramp does the job
 `acceleration` and `deceleration` used to.
 
-There are also aliases named after the SPIKE palette — `forward`, `backward`,
-`left_pid`, `right_pid`, `left_simple`, `right_simple`, `gyro_backwards`. They
-are for reading the blocks and the Python side by side. Use the toolkit names in
-mission code.
+`advanced.py` adds two names the toolkit does not have. `bearing()` reports which
+way the robot points, measured from base. `face(degrees)` turns to a direction
+rather than by an amount, so the errors from one turn do not pass to the next.
+`code/learn/gyro-correction.html` has the pictures.
 
 **The units are not the same as the blocks.** The blocks take millimetres and
 this takes centimetres, so `.Forward 300` is `drive_cm(30)`. Copying the 300
@@ -89,6 +98,68 @@ guard the robot spun until the distance counter filled, because
 progress.
 
 `code/learn/10-gyro.md` has the long version.
+
+## The eight bugs we found in the Word Blocks
+
+`advanced.py` is not a literal copy of Advanced Coding 26. Eight things in the
+blocks were wrong, and the Python version fixes them. This is the record, so
+nobody "fixes" it back.
+
+1. **The blocks use `3.146` for pi**, in `zEnd Speed` and `zBackwards Acc`.
+   That is 0.14 percent long. Python uses `math.pi`, so distances shift very
+   slightly and the wheel calibration needs re-measuring.
+2. **`zEnd Speed` phase 1 zeroed its own last-error variable inside the loop.**
+   That turned its D term into extra P gain. `zBackwards Acc` did not do it,
+   so the two were not the mirror images they were meant to be.
+3. **The D term changed sign between phase 1 and phases 2 and 3.** One form is
+   used throughout now.
+4. **`zEnd Speed` counted motor B and `zBackwards Acc` counted motor A.** That
+   was not sloppiness: the two encoders are mirrored, so each one only counts
+   up in one direction. Python takes the size of both and averages, which works
+   either way round.
+5. **`Gyro Backwards basic` never zeroed its last-error variable**, so its first
+   correction used whatever the previously run block had left behind.
+6. **`.Right (PID)` stopped about a degree early and `.Left (PID)` did not.**
+   Stopping short is now an argument, off by default, and it works both ways.
+7. **The PID turns never limited their output or their integral.** A stall grew
+   the integral without bound. Both are clamped, and there is a minimum speed,
+   because below about 12 percent the motors buzz without moving.
+8. **Every `wait until` in the line blocks waited forever.** Miss the line once
+   and the robot sits still for the rest of the match. Kept for the record: the
+   line blocks were ported with timeouts, then removed with the rest of the
+   colour sensor code.
+
+Two more, found on the hub rather than by reading:
+
+9. **The blocks assume the gyro counts up clockwise. Ours counts up
+   anticlockwise.** We measured it on 20 September 2026, after a `drive_cm(-44)`
+   spun on the spot instead of driving. `YAW_SIGN = -1`. Run
+   `bench_check_yaw_sign()` to check it again after a rebuild.
+10. **A turn that brakes and never looks again keeps its overshoot.** The robot
+    rolls about 2.4 degrees past after the brakes go on. The turns now wait,
+    read the gyro again, and correct.
+
+## Which ports the motors are on
+
+Drive motors are **F (left) and A (right)**, from
+`code/missions/M03-flip-the-rock/mission.py:17-18`.
+
+`toolkit.py` claims A and B, confirmed on 13 September 2026. On 20 September the
+hub disagreed: `init_robot` raised `OSError: [Errno 19] ENODEV`, meaning no motor
+on A or B. F and A worked.
+
+The colour sensors are not in `advanced.py` at all. The team decided on
+20 September 2026 not to use them, so `line_square`, `line_follow` and the three
+helpers behind them were removed rather than left as code nobody runs.
+
+`toolkit.py` still names `left_color` and `right_color`, and `code/learn/03-ports.md`
+still teaches them. Those are unaffected.
+
+**What that costs.** `line_square` was the only thing in either library that could
+cancel a *position* error. `face()` fixes heading, and nothing fixes distance, so
+a long run's distance error now has no way to be reset. If a mission ever needs
+that, the choices are to bring the sensors back, or to drive gently into a wall
+or model and let the robot square up against it mechanically.
 
 ## Never read Python before?
 

@@ -8,9 +8,6 @@ It drives each simulator-safe function and checks where the robot ended up, so
 a typo or a runaway loop fails a check here instead of failing on the table five
 minutes before a match.
 
-The two line-following functions cannot be checked. The pretend hub has no
-colour sensor, so all this can confirm is that they refuse politely.
-
 Usage:
     python3 tools/check-library.py
 """
@@ -132,7 +129,7 @@ async def detect_yaw_sign(shim, field, lib):
     await shim.runloop.sleep_ms(50)
 
     before = lib["_yaw_deg"]()
-    power = lib["_pct_to_deg_s"](20)
+    power = 210            # 20 percent of MAX_DEG_S, in deg/s
     lib["_tank"](power, -power)          # clockwise, by definition of _tank
     await shim.runloop.sleep_ms(400)
     lib["motor_pair"].stop(lib["PAIR"])
@@ -196,32 +193,42 @@ async def _(shim, field, lib):
         raise Failure("ended %.2f cm from where it started" % travelled(start, end))
 
 
-@check("turn_deg_gyro(90) then turn_deg_gyro(-90) comes back to square")
+@check("turn_deg(90) then turn_deg(-90) comes back to square")
 async def _(shim, field, lib):
     async def out_and_back():
-        await lib["turn_deg_gyro"](90)
-        await lib["turn_deg_gyro"](-90)
+        await lib["turn_deg"](90)
+        await lib["turn_deg"](-90)
 
     start, end = await drive(shim, field, lib, out_and_back())
     close(heading_error(end[2], start[2]), 0.0, 4.0, "heading")
 
 
-@check("turn_deg_gyro(90) turns clockwise, near 90")
+@check("turn_deg(90) turns clockwise, near 90")
 async def _(shim, field, lib):
-    start, end = await drive(shim, field, lib, lib["turn_deg_gyro"](90))
+    start, end = await drive(shim, field, lib, lib["turn_deg"](90))
     close(heading_error(end[2], start[2] + 90.0), 0.0, 5.0, "turn size")
 
 
-@check("turn_deg(-90) lands inside its own tolerance")
+@check("turn_deg is the gyro turn now, so -90 lands close")
 async def _(shim, field, lib):
+    # The old open-loop turn_deg was about 4 degrees out and slower. It was
+    # deleted on 20 September 2026 and this name now means the gyro turn, which
+    # is what code/learn/ teaches in 62 places.
     start, end = await drive(shim, field, lib, lib["turn_deg"](-90))
-    close(heading_error(end[2], start[2] - 90.0), 0.0, 8.0, "turn size")
+    close(heading_error(end[2], start[2] - 90.0), 0.0, 3.0, "turn size")
+
+
+@check("turn_deg_gyro is the same function as turn_deg")
+async def _(shim, field, lib):
+    _, plain = await drive(shim, field, lib, lib["turn_deg"](45))
+    _, alias = await drive(shim, field, lib, lib["turn_deg_gyro"](45))
+    close(heading_error(alias[2], plain[2]), 0.0, 1.5, "heading")
 
 
 @check("bearing() survives the yaw resets other moves do")
 async def _(shim, field, lib):
     async def out_and_back():
-        await lib["turn_deg_gyro"](90)
+        await lib["turn_deg"](90)
         await lib["drive_cm"](20)      # this zeroes the gyro internally
         # bearing() must still report about 90, not about 0
         if abs(lib["bearing"]() - 90.0) > 4.0:
@@ -257,7 +264,7 @@ async def _(shim, field, lib):
 @check("face(0) and face(360) both take the short way home")
 async def _(shim, field, lib):
     async def go(target):
-        await lib["turn_deg_gyro"](90)
+        await lib["turn_deg"](90)
         await lib["face"](target)
 
     _, zero = await drive(shim, field, lib, go(0))
@@ -266,44 +273,20 @@ async def _(shim, field, lib):
     close(heading_error(full[2], 0.0), 0.0, 3.0, "face(360)")
 
 
-@check("turn_deg_gyro(3) does not stall below the minimum power")
+@check("turn_deg(3) does not stall below the minimum power")
 async def _(shim, field, lib):
-    start, end = await drive(shim, field, lib, lib["turn_deg_gyro"](3))
+    start, end = await drive(shim, field, lib, lib["turn_deg"](3))
     if heading_error(end[2], start[2]) < 0.5:
         raise Failure("a 3 degree turn did not move the robot at all")
 
 
-@check("gyro_backward_deg(50, 360) terminates")
+@check("gyro_backward_deg(400, 360) terminates")
 async def _(shim, field, lib):
-    start, end = await drive(shim, field, lib, lib["gyro_backward_deg"](50, 360))
+    start, end = await drive(shim, field, lib, lib["gyro_backward_deg"](400, 360))
     if travelled(start, end) < 1.0:
         raise Failure("never moved")
     if end[1] >= start[1]:
         raise Failure("went forwards, not backwards")
-
-
-@check("the palette aliases do the same thing as the toolkit names")
-async def _(shim, field, lib):
-    # Not exactly the same: the simulator steps on real time, so the loop can
-    # overshoot its target by up to one 15 ms tick. That is about 0.3 cm at
-    # these speeds, and it varies between two runs of the same function.
-    _, plain = await drive(shim, field, lib, lib["drive_cm"](25))
-    _, alias = await drive(shim, field, lib, lib["forward"](25))
-    close(alias[0], plain[0], 0.3, "x")
-    close(alias[1], plain[1], 0.3, "y")
-
-    _, plain = await drive(shim, field, lib, lib["drive_cm"](-25))
-    _, alias = await drive(shim, field, lib, lib["backward"](25))
-    close(alias[0], plain[0], 0.3, "x")
-    close(alias[1], plain[1], 0.3, "y")
-
-    _, plain = await drive(shim, field, lib, lib["turn_deg_gyro"](45))
-    _, alias = await drive(shim, field, lib, lib["right_pid"](45))
-    close(heading_error(alias[2], plain[2]), 0.0, 1.5, "heading")
-
-    _, plain = await drive(shim, field, lib, lib["turn_deg"](-45))
-    _, alias = await drive(shim, field, lib, lib["left_simple"](45))
-    close(heading_error(alias[2], plain[2]), 0.0, 1.5, "heading")
 
 
 @check("drive_cm_gyro is the same function as drive_cm")
@@ -314,16 +297,19 @@ async def _(shim, field, lib):
     close(gyro[1], plain[1], 0.3, "y")
 
 
-@check("every toolkit.py public name exists here too")
+@check("the names missions actually use are all here")
 async def _(shim, field, lib):
     # The point of this file is that a mission can move between the two
     # libraries without hunting for a renamed function.
+    # Not the whole of toolkit.py any more. nudge_cm, micro_turn_deg and
+    # timed_attachment were dropped on 20 September 2026 because the team does
+    # not use them. The lessons still teach them against toolkit.py, so a kid
+    # calling nudge_cm here gets a NameError.
     expected = [
         "init_robot", "reset_yaw", "drive_cm", "drive_cm_gyro",
         "turn_deg", "turn_deg_gyro", "arc_turn", "run_attachment_deg",
-        "timed_attachment", "move_attachment_deg", "nudge_cm",
-        "micro_turn_deg", "calibrate_wheel_diameter", "set_calibration_scale",
-        "face", "bearing",
+        "move_attachment_deg", "calibrate_wheel_diameter",
+        "set_calibration_scale", "face", "bearing",
     ]
     missing = [name for name in expected if name not in lib]
     if missing:
@@ -370,7 +356,7 @@ async def _(shim, field, lib):
 @check("millimetres typed into a centimetres argument is refused")
 async def _(shim, field, lib):
     for name, args in [("drive_cm", (300,)), ("drive_cm", (-300,)),
-                       ("forward", (300,)), ("backward", (300,))]:
+                       ("drive_cm_gyro", (300,))]:
         try:
             await drive(shim, field, lib, lib[name](*args))
         except ValueError as exc:
@@ -378,32 +364,6 @@ async def _(shim, field, lib):
                 raise Failure("%s: wrong message: %s" % (name, exc))
         else:
             raise Failure("%s%r drove 3 metres instead of refusing" % (name, args))
-
-
-@check("line_square refuses politely with no colour sensor")
-async def _(shim, field, lib):
-    if lib["_HAS_COLOUR"]:
-        return
-    try:
-        await drive(shim, field, lib, lib["line_square"]())
-    except RuntimeError as exc:
-        if "real hub" not in str(exc):
-            raise Failure("wrong message: %s" % exc)
-        return
-    raise Failure("should have refused, but ran")
-
-
-@check("line_follow refuses politely with no colour sensor")
-async def _(shim, field, lib):
-    if lib["_HAS_COLOUR"]:
-        return
-    try:
-        await drive(shim, field, lib, lib["line_follow"](1, 2))
-    except RuntimeError as exc:
-        if "real hub" not in str(exc):
-            raise Failure("wrong message: %s" % exc)
-        return
-    raise Failure("should have refused, but ran")
 
 
 async def run_all():

@@ -24,23 +24,29 @@ Names starting with `.` are the ones to use. Names starting with `z` are
 internals that a `.` block calls, named that way so they sort to the bottom of
 the palette.
 
-| Block | Python | Also called |
-| --- | --- | --- |
-| `.Forward (Mm)` | `drive_cm(cm)` | `forward(cm)` |
-| `.Backward (mm)` | `drive_cm(-cm)` | `backward(cm)` |
-| `.Left (PID)` / `.Right (PID)` | `turn_deg_gyro(-deg)` / `turn_deg_gyro(deg)` | `left_pid()` / `right_pid()` |
-| `Left (simple)` / `Right (simple)` | `turn_deg(-deg)` / `turn_deg(deg)` | `left_simple()` / `right_simple()` |
-| `Gyro Backwards (degrees) basic` | `gyro_backward_deg(speed_pct, degrees)` | `gyro_backwards()` |
-| `Line Square` | `line_square()` | |
-| `Line Follow` | `line_follow(side, seconds)` | |
+| Block | Python |
+| --- | --- |
+| `.Forward (Mm)` | `drive_cm(cm)` |
+| `.Backward (mm)` | `drive_cm(-cm)` |
+| `.Left (PID)` / `.Right (PID)` | `turn_deg(-deg)` / `turn_deg(deg)` |
+| `Left (simple)` / `Right (simple)` | not ported. It was slower and less accurate |
+| `Gyro Backwards (degrees) basic` | `gyro_backward_deg(speed, degrees)` |
+| `Line Square` | not ported. We are not using the colour sensors |
+| `Line Follow` | not ported, same reason |
+| nothing in the blocks | `face(deg)`, which turns to a direction |
 
-The middle column uses the same names as
-[`library/toolkit.py`](library/toolkit.py), so mission code can move between the
-two Python files without renaming anything. The sign says which way to go:
-positive is forward or clockwise.
+The Python names match [`library/toolkit.py`](library/toolkit.py), which is what
+`code/learn/` teaches. The sign says which way: positive is forward or clockwise.
 
-The last column reads closer to the palette, for anybody comparing the blocks
-and the Python. They are the same functions.
+**Three blocks were not ported.** The simple turns lost to the PID ones on both
+speed and accuracy, measured on 20 September 2026: 1.54 seconds and 4.26 degrees
+out, against 1.18 seconds and 0.58 degrees. The two line blocks need colour
+sensors the team decided not to use.
+
+**One thing in Python has no block.** `face(90)` turns to a direction measured
+from base, instead of by an amount from wherever the robot is now. That is what
+stops small turn errors piling up over a run. See
+[the pictures](learn/gyro-correction.html).
 
 **The units are not the same.** The blocks take millimetres and the Python takes
 centimetres. `.Forward 300` is `drive_cm(30)`, not `drive_cm(300)`. Getting that
@@ -120,8 +126,8 @@ number is right for one speed and one floor, so check it on the competition mat.
 
 **Gotcha, PID version:** below roughly 12 percent power the wheels buzz without
 moving. The block gets around it by accepting anything within a degree. The
-Python port sets a minimum power instead, which is why `turn_deg_gyro(3)` works
-and the block version of a 3 degree turn does not.
+Python port sets a minimum power instead, which is why `turn_deg(3)` works and
+the block version of a 3 degree turn does not.
 
 **Status:** ☑ built ☐ tested ☐ used in a run
 
