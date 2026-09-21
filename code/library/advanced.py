@@ -213,6 +213,17 @@ RUNAWAY_DEG = 45.0
 # way the .Forward block did. init_robot(default_speed=...) sets it.
 DEFAULT_DRIVE_DEG_S = None
 
+# Which bearing the gyro's current zero stands for, in degrees from base.
+# Maintained by _reset_yaw and read by bearing(). init_robot() sets it to 0,
+# which is what makes base "zero" for the whole run.
+_HEADING_BASE = 0.0
+
+# What the last drive actually aimed for, in cm, and how much coast allowance it
+# gave away to get there. For debug logs in mission code. See
+# code/missions/M02-exploding-seeds/mission-advanced.py.
+_LAST_DRIVE_TARGET_CM = 0.0
+_LAST_DRIVE_COMP_CM = 0.0
+
 # -----------------------------
 # Geometry helpers
 # -----------------------------
@@ -227,6 +238,18 @@ def _cm_to_deg(cm):
     circ_mm = pi * effective_wheel_d
     rotations = (abs(cm) * 10.0) / circ_mm
     return int(round(rotations * 360.0))
+
+
+def _deg_to_cm(deg):
+    """Motor shaft degrees back to distance in cm. The inverse of _cm_to_deg.
+
+    Do NOT do this by dividing by _cm_to_deg(1). That rounds to a whole number of
+    degrees, which on these wheels is 18 instead of 18.47, and every distance you
+    report comes out 2.6 percent long.
+    """
+    effective_wheel_d = WHEEL_D_MM * CALIBRATION_SCALE
+    circ_mm = pi * effective_wheel_d
+    return (abs(deg) / 360.0) * circ_mm / 10.0
 
 
 def _robot_deg_to_wheel_deg(robot_deg):
@@ -254,7 +277,27 @@ def _yaw_cw():
 
 
 def _reset_yaw(deg=0):
+    """Zero the gyro, and remember which bearing that zero now stands for.
+
+    Several moves zero the gyro so they can hold "straight" as zero. That throws
+    away where the robot is pointing relative to base, which is what face()
+    needs. So this keeps a running total: _HEADING_BASE is the bearing the
+    gyro's current zero represents, and bearing() adds the two back together.
+    """
+    global _HEADING_BASE
+    _HEADING_BASE = _HEADING_BASE + _yaw_cw() - deg
     motion_sensor.reset_yaw(int(deg * 10))
+
+
+def bearing():
+    """Which way the robot is pointing, in degrees from base.
+
+    Base is however you set the robot down when init_robot() ran. It does not
+    move for the rest of the run, no matter how many times a move zeroes the
+    gyro. Clockwise is positive, and it keeps counting past 360 rather than
+    wrapping, so a robot that has turned right four times reads about 360.
+    """
+    return _HEADING_BASE + _yaw_cw()
 
 
 def _wrap180(a):
@@ -358,6 +401,14 @@ ALL_PORTS = (("A", port.A), ("B", port.B), ("C", port.C),
              ("D", port.D), ("E", port.E), ("F", port.F))
 
 
+def port_label(which_port):
+    """Turn a port object back into its letter, for readable messages."""
+    for name, candidate in ALL_PORTS:
+        if candidate is which_port:
+            return name
+    return "?"
+
+
 def _has_motor(which_port):
     """True if there is a motor on this port. Asking is the only way to know."""
     try:
@@ -416,9 +467,13 @@ def scan_ports():
 async def reset_yaw():
     """Zero the gyro and both drive encoders, then let the gyro settle.
 
-    Same name and same job as toolkit.py:108.
+    Same name and same job as toolkit.py:108. This also declares "here is base":
+    bearing() reads 0 afterwards, and face() measures from this direction for the
+    rest of the run.
     """
+    global _HEADING_BASE
     motion_sensor.reset_yaw(0)
+    _HEADING_BASE = 0.0
     motor.reset_relative_position(LEFT_DRIVE, 0)
     motor.reset_relative_position(RIGHT_DRIVE, 0)
     await runloop.sleep_ms(500)
@@ -527,6 +582,13 @@ async def _drive_ramp_cm(cm,
     target_cm = abs(cm) - stop_comp_cm
     if target_cm <= 0:
         return
+
+    # Record what this move actually aimed for, so a mission's debug log can
+    # compare the wheels against the real target instead of guessing at the
+    # coast allowance and reporting a gap that is not a fault.
+    global _LAST_DRIVE_TARGET_CM, _LAST_DRIVE_COMP_CM
+    _LAST_DRIVE_TARGET_CM = target_cm
+    _LAST_DRIVE_COMP_CM = stop_comp_cm
 
     dist_deg = _cm_to_deg(target_cm)
     ramp_deg = _cm_to_deg(abs(ramp_cm))
@@ -750,18 +812,81 @@ async def gyro_backward_deg(speed_pct, degrees,
 # -----------------------------
 # Turns, PID
 # -----------------------------
-async def turn_deg_gyro(angle_deg,
-                        velocity=TURN_PID_MAX_DEG_S,
-                        kp=KP_TURN,
-                        ki=KI_TURN,
-                        kd=KD_TURN,
-                        tolerance=1.0,
-                        stop_early_deg=0.0,
-                        stop_mode=motor.BRAKE,
-                        min_pct=12,
-                        integral_limit=500.0,
-                        timeout_ms=DEFAULT_TIMEOUT_MS):
-    """Spin in place to a gyro angle, using full PID.
+async def _turn_to_bearing(target,
+                           velocity=TURN_PID_MAX_DEG_S,
+                           kp=KP_TURN,
+                           ki=KI_TURN,
+                           kd=KD_TURN,
+                           tolerance=1.0,
+                           stop_mode=motor.BRAKE,
+                           min_pct=12,
+                           integral_limit=500.0,
+                           settle_ms=150,
+                           settle_passes=2,
+                           timeout_ms=DEFAULT_TIMEOUT_MS):
+    """Spin until bearing() reaches `target`. The shared loop behind both turns.
+
+    It does not zero the gyro. It does not need to: bearing() is absolute, so the
+    loop can aim at a bearing directly. That is what lets face() exist.
+
+    After braking it waits settle_ms, reads the gyro again, and goes round once
+    more if the robot coasted past. Without that the momentum after the brake is
+    never corrected. On the hub that was worth about 2.4 degrees a turn, measured
+    20 September 2026. The simulator has no momentum, so it could not show it.
+
+    Fix 7 lives here. The blocks never clamped Output and never guarded Integral,
+    so a stall grew the integral without limit. min_pct is new as well: below
+    roughly 12 percent the motors buzz without moving, which is what the block's
+    1 degree fudge was quietly working around.
+    """
+    max_pct = abs(_deg_s_to_pct(velocity))
+    max_steps = int(timeout_ms / LOOP_MS)
+
+    for attempt in range(1 + max(0, settle_passes)):
+        previous_error = 0.0
+        integral = 0.0
+        steps = 0
+
+        while True:
+            error = target - bearing()
+            if abs(error) < tolerance:
+                break
+            steps += 1
+            if steps > max_steps:
+                if DEBUG:
+                    print("turn timed out", round(error, 2), "degrees short")
+                break
+
+            integral = _clamp(integral + error, -integral_limit, integral_limit)
+            derivative = error - previous_error
+            previous_error = error
+
+            output = kp * error + ki * integral + kd * derivative
+            output = _clamp(output, -max_pct, max_pct)
+            # Below the stall speed the wheels buzz and do not move.
+            if 0 < abs(output) < min_pct:
+                output = min_pct if output > 0 else -min_pct
+
+            power = _pct_to_deg_s(output)
+            _tank(power, -power)
+
+            if DEBUG:
+                print("turn err:", round(error, 2), "out%:", round(output, 1))
+
+            await runloop.sleep_ms(LOOP_MS)
+
+        motor_pair.stop(PAIR, stop=stop_mode)
+        await runloop.sleep_ms(settle_ms)
+
+        # Did the robot coast past while it was braking?
+        if abs(target - bearing()) < tolerance:
+            break
+        if DEBUG:
+            print("coasted past by", round(target - bearing(), 2), "- going again")
+
+
+async def turn_deg_gyro(angle_deg, stop_early_deg=0.0, **kwargs):
+    """Spin in place BY this many degrees, using full PID.
 
     Same name as toolkit.py:303, and unlike that one this actually turns the
     robot. The toolkit's version has its motor call commented out and has never
@@ -772,65 +897,49 @@ async def turn_deg_gyro(angle_deg,
     ".Right (PID)" merged, because they were the same loop with the target
     negated.
 
-    velocity is deg/s and caps how hard the turn pushes.
-
-    Fixes 6 and 7 live here.
+    This is a RELATIVE turn: 90 means "a quarter turn from wherever I am now".
+    Call it four times and the small errors add up. Use face() instead when that
+    matters. See code/learn/gyro-correction.html.
 
     Fix 6: the right-hand block exited on abs((Degrees - 1) - yaw) < 1 while
     driving on Error = Degrees - yaw, so it stopped about a degree short. The
     left-hand block was symmetric. Stopping short is now stop_early_deg, it is
     off by default, and it applies to both directions.
-
-    Fix 7: Output was never clamped and Integral never guarded. On a stall the
-    integral grew without limit. min_pct is new as well: below roughly 12
-    percent the motors stall, which is what the block's 1 degree fudge was
-    quietly working around.
     """
     if angle_deg == 0:
         return
-
-    max_pct = abs(_deg_s_to_pct(velocity))
     facing = 1.0 if angle_deg > 0 else -1.0
-    target = angle_deg - (stop_early_deg * facing)
-
-    _reset_yaw(0)
     await _settle()
+    target = bearing() + angle_deg - (stop_early_deg * facing)
+    await _turn_to_bearing(target, **kwargs)
 
-    previous_error = 0.0
-    integral = 0.0
-    steps = 0
-    max_steps = int(timeout_ms / LOOP_MS)
 
-    while True:
-        error = target - _wrap180(_yaw_cw())
-        if abs(error) < tolerance:
-            break
-        steps += 1
-        if steps > max_steps:
-            if DEBUG:
-                print("turn_deg_gyro timed out", round(error, 2), "short")
-            break
+async def face(bearing_deg, shortest=True, stop_early_deg=0.0, **kwargs):
+    """Turn to point at an absolute bearing, measured from base.
 
-        integral = _clamp(integral + error, -integral_limit, integral_limit)
-        derivative = error - previous_error
-        previous_error = error
+    Base is however you set the robot down when init_robot() ran. face(90) means
+    the same physical direction all run long, however far the robot has wandered
+    since. That is the difference from turn_deg_gyro, which measures from
+    wherever the robot happens to be pointing this second.
 
-        output = kp * error + ki * integral + kd * derivative
-        output = _clamp(output, -max_pct, max_pct)
-        # Below the stall speed the wheels buzz and do not move.
-        if 0 < abs(output) < min_pct:
-            output = min_pct if output > 0 else -min_pct
+    Because every target is measured from the same fixed line, a turn that lands
+    a degree short does not pass that degree on. Errors stop piling up. Four
+    turns round a square end about 1 degree out instead of 17. The numbers are in
+    code/learn/gyro-correction.html.
 
-        power = _pct_to_deg_s(output)
-        _tank(power, -power)
-
-        if DEBUG:
-            print("turn err:", round(error, 2), "out%:", round(output, 1))
-
-        await runloop.sleep_ms(LOOP_MS)
-
-    motor_pair.stop(PAIR, stop=stop_mode)
-    await runloop.sleep_ms(100)
+    shortest=True turns whichever way is nearer, so face(0) and face(360) both
+    mean "back to the bearing you started on" and both take the short way round.
+    Pass shortest=False to make the robot travel the long way on purpose.
+    """
+    await _settle()
+    if shortest:
+        target = bearing() + _wrap180(bearing_deg - bearing())
+    else:
+        target = bearing_deg
+    if stop_early_deg:
+        facing = 1.0 if target > bearing() else -1.0
+        target = target - (stop_early_deg * facing)
+    await _turn_to_bearing(target, **kwargs)
 
 
 # -----------------------------
@@ -845,6 +954,11 @@ async def turn_deg(angle_deg,
 
     Same name as toolkit.py:277. Positive angle_deg turns clockwise, negative
     counter-clockwise. This is "Left (simple)" and "Right (simple)" merged.
+
+    PREFER turn_deg_gyro, OR face. This one is open loop: it spins at a flat
+    speed, brakes a few degrees early, and never checks the result. That costs
+    about 4 degrees a turn against turn_deg_gyro's 1. It is kept because the
+    Word Blocks library has it and it is quicker.
 
     Cruder than turn_deg_gyro and quite a lot quicker, which is why the blocks
     kept both. It stops overshoot_deg short and lets momentum finish the turn.
@@ -913,15 +1027,38 @@ async def arc_turn(radius_cm, angle_deg, velocity=400, stop_mode=motor.BRAKE):
                                       velocity=velocity, stop=stop_mode)
 
 
+def _attachment_args(degrees, velocity):
+    """Split a signed degree count into (degrees, signed velocity).
+
+    SPIKE takes the direction from the sign of the VELOCITY. The degree count is
+    a distance and has to be positive. Pass a negative degree count and the
+    target sits behind the direction of travel, so the motor never arrives and
+    the await never returns. No error, no timeout, just a program that stops.
+
+    That cost us a hub session on 20 September 2026. The pretend hub hides it:
+    tools/spike-shim.py:483-494 takes abs(degrees) and flips the velocity itself,
+    so the mistake only shows on the real robot.
+
+    Missions can therefore write -150 and mean "150 degrees the other way".
+    """
+    turns = abs(int(degrees))
+    speed = abs(int(velocity))
+    if degrees < 0:
+        speed = -speed
+    return turns, speed
+
+
 async def run_attachment_deg(which_port, degrees, velocity=300,
                              stop_mode=motor.BRAKE):
     """Run an attachment motor by degrees (C or D typically).
 
-    Same as toolkit.py:362, including its 200 degree guard.
+    Same as toolkit.py:362, including its 200 degree guard. Negative degrees run
+    the other way; see _attachment_args for why that needs handling.
     """
-    if degrees > 200:
+    if abs(degrees) > 200:
         return
-    await motor.run_for_degrees(which_port, degrees, velocity, stop=stop_mode)
+    turns, speed = _attachment_args(degrees, velocity)
+    await motor.run_for_degrees(which_port, turns, speed, stop=stop_mode)
 
 
 async def timed_attachment(which_port, velocity=400, ms=250,
@@ -931,8 +1068,14 @@ async def timed_attachment(which_port, velocity=400, ms=250,
 
 
 async def move_attachment_deg(which_port, degrees, velocity=1000):
-    """Move an attachment motor by degrees, with no guard. Same as toolkit.py:390."""
-    await motor.run_for_degrees(which_port, degrees, velocity=velocity)
+    """Move an attachment motor by degrees, with no 200 degree guard.
+
+    Same as toolkit.py:390. Negative degrees run the other way; see
+    _attachment_args for why that has to be translated rather than passed
+    straight through.
+    """
+    turns, speed = _attachment_args(degrees, velocity)
+    await motor.run_for_degrees(which_port, turns, speed)
 
 
 async def nudge_cm(cm=1.5, velocity=250):

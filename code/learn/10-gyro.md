@@ -4,6 +4,10 @@ The wheels tell the robot how far it has gone. Nothing so far tells it which way
 is pointing. The gyro does that, and it is the difference between a run that works
 once and a run that works ten times.
 
+If you would rather see it than read it, there are four pictures:
+[**how gyro correction works**](gyro-correction.html). Drift, the error angle, the
+two wheel speeds, the loop, and what happens when the sign is backwards.
+
 ## Drifting
 
 A real robot does not drive straight. One motor is a little stronger, one tyre grips

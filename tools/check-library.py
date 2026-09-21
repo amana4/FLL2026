@@ -80,6 +80,9 @@ async def drive(shim, field, lib, coro, drift=0.0):
     # field.reset() unpairs the motors, so pair them again. On the hub this is
     # what init_robot() does, but that also sleeps, which would skew the pose.
     lib["motor_pair"].pair(lib["PAIR"], lib["LEFT_DRIVE"], lib["RIGHT_DRIVE"])
+    # init_robot() also declares "here is base" by zeroing this. Skipping it
+    # would leak the last check's bearing into the next one.
+    lib["_HEADING_BASE"] = 0.0
 
     start = shim.sim.pose()
     stdout = sys.stdout
@@ -215,6 +218,54 @@ async def _(shim, field, lib):
     close(heading_error(end[2], start[2] - 90.0), 0.0, 8.0, "turn size")
 
 
+@check("bearing() survives the yaw resets other moves do")
+async def _(shim, field, lib):
+    async def out_and_back():
+        await lib["turn_deg_gyro"](90)
+        await lib["drive_cm"](20)      # this zeroes the gyro internally
+        # bearing() must still report about 90, not about 0
+        if abs(lib["bearing"]() - 90.0) > 4.0:
+            raise Failure("bearing() reads %.2f after a drive, wanted about 90"
+                          % lib["bearing"]())
+
+    await drive(shim, field, lib, out_and_back())
+
+
+@check("face() is absolute, so a square does not accumulate error")
+async def _(shim, field, lib):
+    async def square(turn):
+        for k in range(4):
+            await lib["drive_cm"](30)
+            await turn(k)
+
+    # relative turns: each one inherits the last one's shortfall
+    _, rel = await drive(shim, field, lib,
+                         square(lambda k: lib["turn_deg"](90)), drift=8.0)
+    # absolute bearings: every target measured from base
+    _, absolute = await drive(shim, field, lib,
+                              square(lambda k: lib["face"](90 * (k + 1))), drift=8.0)
+
+    rel_off = heading_error(rel[2], 0.0)
+    abs_off = heading_error(absolute[2], 0.0)
+    if abs_off >= rel_off:
+        raise Failure("face() was no better: %.2f deg against %.2f deg"
+                      % (abs_off, rel_off))
+    if abs_off > 4.0:
+        raise Failure("face() left the square %.2f deg out, wanted under 4" % abs_off)
+
+
+@check("face(0) and face(360) both take the short way home")
+async def _(shim, field, lib):
+    async def go(target):
+        await lib["turn_deg_gyro"](90)
+        await lib["face"](target)
+
+    _, zero = await drive(shim, field, lib, go(0))
+    _, full = await drive(shim, field, lib, go(360))
+    close(heading_error(zero[2], 0.0), 0.0, 3.0, "face(0)")
+    close(heading_error(full[2], 0.0), 0.0, 3.0, "face(360)")
+
+
 @check("turn_deg_gyro(3) does not stall below the minimum power")
 async def _(shim, field, lib):
     start, end = await drive(shim, field, lib, lib["turn_deg_gyro"](3))
@@ -272,6 +323,7 @@ async def _(shim, field, lib):
         "turn_deg", "turn_deg_gyro", "arc_turn", "run_attachment_deg",
         "timed_attachment", "move_attachment_deg", "nudge_cm",
         "micro_turn_deg", "calibrate_wheel_diameter", "set_calibration_scale",
+        "face", "bearing",
     ]
     missing = [name for name in expected if name not in lib]
     if missing:

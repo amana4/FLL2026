@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How gyro correction works</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Skinned to the site's BIOGLOW palette in tools/theme.css, and to Nunito,
+     which mkdocs.yml picked because the audience is nine. */
+  :root {
+    --paper: #fbfdfb;
+    --paper-2: #ffffff;
+    --ink: #123d2b;
+    --muted: #4f6b5c;
+    --soft: #7fa791;
+    --rule: rgba(18, 61, 43, 0.12);
+    --accent: #0b7a63;
+    --warn: #c2542f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 2.5rem 1.5rem 4rem;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Nunito', system-ui, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 920px; margin: 0 auto; }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.5rem;
+  }
+  h1 { font-size: 2rem; font-weight: 700; margin: 0 0 0.5rem; letter-spacing: -0.01em; }
+  h2 {
+    font-size: 1.125rem; font-weight: 700; margin: 3rem 0 0.25rem;
+    padding-top: 1.5rem; border-top: 1px solid var(--rule);
+  }
+  .lede { color: var(--muted); margin: 0 0 1rem; max-width: 62ch; }
+  p { max-width: 68ch; }
+  figure { margin: 1.25rem 0 0; }
+  svg { width: 100%; height: auto; display: block; }
+  pre {
+    margin: 1.25rem 0 0; padding: 1rem 1.25rem; overflow-x: auto;
+    background: var(--paper-2); border: 1px solid var(--rule); border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.8125rem; line-height: 1.7;
+  }
+  pre .c { color: var(--soft); }
+  table { border-collapse: collapse; width: 100%; margin: 1.25rem 0 0; font-size: 0.9375rem; }
+  th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--rule); }
+  th { font-family: 'JetBrains Mono', monospace; font-size: 0.6875rem;
+       letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  code { font-family: 'JetBrains Mono', monospace; font-size: 0.875em; }
+  .note {
+    margin: 1.5rem 0 0; padding: 1rem 1.25rem; background: var(--paper-2);
+    border: 1px solid var(--rule); border-radius: 6px;
+  }
+  .note p { margin: 0; }
+  footer {
+    margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace; font-size: 0.6875rem;
+    letter-spacing: 0.08em; color: var(--soft);
+  }
+</style>
+</head>
+<body>
+<main>
+
+  <p class="eyebrow">Robot game · driving straight</p>
+  <h1>How gyro correction works</h1>
+  <p class="lede">A real robot never drives straight on its own. The gyro is how it
+  notices, and the correction is how it argues back. Four pictures.</p>
+
+  <h2>1. The gyro measures how far off straight you are</h2>
+  <p>One motor is stronger than the other, one tyre grips better, the battery
+  sags. Over 20 cm you cannot see it. Over 90 cm it misses the model.</p>
+
+  <figure>
+  <svg viewBox="0 0 880 424" role="img" aria-labelledby="gyro-error-title gyro-error-desc"
+       xmlns="http://www.w3.org/2000/svg">
+    <title id="gyro-error-title">Drift, and the gyro error angle</title>
+    <desc id="gyro-error-desc">Left: a robot asked to drive straight curves away from the
+    line it aimed along. Right: the error is the angle between the heading it wanted and
+    the heading it now has.</desc>
+    <defs>
+      <marker id="ga-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#0b7a63"/>
+      </marker>
+    </defs>
+    <rect width="100%" height="100%" fill="#fbfdfb"/>
+
+    <!-- ============ PANEL A: it drifts ============ -->
+    <rect x="40" y="56" width="360" height="288" rx="6" fill="#ffffff" stroke="rgba(18,61,43,0.12)"/>
+    <text x="56" y="80" fill="#7fa791" font-size="8" font-family="'JetBrains Mono', monospace"
+          letter-spacing="0.14em">1A · IT DRIFTS</text>
+
+    <line x1="200" y1="312" x2="200" y2="112" stroke="#4f6b5c" stroke-width="1" stroke-dasharray="5,4"/>
+    <rect x="168" y="92" width="64" height="12" rx="2" fill="#ffffff"/>
+    <text x="200" y="101" fill="#4f6b5c" font-size="8" font-family="'JetBrains Mono', monospace"
+          text-anchor="middle" letter-spacing="0.1em">AIMED</text>
+
+    <path d="M 200 312 C 200 256 216 192 264 136" fill="none" stroke="#0b7a63" stroke-width="1.6"/>
+    <circle cx="200" cy="312" r="4" fill="#123d2b"/>
+    <text x="212" y="316" fill="#4f6b5c" font-size="8" font-family="'JetBrains Mono', monospace"
+          letter-spacing="0.1em">START</text>
+
+    <circle cx="264" cy="136" r="4" fill="#0b7a63"/>
+    <text x="280" y="140" fill="#0b7a63" font-size="8" font-family="'JetBrains Mono', monospace"
+          letter-spacing="0.1em">ENDED UP HERE</text>
+
+    <!-- ============ PANEL B: the angle ============ -->
+    <rect x="440" y="56" width="360" height="288" rx="6" fill="#ffffff" stroke="rgba(18,61,43,0.12)"/>
+    <text x="456" y="80" fill="#7fa791" font-size="8" font-family="'JetBrains Mono', monospace"
+          letter-spacing="0.14em">1B · THE GYRO SEES THE ANGLE</text>
+
+    <!-- rays first, so the robot covers their shared origin -->
+    <line x1="620" y1="256" x2="620" y2="104" stroke="#4f6b5c" stroke-width="1" stroke-dasharray="5,4"/>
+    <rect x="584" y="88" width="72" height="12" rx="2" fill="#ffffff"/>
+    <text x="620" y="97" fill="#4f6b5c" font-size="8" font-family="'JetBrains Mono', monospace"
+          text-anchor="middle" letter-spacing="0.1em">WANTED</text>
+
+    <line x1="620" y1="256" x2="696" y2="124" stroke="#0b7a63" stroke-width="1.6" marker-end="url(#ga-arrow)"/>
+    <text x="704" y="116" fill="#0b7a63" font-size="8" font-family="'JetBrains Mono', monospace"
+          letter-spacing="0.1em">POINTING</text>
+
+    <!-- the robot, sitting on the vertex. The white rect masks the two rays, so
+         they read as starting at the robot rather than crossing through it. -->
+    <g transform="translate(620 256) rotate(30)">
+      <rect x="-32" y="-20" width="8" height="24" rx="2" fill="#123d2b"/>
+      <rect x="24" y="-20" width="8" height="24" rx="2" fill="#123d2b"/>
+      <rect x="-24" y="-32" width="48" height="64" rx="6" fill="#ffffff"/>
+      <rect x="-24" y="-32" width="48" height="64" rx="6" fill="rgba(11,122,99,0.08)"
+            stroke="#0b7a63" stroke-width="1.2"/>
+    </g>
+
+    <!-- the angle between the two rays -->
+    <path d="M 620 160 A 96 96 0 0 1 668 173" fill="none" stroke="#0b7a63" stroke-width="1.2"/>
+    <rect x="628" y="128" width="56" height="12" rx="2" fill="#ffffff"/>
+    <text x="656" y="137" fill="#0b7a63" font-size="8" font-family="'JetBrains Mono', monospace"
+          text-anchor="middle" letter-spacing="0.1em">ERROR</text>
+
+    <text x="784" y="308" fill="#123d2b" font-size="14" font-style="italic"
+          font-family="'Nunito', sans-serif" text-anchor="end">drawn big — a real one</text>
+    <text x="784" y="328" fill="#123d2b" font-size="14" font-style="italic"
+          font-family="'Nunito', sans-serif" text-anchor="end">is 2 or 3 degrees</text>
+
+    <!-- legend -->
+    <line x1="40" y1="368" x2="840" y2="368" stroke="rgba(18,61,43,0.12)" stroke-width="0.8"/>
+    <text x="40" y="388" fill="#4f6b5c" font-size="8" font-family="'JetBrains Mono', monospace"
+          letter-spacing="0.14em">LEGEND</text>
+    <line x1="140" y1="384" x2="176" y2="384" stroke="#4f6b5c" stroke-width="1" stroke-dasharray="5,4"/>
+    <text x="184" y="388" fill="#4f6b5c" font-size="9" font-family="'Nunito', sans-serif">what you asked for</text>
+    <line x1="340" y1="384" x2="376" y2="384" stroke="#0b7a63" stroke-width="1.6"/>
+    <text x="384" y="388" fill="#4f6b5c" font-size="9" font-family="'Nunito', sans-serif">what the robot did</text>
+  </svg>
+  </figure>
+
+  <p>Zero the gyro before you move. From then on its reading is the angle between
+  where you point now and where you started. Because you always want that to be
+  zero, <strong>the reading is the error</strong>. Nothing to subtract.</p>
+
+<pre>await _settle()                  <span class="c"># let the gyro stop wobbling, 0.3 s</span>
+_reset_yaw(0)                    <span class="c"># now straight ahead means zero</span>
+
+error = _wrap180(_yaw_cw())      <span class="c"># this IS how far off you are</span></pre>
+
+  <h2>2. The correction speeds up one wheel and slows the other</h2>
+  <p>Nothing steers a competition robot. It has two driven wheels and it turns by
+  driving them at different speeds. So the correction is one number, and it goes
+  onto one wheel as a plus and the other as a minus.</p>
+
+  <figure>
+  <svg viewBox="0 0 880 428" role="img" aria-labelledby="gyro-wheels-title gyro-wheels-desc"
+       xmlns="http://www.w3.org/2000/svg">
+    <title id="gyro-wheels-title">Turning the error into two wheel speeds</title>
+    <desc id="gyro-wheels-desc">The trim value is added to the left wheel speed and
+    subtracted from the right wheel speed, which swings the robot back towards the line
+    it drifted away from.</desc>
+    <defs>
+      <marker id="gw-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#4f6b5c"/>
+      </marker>
+      <marker id="gw-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#0b7a63"/>
+      </marker>
+    </defs>
+    <rect width="100%" height="100%" fill="#fbfdfb"/>
+
+    <!-- the one line of maths -->
+    <rect x="40" y="40" width="800" height="72" rx="6" fill="rgba(11,122,99,0.08)" stroke="#0b7a63"/>
+    <text x="64" y="68" fill="#7fa791" font-size="8" font-family="'JetBrains Mono', monospace"
+          letter-spacing="0.14em">ADVANCED.PY, INSIDE _DRIVE_RAMP_CM</text>
+    <text x="64" y="94" fill="#123d2b" font-size="12" font-family="'JetBrains Mono', monospace">trim = -(kp * error + kd * (error - last_error))</text>
+
+    <path d="M 240 112 L 240 168" fill="none" stroke="#4f6b5c" stroke-width="1" marker-end="url(#gw-arrow)"/>
+    <path d="M 640 112 L 640 168" fill="none" stroke="#4f6b5c" stroke-width="1" marker-end="url(#gw-arrow)"/>
+
+    <!-- left wheel box -->
+    <rect x="128" y="176" width="224" height="72" rx="6" fill="#ffffff" stroke="rgba(18,61,43,0.12)"/>
+    <text x="144" y="200" fill="#7fa791" font-size="8" font-family="'JetBrains Mono', monospace"
+          letter-spacing="0.14em">LEFT WHEEL</text>
+    <text x="144" y="224" fill="#123d2b" font-size="12" font-weight="600"
+          font-family="'Nunito', sans-serif">Speeds up</text>
+    <text x="144" y="240" fill="#4f6b5c" font-size="9" font-family="'JetBrains Mono', monospace">base + trim</text>
+
+    <!-- right wheel box -->
+    <rect x="528" y="176" width="224" height="72" rx="6" fill="#ffffff" stroke="rgba(18,61,43,0.12)"/>
+    <text x="544" y="200" fill="#7fa791" font-size="8" font-family="'JetBrains Mono', monospace"
+          letter-spacing="0.14em">RIGHT WHEEL</text>
+    <text x="544" y="224" fill="#123d2b" font-size="12" font-weight="600"
+          font-family="'Nunito', sans-serif">Slows down</text>
+    <text x="544" y="240" fill="#4f6b5c" font-size="9" font-family="'JetBrains Mono', monospace">base − trim</text>
+
+    <!-- which way the robot swings: arrow over the top, label on it -->
+    <path d="M 476 234 A 72 72 0 0 0 404 234" fill="none" stroke="#0b7a63"
+          stroke-width="1.2" marker-end="url(#gw-arrow-accent)"/>
+    <rect x="368" y="200" width="144" height="12" rx="2" fill="#fbfdfb"/>
+    <text x="440" y="209" fill="#0b7a63" font-size="8" font-family="'JetBrains Mono', monospace"
+          text-anchor="middle" letter-spacing="0.1em">SO IT SWINGS BACK LEFT</text>
+
+    <!-- the robot -->
+    <g>
+      <rect x="376" y="272" width="16" height="48" rx="3" fill="#123d2b"/>
+      <rect x="488" y="272" width="16" height="48" rx="3" fill="#123d2b"/>
+      <rect x="392" y="248" width="96" height="96" rx="8" fill="rgba(11,122,99,0.08)"
+            stroke="#0b7a63" stroke-width="1.2"/>
+      <text x="440" y="302" fill="#123d2b" font-size="12" font-weight="600"
+            font-family="'Nunito', sans-serif" text-anchor="middle">robot</text>
+    </g>
+
+    <path d="M 240 248 L 240 296 Q 240 304 248 304 L 368 304" fill="none"
+          stroke="#0b7a63" stroke-width="1.2" marker-end="url(#gw-arrow-accent)"/>
+    <path d="M 640 248 L 640 296 Q 640 304 632 304 L 512 304" fill="none"
+          stroke="#0b7a63" stroke-width="1.2" marker-end="url(#gw-arrow-accent)"/>
+
+    <!-- legend -->
+    <line x1="40" y1="372" x2="840" y2="372" stroke="rgba(18,61,43,0.12)" stroke-width="0.8"/>
+    <text x="40" y="392" fill="#4f6b5c" font-size="8" font-family="'JetBrains Mono', monospace"
+          letter-spacing="0.14em">LEGEND</text>
+    <text x="140" y="392" fill="#4f6b5c" font-size="9" font-family="'Nunito', sans-serif">Shown for a robot that drifted right. Drift left and every sign flips.</text>
+  </svg>
+  </figure>
+
+  <table>
+    <thead>
+      <tr><th>The robot has</th><th>error is</th><th>trim is</th><th>which means</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>drifted right</td><td>positive</td><td>negative</td><td>left slows, right speeds → swings left</td></tr>
+      <tr><td>drifted left</td><td>negative</td><td>positive</td><td>left speeds, right slows → swings right</td></tr>
+      <tr><td>stayed straight</td><td>0</td><td>0</td><td>both wheels the same → nothing happens</td></tr>
+    </tbody>
+  </table>
+
+  <h2>3. It does this 66 times a second</h2>
+  <p>One correction is not the point. The loop is the point. Each pass is small
+  and slightly wrong, and the next pass fixes what the last one missed.</p>
+
+  <figure>
+  <svg viewBox="0 0 880 348" role="img" aria-labelledby="gyro-loop-title gyro-loop-desc"
+       xmlns="http://www.w3.org/2000/svg">
+    <title id="gyro-loop-title">The correction loop</title>
+    <desc id="gyro-loop-desc">Four steps repeat continuously while the robot drives: read
+    the gyro, work out the trim, set the two wheel speeds, wait fifteen milliseconds.</desc>
+    <defs>
+      <marker id="gl-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#4f6b5c"/>
+      </marker>
+    </defs>
+    <rect width="100%" height="100%" fill="#fbfdfb"/>
+
+    <line x1="216" y1="128" x2="256" y2="128" stroke="#4f6b5c" stroke-width="1" marker-end="url(#gl-arrow)"/>
+    <line x1="432" y1="128" x2="472" y2="128" stroke="#4f6b5c" stroke-width="1" marker-end="url(#gl-arrow)"/>
+    <line x1="648" y1="128" x2="688" y2="128" stroke="#4f6b5c" stroke-width="1" marker-end="url(#gl-arrow)"/>
+
+    <path d="M 776 168 L 776 216 Q 776 224 768 224 L 136 224 Q 128 224 128 216 L 128 176"
+          fill="none" stroke="#4f6b5c" stroke-width="1" marker-end="url(#gl-arrow)"/>
+    <rect x="392" y="204" width="176" height="12" rx="2" fill="#fbfdfb"/>
+    <text x="480" y="213" fill="#4f6b5c" font-size="8" font-family="'JetBrains Mono', monospace"
+          text-anchor="middle" letter-spacing="0.1em">UNTIL YOU HAVE ARRIVED</text>
+
+    <rect x="40" y="88" width="176" height="80" rx="6" fill="#ffffff" stroke="rgba(18,61,43,0.12)"/>
+    <rect x="52" y="96" width="20" height="12" rx="2" fill="transparent" stroke="rgba(18,61,43,0.30)" stroke-width="0.8"/>
+    <text x="62" y="105" fill="#4f6b5c" font-size="7" font-family="'JetBrains Mono', monospace"
+          text-anchor="middle" letter-spacing="0.08em">1</text>
+    <text x="128" y="132" fill="#123d2b" font-size="12" font-weight="600"
+          font-family="'Nunito', sans-serif" text-anchor="middle">Read the gyro</text>
+    <text x="128" y="152" fill="#4f6b5c" font-size="9" font-family="'JetBrains Mono', monospace"
+          text-anchor="middle">error = yaw</text>
+
+    <rect x="256" y="88" width="176" height="80" rx="6" fill="#ffffff" stroke="rgba(18,61,43,0.12)"/>
+    <rect x="268" y="96" width="20" height="12" rx="2" fill="transparent" stroke="rgba(18,61,43,0.30)" stroke-width="0.8"/>
+    <text x="278" y="105" fill="#4f6b5c" font-size="7" font-family="'JetBrains Mono', monospace"
+          text-anchor="middle" letter-spacing="0.08em">2</text>
+    <text x="344" y="132" fill="#123d2b" font-size="12" font-weight="600"
+          font-family="'Nunito', sans-serif" text-anchor="middle">Work out the trim</text>
+    <text x="344" y="152" fill="#4f6b5c" font-size="9" font-family="'JetBrains Mono', monospace"
+          text-anchor="middle">kp and kd</text>
+
+    <rect x="472" y="88" width="176" height="80" rx="6" fill="rgba(11,122,99,0.08)" stroke="#0b7a63"/>
+    <rect x="484" y="96" width="20" height="12" rx="2" fill="transparent" stroke="rgba(11,122,99,0.50)" stroke-width="0.8"/>
+    <text x="494" y="105" fill="#0b7a63" font-size="7" font-family="'JetBrains Mono', monospace"
+          text-anchor="middle" letter-spacing="0.08em">3</text>
+    <text x="560" y="132" fill="#123d2b" font-size="12" font-weight="600"
+          font-family="'Nunito', sans-serif" text-anchor="middle">Set the two wheels</text>
+    <text x="560" y="152" fill="#0b7a63" font-size="9" font-family="'JetBrains Mono', monospace"
+          text-anchor="middle">_tank(base+trim, base-trim)</text>
+
+    <rect x="688" y="88" width="176" height="80" rx="6" fill="#ffffff" stroke="rgba(18,61,43,0.12)"/>
+    <rect x="700" y="96" width="20" height="12" rx="2" fill="transparent" stroke="rgba(18,61,43,0.30)" stroke-width="0.8"/>
+    <text x="710" y="105" fill="#4f6b5c" font-size="7" font-family="'JetBrains Mono', monospace"
+          text-anchor="middle" letter-spacing="0.08em">4</text>
+    <text x="776" y="132" fill="#123d2b" font-size="12" font-weight="600"
+          font-family="'Nunito', sans-serif" text-anchor="middle">Wait 15 ms</text>
+    <text x="776" y="152" fill="#4f6b5c" font-size="9" font-family="'JetBrains Mono', monospace"
+          text-anchor="middle">sleep_ms(15)</text>
+
+    <line x1="40" y1="272" x2="840" y2="272" stroke="rgba(18,61,43,0.12)" stroke-width="0.8"/>
+    <text x="40" y="292" fill="#4f6b5c" font-size="8" font-family="'JetBrains Mono', monospace"
+          letter-spacing="0.14em">LEGEND</text>
+    <text x="140" y="292" fill="#4f6b5c" font-size="9" font-family="'Nunito', sans-serif">15 ms per pass is about 66 passes a second. Over 30 cm that is roughly 130 corrections.</text>
+  </svg>
+  </figure>
+
+  <h2>4. Get the sign wrong and it runs away</h2>
+  <p>The minus in front of the trim is the whole thing. It makes the correction
+  push <em>against</em> the error. Turn it round and the correction pushes
+  <em>with</em> the error: the error grows, so the push grows, so the error grows.
+  The robot spins instead of driving. Engineers call the version that works
+  negative feedback.</p>
+
+  <figure>
+  <svg viewBox="0 0 880 428" role="img" aria-labelledby="gyro-sign-title gyro-sign-desc"
+       xmlns="http://www.w3.org/2000/svg">
+    <title id="gyro-sign-title">Right sign against wrong sign</title>
+    <desc id="gyro-sign-desc">Side by side comparison. With the correct sign the robot
+    wobbles less and less and settles onto the straight line. With the sign reversed the
+    error grows every pass and the robot spirals on the spot.</desc>
+    <rect width="100%" height="100%" fill="#fbfdfb"/>
+
+    <!-- LEFT: correct sign -->
+    <rect x="40" y="56" width="384" height="272" rx="6" fill="#ffffff" stroke="#0b7a63"/>
+    <text x="56" y="80" fill="#0b7a63" font-size="8" font-family="'JetBrains Mono', monospace"
+          letter-spacing="0.14em">RIGHT SIGN · PUSHES BACK</text>
+    <line x1="232" y1="300" x2="232" y2="100" stroke="#4f6b5c" stroke-width="1" stroke-dasharray="5,4"/>
+    <path d="M 232 300 C 264 276 200 252 248 224 C 276 206 216 188 240 168
+             C 252 156 226 146 234 132 C 238 124 230 116 232 104"
+          fill="none" stroke="#0b7a63" stroke-width="1.6"/>
+    <circle cx="232" cy="300" r="4" fill="#123d2b"/>
+    <text x="272" y="288" fill="#4f6b5c" font-size="9" font-family="'Nunito', sans-serif">wobbles less each pass</text>
+
+    <!-- RIGHT: wrong sign -->
+    <rect x="456" y="56" width="384" height="272" rx="6" fill="#ffffff" stroke="#c2542f"/>
+    <text x="472" y="80" fill="#c2542f" font-size="8" font-family="'JetBrains Mono', monospace"
+          letter-spacing="0.14em">WRONG SIGN · PUSHES HARDER</text>
+    <line x1="648" y1="300" x2="648" y2="100" stroke="#4f6b5c" stroke-width="1" stroke-dasharray="5,4"/>
+    <path d="M 648 300 C 696 284 724 244 700 212 C 676 180 620 188 612 224
+             C 604 256 636 280 664 264 C 684 252 684 232 668 226
+             C 656 222 648 230 650 238"
+          fill="none" stroke="#c2542f" stroke-width="1.6"/>
+    <circle cx="648" cy="300" r="4" fill="#123d2b"/>
+    <text x="744" y="164" fill="#c2542f" font-size="9" font-family="'Nunito', sans-serif">spins on the spot</text>
+
+    <line x1="40" y1="372" x2="840" y2="372" stroke="rgba(18,61,43,0.12)" stroke-width="0.8"/>
+    <text x="40" y="392" fill="#4f6b5c" font-size="8" font-family="'JetBrains Mono', monospace"
+          letter-spacing="0.14em">LEGEND</text>
+    <text x="140" y="392" fill="#4f6b5c" font-size="9" font-family="'Nunito', sans-serif">Both panels: dashed line is the heading you asked for. Same code, one sign apart.</text>
+  </svg>
+  </figure>
+
+  <div class="note">
+    <p><strong>This happened to us.</strong> On 20 September 2026 a
+    <code>drive_cm(-44)</code> spun on the spot instead of driving. The gyro on this
+    hub counts up anticlockwise, not clockwise, so the correction was pushing the
+    wrong way. The fix was one line — <code>YAW_SIGN = -1</code> in
+    <code>advanced.py</code>. Run <code>bench_check_yaw_sign()</code> after any
+    rebuild and it tells you which value to use.</p>
+  </div>
+
+  <footer>code/learn/gyro-correction.html · source: code/library/advanced.py, _drive_ramp_cm</footer>
+
+</main>
+</body>
+</html>
