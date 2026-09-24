@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Run code/library/advanced.py against the pretend hub, outside a browser.
 
-tools/check-lessons.py only looks at code/learn/ and only ever loads
-code/library/toolkit.py, so nothing exercises the advanced library. This does.
+tools/check-lessons.py only runs the lesson examples, and only lesson 10 loads
+the advanced library. This drives the library itself.
 
 It drives each simulator-safe function and checks where the robot ended up, so
 a typo or a runaway loop fails a check here instead of failing on the table five

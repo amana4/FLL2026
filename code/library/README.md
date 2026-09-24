@@ -177,8 +177,10 @@ python3 tools/check-library.py
 
 Drives `advanced.py` against the pretend hub and checks where the robot ended
 up. It catches a runaway loop or a flipped sign in about ten seconds.
-`tools/check-lessons.py` does not cover this file; it only reads `code/learn/`
-and only ever loads `toolkit.py`.
+`tools/check-lessons.py` runs the lesson examples. Most load `toolkit.py`; the
+blocks in `code/learn/10-gyro.md` are marked `data-lib="advanced"` and load this
+file, so they catch a lesson that no longer matches it. They do not replace
+`check-library.py`.
 
 The two line functions cannot be checked. The pretend hub has no colour sensor,
 so the run only confirms they refuse politely instead of crashing.

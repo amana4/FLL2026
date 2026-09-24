@@ -22,7 +22,7 @@ toolkit, these pages change with it.
 | 7 | [Doing things again — loops](07-loops.md) | Use `for` and `range` instead of copying lines |
 | 8 | [Making your own functions](08-functions.md) | Write `def`, take arguments, give a default |
 | 9 | [When the robot lies to you](09-calibration.md) | Measure the error, then correct it |
-| 10 | [The gyro](10-gyro.md) | Explain why `drive_cm_gyro` drives straighter |
+| 10 | [The gyro](10-gyro.md) | Explain how `drive_cm` holds a heading, and when to use `face` instead of `turn_deg` |
 | 11 | [Attachments](11-attachments.md) | Run a motor on port C by degrees or by time |
 | 12 | [Write a real mission](12-a-mission.md) | Turn a plan into a mission program |
 | 13 | [Flowcharts, and explaining your code](13-flowcharts-judges.md) | Draw a mission, and answer a judge with a number in it |
@@ -116,14 +116,14 @@ generic Python course does not transfer to them directly. Run the official Train
 Camps alongside these: [`../spike-lessons.md`](../spike-lessons.md) maps them onto
 our meeting numbers.
 
-Four lessons end at a **real bug in our own toolkit** rather than a made-up
+Four lessons end at a **real bug in our own code** rather than a made-up
 exercise. Those are the ones worth doing as a group, with the file open:
 
 | Lesson | The problem it lands on |
 | --- | --- |
 | [3](03-ports.md) | The port map was wrong: `port.F` was paired as a drive motor when it holds a colour sensor. Found and fixed 13 Sep 2026, and told as the story of why |
 | [6](06-numbers.md) | `arc_turn` has a missing term, so it turns 121 degrees when asked for 90 |
-| [10](10-gyro.md) | `turn_deg_gyro` never commands the motors, and hangs |
+| [10](10-gyro.md) | `YAW_SIGN` in `advanced.py` was backwards, so a straight drive spun on the spot. Found on the hub 20 Sep 2026 |
 | [11](11-attachments.md) | `run_attachment_deg` silently ignores anything over 200 degrees |
 
 Each ends with a decision for the team to make, not an answer. Deciding to delete a

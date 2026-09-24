@@ -9,7 +9,8 @@
  *      an output panel.
  *   3. On the first Run, downloads Pyodide (CPython built for the browser),
  *      loads tools/spike-shim.py to stand in for the hub, then loads the team's
- *      real code/library/toolkit.py on top of it.
+ *      real code/library/toolkit.py on top of it. A block marked
+ *      data-lib="advanced" gets code/library/advanced.py instead.
  *   4. Runs what the student typed and animates the result.
  *
  * The code in the markdown stays in the page, hidden on screen and visible when
@@ -78,7 +79,7 @@
     });
   }
 
-  // The Python side of the harness. Loads the shim, keeps the toolkit source,
+  // The Python side of the harness. Loads the shim, keeps both library sources,
   // and gives JavaScript one function to call per run.
   var DRIVER = [
     "import sys, json",
@@ -90,9 +91,12 @@
     "_shim.set_push(_spike_push)",
     "_missions.FIELD.on_change = lambda state: _spike_models(json.dumps(state))",
     "",
-    "async def _spike_run(user_code):",
+    "async def _spike_run(user_code, lib):",
     "    ns = {'__name__': '__main__'}",
-    "    exec(compile(_SPIKE_TOOLKIT_SRC, 'toolkit.py', 'exec'), ns)",
+    "    if lib == 'advanced':",
+    "        exec(compile(_SPIKE_ADVANCED_SRC, 'advanced.py', 'exec'), ns)",
+    "    else:",
+    "        exec(compile(_SPIKE_TOOLKIT_SRC, 'toolkit.py', 'exec'), ns)",
     "    ns['sim'] = sys.modules['sim']",
     "    ns['field'] = _field",
     "    _shim.begin_run()",
@@ -139,13 +143,15 @@
           return Promise.all([
             fetchText(SITE_ROOT + "tools/spike-shim.py"),
             fetchText(SITE_ROOT + "tools/spike-missions.py"),
-            fetchText(SITE_ROOT + "code/library/toolkit.py")
+            fetchText(SITE_ROOT + "code/library/toolkit.py"),
+            fetchText(SITE_ROOT + "code/library/advanced.py")
           ]);
         })
         .then(function (sources) {
           var shimSrc = sources[0];
           var missionsSrc = sources[1];
           var toolkitSrc = sources[2];
+          var advancedSrc = sources[3];
 
           // The shim registers the pretend hub modules in sys.modules when it
           // runs, so it has to run before the toolkit imports them. The mission
@@ -156,6 +162,7 @@
           pyodide.runPython("import spike_shim, spike_missions");
 
           pyodide.globals.set("_SPIKE_TOOLKIT_SRC", toolkitSrc);
+          pyodide.globals.set("_SPIKE_ADVANCED_SRC", advancedSrc);
           pyodide.globals.set("_spike_push", function (x, y, heading, yaw, offMat) {
             if (active) {
               active.push(x, y, heading, yaw, offMat);
@@ -221,6 +228,7 @@
   function Block(host) {
     this.host = host;
     this.showView = host.getAttribute("data-view") !== "none";
+    this.lib = host.getAttribute("data-lib") || "toolkit";
     this.trail = [];
     this.models = [];
     this.pose = { x: 30, y: 20, heading: 0, yaw: 0, offMat: false };
@@ -445,7 +453,8 @@
         // into the program text, which would break the moment a student typed
         // a quote character. `_spike_run` builds a fresh namespace for it.
         pyodide.globals.set("_SPIKE_USER_CODE", code);
-        return pyodide.runPythonAsync("await _spike_run(_SPIKE_USER_CODE)");
+        pyodide.globals.set("_SPIKE_LIB", self.lib);
+        return pyodide.runPythonAsync("await _spike_run(_SPIKE_USER_CODE, _SPIKE_LIB)");
       })
       .then(function () {
         self.setStatus("Finished.");

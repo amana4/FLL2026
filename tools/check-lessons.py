@@ -12,14 +12,17 @@ Two kinds of block are collected:
   ??? question ...  four-space-indented ```python fence           the answers
 
 A block whose first line is `# expect-error` is required to raise. Anything else
-is required to finish cleanly.
+is required to finish cleanly. A run block marked data-lib="advanced" runs
+against code/library/advanced.py instead of toolkit.py, as it does on the site.
 
 Usage:
     python3 tools/check-lessons.py
     python3 tools/check-lessons.py code/learn/03-driving.md
 """
 
+import ast
 import asyncio
+import inspect
 import os
 import re
 import sys
@@ -34,12 +37,14 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHIM = os.path.join(REPO, "tools", "spike-shim.py")
 MISSIONS = os.path.join(REPO, "tools", "spike-missions.py")
 TOOLKIT = os.path.join(REPO, "code", "library", "toolkit.py")
+ADVANCED = os.path.join(REPO, "code", "library", "advanced.py")
 LESSONS = os.path.join(REPO, "code", "learn")
 
 EXPECT_ERROR = "# expect-error"
 
 RUN_BLOCK = re.compile(
-    r'<div class="spike-run"[^>]*>(.*?)</div>', re.DOTALL)
+    r'<div class="spike-run"([^>]*)>(.*?)</div>', re.DOTALL)
+LIB_ATTR = re.compile(r'data-lib="([a-z]+)"')
 FENCE = re.compile(r"```python\n(.*?)```", re.DOTALL)
 # A fence indented by four spaces, which is how the ??? answer blocks are held.
 INDENTED_FENCE = re.compile(r"\n    ```python\n(.*?)\n    ```", re.DOTALL)
@@ -53,19 +58,23 @@ def dedent4(text):
 
 
 def collect(path):
-    """Return a list of (label, source) for one markdown file."""
+    """Return a list of (label, lib, source) for one markdown file."""
     with open(path, encoding="utf-8") as fh:
         text = fh.read()
 
     blocks = []
-    for i, div in enumerate(RUN_BLOCK.findall(text), start=1):
+    for i, (attrs, div) in enumerate(RUN_BLOCK.findall(text), start=1):
+        lib = LIB_ATTR.search(attrs)
+        lib = lib.group(1) if lib else "toolkit"
         for fence in FENCE.findall(div):
-            blocks.append(("run %d" % i, fence))
+            blocks.append(("run %d" % i, lib, fence))
 
     # Answer fences live inside the details blocks, indented by four spaces. The
-    # run blocks above are not indented, so there is no overlap.
+    # run blocks above are not indented, so there is no overlap. An answer uses
+    # whichever library the page's run blocks use.
+    page_lib = "advanced" if 'data-lib="advanced"' in text else "toolkit"
     for i, fence in enumerate(INDENTED_FENCE.findall(text), start=1):
-        blocks.append(("answer %d" % i, dedent4(fence)))
+        blocks.append(("answer %d" % i, page_lib, dedent4(fence)))
 
     return blocks
 
@@ -93,19 +102,21 @@ def load_shim():
     return shim, field
 
 
-async def run_block(shim, field, toolkit_src, source):
+async def run_block(shim, field, lib_name, lib_src, source):
     ns = {"__name__": "__main__"}
-    exec(compile(toolkit_src, "toolkit.py", "exec"), ns)
+    exec(compile(lib_src, lib_name, "exec"), ns)
     ns["sim"] = sys.modules["sim"]
     ns["field"] = field
     shim.begin_run()
 
-    # CPython has no top-level await, so wrap the block in a coroutine. Comments
-    # and blank lines survive the indent untouched.
-    body = "\n".join("    " + line for line in source.split("\n"))
-    wrapper = "async def __block():\n" + body + "\n    pass\n"
-    exec(compile(wrapper, "<lesson>", "exec"), ns)
-    await ns["__block"]()
+    # Run the block at the top level with await allowed, the way Pyodide's
+    # eval_code_async does. So `DEBUG = True` in a block changes the library's
+    # DEBUG here too, instead of making a local variable nobody reads.
+    code = compile(source, "<lesson>", "exec",
+                   flags=ast.PyCF_ALLOW_TOP_LEVEL_AWAIT)
+    result = eval(code, ns)
+    if inspect.iscoroutine(result):
+        await result
     await shim.drain()
     shim.end_run()
 
@@ -124,8 +135,10 @@ def main(argv):
     # Keep the same limit the website uses, so a block that passes here is a
     # block a student can actually sit through.
     shim.TIME_LIMIT_S = 20.0
-    with open(TOOLKIT, encoding="utf-8") as fh:
-        toolkit_src = fh.read()
+    libs = {}
+    for name, path in (("toolkit", TOOLKIT), ("advanced", ADVANCED)):
+        with open(path, encoding="utf-8") as fh:
+            libs[name] = (os.path.basename(path), fh.read())
 
     failures = []
     checked = 0
@@ -136,7 +149,7 @@ def main(argv):
         if not blocks:
             print("%-38s no code blocks" % rel)
             continue
-        for label, source in blocks:
+        for label, lib, source in blocks:
             checked += 1
             wants_error = source.lstrip().startswith(EXPECT_ERROR)
             # Reset the physical robot between blocks, or one lesson's tampering
@@ -149,7 +162,7 @@ def main(argv):
             stdout = sys.stdout
             sys.stdout = open(os.devnull, "w")
             try:
-                asyncio.run(run_block(shim, field, toolkit_src, source))
+                asyncio.run(run_block(shim, field, *libs[lib], source))
                 raised = None
             except Exception as exc:  # noqa: BLE001 - a lesson may raise anything
                 raised = exc
