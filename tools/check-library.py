@@ -77,9 +77,11 @@ async def drive(shim, field, lib, coro, drift=0.0):
     # field.reset() unpairs the motors, so pair them again. On the hub this is
     # what init_robot() does, but that also sleeps, which would skew the pose.
     lib["motor_pair"].pair(lib["PAIR"], lib["LEFT_DRIVE"], lib["RIGHT_DRIVE"])
-    # init_robot() also declares "here is base" by zeroing this. Skipping it
+    # init_robot() also declares "here is base" by zeroing these. Skipping it
     # would leak the last check's bearing into the next one.
     lib["_HEADING_BASE"] = 0.0
+    lib["_YAW_LAST"] = 0.0
+    lib["_YAW_TOTAL"] = 0.0
 
     start = shim.sim.pose()
     stdout = sys.stdout
@@ -105,6 +107,26 @@ def sideways(start, end):
     The robot starts pointing along +y, so that is the x difference.
     """
     return end[0] - start[0]
+
+
+def log_tank(lib, calls, move=True):
+    """Swap _tank for one that writes down each left-wheel speed first.
+
+    A turn calls _tank(speed, -speed), so the left wheel is positive when the
+    robot turns right and negative when it turns left. move=False jams the
+    wheels: the calls are still written down, but the robot stays put.
+
+    Returns the real _tank. Put it back in a finally block.
+    """
+    real = lib["_tank"]
+
+    def logged(left, right):
+        calls.append(left)
+        if move:
+            real(left, right)
+
+    lib["_tank"] = logged
+    return real
 
 
 async def detect_yaw_sign(shim, field, lib):
@@ -240,6 +262,10 @@ async def _(shim, field, lib):
 
 @check("face() is absolute, so a square does not accumulate error")
 async def _(shim, field, lib):
+    # Every turn lands 3 degrees short on purpose, as in code/learn/10-gyro.md.
+    # This used to lean on drift alone, which leaves each side about 1 degree
+    # out. That is the same size as the turn tolerance, and the pretend hub
+    # runs on the wall clock, so about one run in eight turn_deg came out ahead.
     async def square(turn):
         for k in range(4):
             await lib["drive_cm"](30)
@@ -247,18 +273,21 @@ async def _(shim, field, lib):
 
     # relative turns: each one inherits the last one's shortfall
     _, rel = await drive(shim, field, lib,
-                         square(lambda k: lib["turn_deg"](90)), drift=8.0)
+                         square(lambda k: lib["turn_deg"](90, stop_early_deg=3)),
+                         drift=8.0)
     # absolute bearings: every target measured from base
     _, absolute = await drive(shim, field, lib,
-                              square(lambda k: lib["face"](90 * (k + 1))), drift=8.0)
+                              square(lambda k: lib["face"](90 * (k + 1),
+                                                           stop_early_deg=3)),
+                              drift=8.0)
 
     rel_off = heading_error(rel[2], 0.0)
     abs_off = heading_error(absolute[2], 0.0)
-    if abs_off >= rel_off:
-        raise Failure("face() was no better: %.2f deg against %.2f deg"
+    if abs_off > rel_off - 4.0:
+        raise Failure("face() was not clearly better: %.2f deg against %.2f deg"
                       % (abs_off, rel_off))
-    if abs_off > 4.0:
-        raise Failure("face() left the square %.2f deg out, wanted under 4" % abs_off)
+    if abs_off > 5.0:
+        raise Failure("face() left the square %.2f deg out, wanted under 5" % abs_off)
 
 
 @check("face(0) and face(360) both take the short way home")
@@ -271,6 +300,146 @@ async def _(shim, field, lib):
     _, full = await drive(shim, field, lib, go(360))
     close(heading_error(zero[2], 0.0), 0.0, 3.0, "face(0)")
     close(heading_error(full[2], 0.0), 0.0, 3.0, "face(360)")
+
+
+@check("a half turn goes left every time, whichever side of 90 it stopped")
+async def _(shim, field, lib):
+    # face(90) stops anywhere within a degree of 90. On 26 September 2026 one
+    # that stopped a little past 90 made face(-90) go right instead of left,
+    # through the place where the gyro jumps from 180 to -180, and the robot
+    # spun for half a minute. Which way a half turn goes must not hang on a
+    # tenth of a degree.
+    for landed in (89.5, 90.5):
+        calls = []
+        ended = []
+
+        async def half_turn():
+            await lib["face"](90)
+            # Pretend the turn stopped at `landed`.
+            lib["_HEADING_BASE"] += landed - lib["bearing"]()
+            real = log_tank(lib, calls)
+            try:
+                await lib["face"](-90)
+            finally:
+                lib["_tank"] = real
+            ended.append(lib["bearing"]())
+
+        await drive(shim, field, lib, half_turn())
+        if not calls or calls[0] > 0:
+            raise Failure("from %.1f, face(-90) went right, not left" % landed)
+        close(ended[0], -90.0, 1.5, "bearing after face(-90) from %.1f" % landed)
+
+
+@check("four turn_deg(90) in a row count up past 180")
+async def _(shim, field, lib):
+    # No drive in between, so nothing zeroes the gyro, and the third turn has
+    # to go past 180. The hub then says -180. Until 26 September 2026 bearing()
+    # believed it, so that turn never arrived.
+    seen = []
+
+    async def four_turns():
+        for _ in range(4):
+            await lib["turn_deg"](90)
+            seen.append(lib["bearing"]())
+
+    start, end = await drive(shim, field, lib, four_turns())
+    close(seen[-1], 360.0, 4.0, "bearing after four quarter turns")
+    close(heading_error(end[2], start[2]), 0.0, 4.0, "heading after four quarter turns")
+
+
+@check("a short turn across the back of the gyro stays short")
+async def _(shim, field, lib):
+    # face(170) then face(-170) is 20 degrees to the right. The drive zeroed the
+    # gyro, so those 20 degrees take the hub's reading through 180.
+    async def across():
+        await lib["drive_cm"](20)
+        await lib["face"](170)
+        await lib["face"](-170)
+
+    start, end = await drive(shim, field, lib, across())
+    close(heading_error(end[2], start[2] + 190.0), 0.0, 3.0, "heading")
+
+
+@check("a stuck turn gives up after one timeout")
+async def _(shim, field, lib):
+    # Jam the wheels. Once a turn has timed out, trying again only burns another
+    # timeout of match time. Before 26 September 2026 it tried three times.
+    calls = []
+    real = log_tank(lib, calls, move=False)
+    try:
+        await drive(shim, field, lib, lib["face"](90, timeout_ms=600))
+    finally:
+        lib["_tank"] = real
+    one_try = int(600 / lib["LOOP_MS"])
+    if len(calls) > one_try:
+        raise Failure("pushed %d times, wanted one timeout's worth, %d"
+                      % (len(calls), one_try))
+
+
+@check("a turn going the wrong way stops instead of spinning")
+async def _(shim, field, lib):
+    # The turn's half of the 20 September 2026 failure. With YAW_SIGN flipped,
+    # every push takes the turn further from its target. Before 26 September
+    # 2026 nothing noticed, and it spun until three timeouts ran out.
+    lib["YAW_SIGN"] = -lib["YAW_SIGN"]
+    try:
+        start, end = await drive(shim, field, lib, lib["face"](90))
+    except RuntimeError as exc:
+        if "wrong way" not in str(exc):
+            raise Failure("wrong message: %s" % exc)
+        return
+    finally:
+        lib["YAW_SIGN"] = -lib["YAW_SIGN"]
+    raise Failure("turned to %.0f degrees without stopping" % end[2])
+
+
+@check("a slow turn stays slow")
+async def _(shim, field, lib):
+    # min_speed is the push that gets the wheels moving. It used to beat a slow
+    # velocity asked for on purpose, so velocity=60 still turned at 126.
+    calls = []
+    real = log_tank(lib, calls)
+    try:
+        start, end = await drive(shim, field, lib, lib["face"](90, velocity=60))
+    finally:
+        lib["_tank"] = real
+    fastest = max(abs(c) for c in calls)
+    if fastest > 60:
+        raise Failure("asked for 60, pushed at %.0f" % fastest)
+    close(heading_error(end[2], start[2] + 90.0), 0.0, 3.0, "heading")
+
+
+@check("_reset_yaw(30) moves the gyro's zero, not the bearing")
+async def _(shim, field, lib):
+    # Nothing calls it with anything but 0 yet. With YAW_SIGN = -1 it used to
+    # set the hub to +30, which _yaw_cw() then read as -30.
+    got = []
+
+    async def rezero():
+        await lib["turn_deg"](40)
+        before = lib["bearing"]()
+        lib["_reset_yaw"](30)
+        got.append((before, lib["bearing"](), lib["_yaw_cw"]()))
+
+    await drive(shim, field, lib, rezero())
+    before, after, yaw = got[0]
+    close(after, before, 0.3, "bearing across _reset_yaw(30)")
+    close(yaw, 30.0, 0.3, "_yaw_cw() after _reset_yaw(30)")
+
+
+@check("stop_early_deg never turns the robot the wrong way")
+async def _(shim, field, lib):
+    # Stopping 5 degrees early on a 2 degree turn used to aim 3 degrees the
+    # other way. A turn smaller than stop_early_deg now does not happen.
+    for name in ("turn_deg", "face"):
+        calls = []
+        real = log_tank(lib, calls)
+        try:
+            await drive(shim, field, lib, lib[name](2, stop_early_deg=5))
+        finally:
+            lib["_tank"] = real
+        if any(c < 0 for c in calls):
+            raise Failure("%s(2, stop_early_deg=5) turned left" % name)
 
 
 @check("turn_deg(3) does not stall below the minimum power")

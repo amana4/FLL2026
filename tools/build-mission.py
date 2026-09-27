@@ -21,6 +21,7 @@ Usage:
 """
 
 import os
+import shlex
 import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -60,15 +61,21 @@ def build(path):
         raise SystemExit(
             "%s has no marker line. Add this, then put the ports and main() "
             "under it:\n\n%s" % (rel, MARKER))
-    return (BANNER % rel) + "\n" + library.rstrip() + "\n\n\n" + tail
+    # Quoted, so a folder name with spaces still pastes into a terminal.
+    return (BANNER % shlex.quote(rel)) + "\n" + library.rstrip() + "\n\n\n" + tail
 
 
 def targets():
+    """Every .py file in a mission folder that has the marker line."""
     found = []
     for name in sorted(os.listdir(MISSIONS)):
-        path = os.path.join(MISSIONS, name, "mission-advanced.py")
-        if os.path.exists(path):
-            found.append(path)
+        folder = os.path.join(MISSIONS, name)
+        if not os.path.isdir(folder):
+            continue
+        for filename in sorted(os.listdir(folder)):
+            path = os.path.join(folder, filename)
+            if filename.endswith(".py") and split_tail(path) is not None:
+                found.append(path)
     return found
 
 
@@ -78,7 +85,7 @@ def main(argv):
     if not paths:
         paths = targets()
     if not paths:
-        print("no mission-advanced.py files found")
+        print("no mission files with the marker found")
         return 0
 
     stale = []

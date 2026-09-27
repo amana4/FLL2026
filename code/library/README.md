@@ -95,7 +95,8 @@ Re-measure with `bench_check_yaw_sign()` after any rebuild that moves the hub.
 more than `RUNAWAY_DEG` (45 degrees) off course brakes and raises. Without that
 guard the robot spun until the distance counter filled, because
 `_drive_degrees()` averages `abs()` of both encoders and a spin reads as forward
-progress.
+progress. Since 26 September 2026 turns do the same: a turn that gets 45 degrees
+further from its target than where it started brakes and raises.
 
 `code/learn/10-gyro.md` has the long version.
 
@@ -129,7 +130,7 @@ nobody "fixes" it back.
    line blocks were ported with timeouts, then removed with the rest of the
    colour sensor code.
 
-Two more, found on the hub rather than by reading:
+Three more, found on the hub rather than by reading:
 
 9. **The blocks assume the gyro counts up clockwise. Ours counts up
    anticlockwise.** We measured it on 20 September 2026, after a `drive_cm(-44)`
@@ -138,6 +139,19 @@ Two more, found on the hub rather than by reading:
 10. **A turn that brakes and never looks again keeps its overshoot.** The robot
     rolls about 2.4 degrees past after the brakes go on. The turns now wait,
     read the gyro again, and correct.
+11. **The gyro only counts from -180 to 180.** One degree past 180 it reads
+    -179. `bearing()` used that number as it came, so a turn that took the
+    reading past 180 never arrived. `face(90)` then `face(-90)` spun until the
+    timeouts ran out, about 30 seconds. So did a third `turn_deg(90)` in a row.
+    Found on 26 September 2026. `_yaw_total()` now keeps counting past 180.
+    The same day, four smaller fixes went in:
+
+    - A half turn always goes left. Before, `face` picked the way by a tenth of
+      a degree, so it went left on one run and right on the next.
+    - A turn that times out stops, instead of trying twice more.
+    - `min_speed` no longer beats a slow `velocity` asked for on purpose.
+    - `stop_early_deg` never makes a small turn go the other way, and
+      `_reset_yaw(deg)` now gets the sign right when `deg` is not 0.
 
 ## Which ports the motors are on
 

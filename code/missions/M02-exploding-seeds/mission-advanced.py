@@ -112,13 +112,25 @@ LOOP_MS = 15                   # one trip round a correction loop
 # That happened on 20 September 2026 with YAW_SIGN set the wrong way. Without
 # this the robot spun until the distance counter filled up, which took it clean
 # off the table.
+#
+# Turns use it too. A turn that ends up this much further from its target than
+# where it started is going the wrong way, so it stops.
 RUNAWAY_DEG = 45.0
+
+# A half turn is just as short going left as going right, so face() would pick
+# a way by a tenth of a degree, and a different way on different runs. So any
+# turn this close to a half turn always goes left.
+HALF_TURN_MARGIN = 10.0
 
 # Cruise speed for drive_cm. None means "work it out for each move".
 DEFAULT_DRIVE_DEG_S = None
 
 # Which direction the gyro's zero stands for. See _reset_yaw and bearing.
 _HEADING_BASE = 0.0
+
+# The gyro reading with its jump at 180 taken out. See _yaw_total.
+_YAW_LAST = 0.0
+_YAW_TOTAL = 0.0
 
 # What the last drive aimed for, so a mission log can check itself.
 _LAST_DRIVE_TARGET_CM = 0.0
@@ -176,6 +188,26 @@ def _yaw_cw():
     return YAW_SIGN * _yaw_deg()
 
 
+def _yaw_total():
+    """The gyro reading, but it keeps counting past 180.
+
+    The hub only counts from -180 to 180. One degree past 180 it says -179, as
+    if the robot had spun nearly all the way round the other way. So we keep our
+    own count. Each time we look, we add on how far the reading moved since the
+    last look, going the short way round. 179 to -179 then counts as 2 degrees,
+    not -358.
+
+    That only works if we look at least once every half turn. The turn loop
+    looks every 15 ms, and a drive never gets 45 degrees off straight, so that
+    is easy. arc_turn does not look, so an arc of more than 180 loses count.
+    """
+    global _YAW_LAST, _YAW_TOTAL
+    now = _yaw_cw()
+    _YAW_TOTAL = _YAW_TOTAL + _wrap180(now - _YAW_LAST)
+    _YAW_LAST = now
+    return _YAW_TOTAL
+
+
 def _reset_yaw(deg=0):
     """Set the gyro back to zero, but remember which way we were pointing.
 
@@ -183,9 +215,12 @@ def _reset_yaw(deg=0):
     normally lose track of base. So we add up what the gyro said first, like
     writing down the mileage before resetting a car's trip counter.
     """
-    global _HEADING_BASE
-    _HEADING_BASE = _HEADING_BASE + _yaw_cw() - deg
-    motion_sensor.reset_yaw(int(deg * 10))
+    global _HEADING_BASE, _YAW_LAST, _YAW_TOTAL
+    _HEADING_BASE = _HEADING_BASE + _yaw_total() - deg
+    # YAW_SIGN turns our clockwise degrees back into the hub's own direction.
+    motion_sensor.reset_yaw(int(YAW_SIGN * deg * 10))
+    _YAW_LAST = float(deg)
+    _YAW_TOTAL = float(deg)
 
 
 def bearing():
@@ -194,7 +229,7 @@ def bearing():
     Base is however you put the robot down before init_robot(). This keeps
     counting past 360, so four right turns read about 360 and not 0.
     """
-    return _HEADING_BASE + _yaw_cw()
+    return _HEADING_BASE + _yaw_total()
 
 
 # -----------------------------
@@ -276,9 +311,11 @@ def _has_motor(which_port):
 # -----------------------------
 async def reset_yaw():
     """Zero the gyro and both wheel counters, and call this spot base."""
-    global _HEADING_BASE
+    global _HEADING_BASE, _YAW_LAST, _YAW_TOTAL
     motion_sensor.reset_yaw(0)
     _HEADING_BASE = 0.0
+    _YAW_LAST = 0.0
+    _YAW_TOTAL = 0.0
     motor.reset_relative_position(LEFT_DRIVE, 0)
     motor.reset_relative_position(RIGHT_DRIVE, 0)
     await runloop.sleep_ms(500)
@@ -575,19 +612,37 @@ async def _turn_to_bearing(target,
     on our hub that was worth about 2.4 degrees every turn.
     """
     max_speed = abs(int(velocity))
+    # The push that gets the wheels moving must not beat a slow turn asked for
+    # on purpose. Below TURN_MIN the real wheels may only buzz, but that is the
+    # caller's choice, not ours.
+    min_speed = min(abs(int(min_speed)), max_speed)
     max_steps = int(timeout_ms / LOOP_MS)
+    # A turn heading the right way only ever gets closer, give or take a small
+    # roll past the target. Getting RUNAWAY_DEG further away than where we
+    # started means it is heading the wrong way.
+    give_up_error = abs(target - bearing()) + RUNAWAY_DEG
 
     for _attempt in range(1 + max(0, settle_passes)):
         previous_error = 0.0
         integral = 0.0
         steps = 0
+        timed_out = False
 
         while True:
             error = target - bearing()
             if abs(error) < tolerance:
                 break
+            if abs(error) > give_up_error:
+                motor_pair.stop(PAIR, stop=motor.BRAKE)
+                raise RuntimeError(
+                    "Turn is %.0f degrees from its target and getting further, "
+                    "so it stopped. It is turning the wrong way. Either "
+                    "YAW_SIGN is wrong, or LEFT_DRIVE and RIGHT_DRIVE are "
+                    "swapped. Run bench_check_yaw_sign() and watch which way "
+                    "the robot turns." % abs(error))
             steps += 1
             if steps > max_steps:
+                timed_out = True
                 if DEBUG:
                     print("turn gave up", round(error, 2), "degrees short")
                 break
@@ -610,10 +665,24 @@ async def _turn_to_bearing(target,
         motor_pair.stop(PAIR, stop=stop_mode)
         await runloop.sleep_ms(settle_ms)
 
+        # Stuck against something. Another go would only use up another
+        # timeout of match time.
+        if timed_out:
+            break
         if abs(target - bearing()) < tolerance:
             break
         if DEBUG:
             print("rolled past by", round(target - bearing(), 2), "- going again")
+
+
+def _shorten(change, stop_early_deg):
+    """Take stop_early_deg off a turn, but never more than the whole turn.
+
+    Taking 5 off a 2 degree turn would leave 3 degrees the other way. So a turn
+    smaller than stop_early_deg does not happen at all.
+    """
+    early = min(stop_early_deg, abs(change))
+    return change - early if change > 0 else change + early
 
 
 async def turn_deg(angle_deg, stop_early_deg=0.0, **kwargs):
@@ -625,9 +694,8 @@ async def turn_deg(angle_deg, stop_early_deg=0.0, **kwargs):
     """
     if angle_deg == 0:
         return
-    facing = 1.0 if angle_deg > 0 else -1.0
     await _settle()
-    await _turn_to_bearing(bearing() + angle_deg - stop_early_deg * facing,
+    await _turn_to_bearing(bearing() + _shorten(angle_deg, stop_early_deg),
                            **kwargs)
 
 
@@ -649,14 +717,19 @@ async def face(bearing_deg, shortest=True, stop_early_deg=0.0, **kwargs):
     a square end about 1 degree out instead of 17.
 
     shortest=True goes whichever way is nearer, so face(0) and face(360) both
-    mean "back the way we started".
+    mean "back the way we started". A half turn has no nearer way, so anything
+    within HALF_TURN_MARGIN of one goes left. face(90) then face(-90) turns left
+    every time, not left on one run and right on the next.
     """
     await _settle()
-    target = bearing() + _wrap180(bearing_deg - bearing()) if shortest else bearing_deg
-    if stop_early_deg:
-        facing = 1.0 if target > bearing() else -1.0
-        target = target - stop_early_deg * facing
-    await _turn_to_bearing(target, **kwargs)
+    now = bearing()
+    if shortest:
+        change = _wrap180(bearing_deg - now)
+        if change > 180.0 - HALF_TURN_MARGIN:
+            change = change - 360.0
+    else:
+        change = bearing_deg - now
+    await _turn_to_bearing(now + _shorten(change, stop_early_deg), **kwargs)
 
 
 # -----------------------------

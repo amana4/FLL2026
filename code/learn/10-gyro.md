@@ -85,7 +85,7 @@ stops dead, so on this page it lands short. That number is `STOP_COMP_FWD_CM` at
 
 The sensor is `motion_sensor`, and it reports angles in **tenths of a degree**.
 That is why the library has a helper to divide by ten, at
-[`advanced.py:155`](../library/advanced.py):
+[`advanced.py:167`](../library/advanced.py):
 
 ```python
 def _yaw_deg():
@@ -145,22 +145,53 @@ The whole correction is built on that one idea: **zero it, then keep it at zero.
 
 There is a catch. If every drive zeroes the gyro, how does the robot remember
 which way it pointed at the start of the run? The zeroing helper, at
-[`advanced.py:170`](../library/advanced.py), writes the old reading down first:
+[`advanced.py:202`](../library/advanced.py), writes the old reading down first:
 
 ```python
 def _reset_yaw(deg=0):
-    global _HEADING_BASE
-    _HEADING_BASE = _HEADING_BASE + _yaw_cw() - deg
-    motion_sensor.reset_yaw(int(deg * 10))
+    global _HEADING_BASE, _YAW_LAST, _YAW_TOTAL
+    _HEADING_BASE = _HEADING_BASE + _yaw_total() - deg
+    motion_sensor.reset_yaw(int(YAW_SIGN * deg * 10))
+    _YAW_LAST = float(deg)
+    _YAW_TOTAL = float(deg)
 ```
 
 It is like writing down a car's mileage before you reset the trip counter.
 `_HEADING_BASE` is the mileage. We come back to it in the section on `face`.
+`_yaw_total()` is the gyro reading with one more fix in it, and the last two
+lines start that fix again from zero. That fix is the next section.
+
+## The jump at 180
+
+The hub only counts from -180 to 180. Turn one degree past 180 and it does not
+say 181. It says -179, as if the robot had spun nearly all the way round the
+other way.
+
+Until 26 September 2026 the library believed it. `face(90)` then `face(-90)` is a
+half turn. When the first turn stopped a little past 90, the second one went
+right, aiming for 270. At 180 the gyro jumped, so the robot thought it had 450
+degrees still to go, and it kept spinning.
+
+`_yaw_total()`, at [`advanced.py:182`](../library/advanced.py), keeps its own
+count instead. Each time it looks, it adds on how far the reading moved since
+the last look, going the short way round:
+
+```python
+def _yaw_total():
+    global _YAW_LAST, _YAW_TOTAL
+    now = _yaw_cw()
+    _YAW_TOTAL = _YAW_TOTAL + _wrap180(now - _YAW_LAST)
+    _YAW_LAST = now
+    return _YAW_TOTAL
+```
+
+From 179 to -179 is then 2 degrees, not -358. It only works if it looks at least
+once every half turn. The turn loop looks 66 times a second, so that is easy.
 
 ## The correction loop
 
 This is the heart of `drive_cm`, from
-[`advanced.py:409`](../library/advanced.py), with the ramp and the safety checks
+[`advanced.py:446`](../library/advanced.py), with the ramp and the safety checks
 stripped out:
 
 ```python
@@ -356,6 +387,11 @@ the same place.
 "back the way I started", and `face(-90)` and `face(270)` both mean "a quarter turn
 left of where I started".
 
+A half turn has no shorter way round. If `face` picked by the numbers, a turn that
+stopped at 89.5 would go one way and one that stopped at 90.5 would go the other.
+So any turn within 10 degrees of a half turn goes left, every time. That number is
+`HALF_TURN_MARGIN`. For a half turn to the right, use `turn_deg(180)`.
+
 ## Find the bug
 
 This is the bug from 20 September 2026. Before that date, `advanced.py` had
@@ -391,9 +427,11 @@ then read the correction loop above again.
 
     The fix had two parts. `YAW_SIGN` went to `-1`, which was measured on the hub
     and not guessed. And `RUNAWAY_DEG = 45` at
-    [`advanced.py:106`](../library/advanced.py) stops the robot if a straight
+    [`advanced.py:109`](../library/advanced.py) stops the robot if a straight
     drive is ever more than 45 degrees off course, because a drive holding a
     heading is never that far out unless the loop is pushing the wrong way.
+    Turns use the same number. A turn that gets 45 degrees further from its
+    target than where it started is going the wrong way, so it stops too.
 
     **What to do after a rebuild.** Run `bench_check_yaw_sign()` on the table. It
     turns right a quarter turn and tells you which value `YAW_SIGN` should be.

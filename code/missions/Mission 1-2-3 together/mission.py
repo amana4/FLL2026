@@ -3,7 +3,7 @@
 # The part above the marker is a copy of code/library/advanced.py. Refresh it
 # with:
 #
-#     python3 tools/build-mission.py code/missions/M03-flip-the-rock/mission-advanced.py
+#     python3 tools/build-mission.py 'code/missions/Mission 1-2-3 together/mission.py'
 #
 # Edit below the marker. That is where the ports and the mission live.
 
@@ -813,7 +813,7 @@ async def bench_check_yaw_sign():
 
 # ===== MISSION CODE BELOW. THE GENERATOR DOES NOT TOUCH THIS =====
 #
-# M03 — Flip the Rock, on the advanced library.
+# Missions 1, 2 and 3 in one run, on the advanced library.
 #
 # Everything above the marker is generated from code/library/advanced.py.
 # Refresh it with:  python3 tools/build-mission.py
@@ -821,30 +821,56 @@ async def bench_check_yaw_sign():
 # Ports come from the library above (F left, A right). Override them here
 # if this robot is wired differently, and the override survives a rebuild.
 
+
 # -----------------------------
 # Main program
 # -----------------------------
+# Missions 3, 2 and 1 in one run, in that order.
+#
+# The attachment is on the back of the robot, so the robot reverses into each
+# model. Every face() counts from base, which is the way the robot points when
+# init_robot() runs. Put the robot down in base the same way every time.
 async def main():
-    await init_robot(default_speed=500)
+    # Pair the wheels and zero the gyro. This spot is base. Any drive that does
+    # not say how fast goes at 800 degrees per second.
+    await init_robot(default_speed=800)
 
+    # Turn the attachment on port C by 180 degrees. There is no await, so the
+    # robot does not wait for it. The attachment moves while the first drive
+    # starts.
     motor.run_for_degrees(port.C, 180, 500)
+
+    # On our mat the robot went 179 cm when asked for 180, so every distance is
+    # scaled to match.
     print (set_calibration_scale(179/180))
+
+    #mission 3
+    # Flip the Rock. Back 44 cm into the model, then forward 20 cm to clear it.
     await drive_cm(-44)
-    await drive_cm(44)
-    #await motor.run_for_degrees(port.D, 180, 200)
+    await drive_cm(20)
+
+    #mission 2
+    # Exploding Seeds. Turn to 72 degrees right of base.
+    await face(72)
+    # Raise the key before backing in, so it clears the stalk.
+    await motor.run_for_degrees(port.C, -150, 200)
+    # Back 36 cm up to the stalk.
+    await drive_cm(-36)
+    # Bring the key down. This is what knocks the seeds off.
+    await motor.run_for_degrees(port.C, 200, 500)
+    # Forward 31 cm at 1000 degrees per second, which is nearly full speed.
+    await drive_cm(31,velocity=1000)
+
+    #mission 1
+    # Drone Survey. Turn to 150 degrees right of base and back up 30 cm.
+    await face(150)
+    await drive_cm(-30)
+    # Turn to 90 degrees right of base. Back 60 cm, then forward 60 cm.
+    await face(90)
+    await drive_cm(-60)
+    await drive_cm(60)
 
 
-    #await drive_cm(-60)
-
-    #await turn_deg_gyro(45)
-
-    # await turn_deg_gyro(90)
-    # await turn_deg_gyro(90)
-    # await turn_deg_gyro(90)
-
-    # await turn_deg_gyro(-90)
-
-    # await run_mission1()
 
 # Run the main loop
 runloop.run(main())
