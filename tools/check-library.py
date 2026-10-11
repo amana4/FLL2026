@@ -67,10 +67,15 @@ def heading_error(got, want):
     return abs((got - want + 180.0) % 360.0 - 180.0)
 
 
-async def drive(shim, field, lib, coro, drift=0.0):
-    """Reset the robot, run one coroutine, and return the pose it ended at."""
+async def drive(shim, field, lib, coro, drift=0.0, track=130.0):
+    """Reset the robot, run one coroutine, and return the pose it ended at.
+
+    track is the pretend robot's real track width in mm. The library still
+    believes TRACK_W_MM, so a different number here is a robot built slightly
+    off from what the code says.
+    """
     shim.sim.set_true_wheel_diameter(62.4)
-    shim.sim.set_true_track_width(130.0)
+    shim.sim.set_true_track_width(track)
     shim.sim.set_drift(drift)
     field.reset(seed=1)
     shim.begin_run()
@@ -127,6 +132,33 @@ def log_tank(lib, calls, move=True):
 
     lib["_tank"] = logged
     return real
+
+
+def arc_end(start, radius, angle, reverse=False):
+    """Where a perfect arc_turn finishes, as (x, y).
+
+    The centre of the circle is on the side the path bends towards. That is
+    the right for a forward curve to the right, and the left for the same
+    curve driven backwards. The robot stays one radius from that centre.
+    """
+    x0, y0, h0 = start
+    side = (1.0 if angle > 0 else -1.0) * (-1.0 if reverse else 1.0)
+    h = math.radians(h0)
+    cx = x0 + side * radius * math.cos(h)
+    cy = y0 - side * radius * math.sin(h)
+    h1 = math.radians(h0 + angle)
+    return (cx - side * radius * math.cos(h1),
+            cy + side * radius * math.sin(h1))
+
+
+def check_arc(start, end, radius, angle, reverse=False, tol_cm=2.0, tol_deg=2.0):
+    """Fail unless the robot ended where, and pointing how, the arc should."""
+    want_x, want_y = arc_end(start, radius, angle, reverse)
+    off = math.hypot(end[0] - want_x, end[1] - want_y)
+    if off > tol_cm:
+        raise Failure("ended %.2f cm from where a %g cm arc of %g degrees ends,"
+                      " wanted under %.1f" % (off, radius, angle, tol_cm))
+    close(heading_error(end[2], start[2] + angle), 0.0, tol_deg, "heading")
 
 
 async def detect_yaw_sign(shim, field, lib):
@@ -440,6 +472,88 @@ async def _(shim, field, lib):
             lib["_tank"] = real
         if any(c < 0 for c in calls):
             raise Failure("%s(2, stop_early_deg=5) turned left" % name)
+
+
+@check("arc_turn(25, 90) follows a 25 cm curve and turns 90 degrees")
+async def _(shim, field, lib):
+    # Until 27 September 2026 arc_turn steered by a formula and never looked at
+    # the gyro. On this check it turned 121.6 degrees, not 90, and ended 9.9 cm
+    # from the mark.
+    start, end = await drive(shim, field, lib, lib["arc_turn"](25, 90))
+    check_arc(start, end, 25, 90)
+
+
+@check("arc_turn(25, -90) curves the other way")
+async def _(shim, field, lib):
+    start, end = await drive(shim, field, lib, lib["arc_turn"](25, -90))
+    check_arc(start, end, 25, -90)
+
+
+@check("arc_turn with reverse=True curves backwards")
+async def _(shim, field, lib):
+    # The nose still turns right, so the back of the robot swings left.
+    start, end = await drive(shim, field, lib,
+                             lib["arc_turn"](25, 90, reverse=True))
+    check_arc(start, end, 25, 90, reverse=True)
+
+
+@check("arc_turn keeps its curve with drift and a wrong track width")
+async def _(shim, field, lib):
+    # The real track is 140 mm, but the library still says 130. So the wheel
+    # speeds come out wrong, and the gyro has to steer the robot back.
+    start, end = await drive(shim, field, lib, lib["arc_turn"](30, 90),
+                             drift=8.0, track=140.0)
+    check_arc(start, end, 30, 90, tol_cm=2.5)
+
+
+@check("arc_turn keeps counting past 180")
+async def _(shim, field, lib):
+    seen = []
+
+    async def three_quarters():
+        await lib["arc_turn"](20, 270)
+        seen.append(lib["bearing"]())
+
+    start, end = await drive(shim, field, lib, three_quarters())
+    check_arc(start, end, 20, 270)
+    close(seen[0], 270.0, 2.0, "bearing after a 270 degree arc")
+
+
+@check("a wrong YAW_SIGN arc stops instead of spinning")
+async def _(shim, field, lib):
+    lib["YAW_SIGN"] = -lib["YAW_SIGN"]
+    try:
+        start, end = await drive(shim, field, lib, lib["arc_turn"](25, 90))
+    except RuntimeError as exc:
+        if "wrong way" not in str(exc):
+            raise Failure("wrong message: %s" % exc)
+        return
+    finally:
+        lib["YAW_SIGN"] = -lib["YAW_SIGN"]
+    raise Failure("turned %.0f degrees without stopping"
+                  % heading_error(end[2], start[2]))
+
+
+@check("arc_turn refuses a radius tighter than half the track")
+async def _(shim, field, lib):
+    # Tighter than that, the inside wheel has to run backwards.
+    for radius in (5, 0, -25):
+        try:
+            await drive(shim, field, lib, lib["arc_turn"](radius, 90))
+        except ValueError as exc:
+            if "turn_deg" not in str(exc):
+                raise Failure("radius %g: wrong message: %s" % (radius, exc))
+        else:
+            raise Failure("arc_turn(%g, 90) did not refuse" % radius)
+
+
+@check("arc_turn_gyro is the same function as arc_turn")
+async def _(shim, field, lib):
+    _, plain = await drive(shim, field, lib, lib["arc_turn"](25, 45))
+    _, alias = await drive(shim, field, lib, lib["arc_turn_gyro"](25, 45))
+    close(alias[0], plain[0], 1.0, "x")
+    close(alias[1], plain[1], 1.0, "y")
+    close(heading_error(alias[2], plain[2]), 0.0, 1.5, "heading")
 
 
 @check("turn_deg(3) does not stall below the minimum power")

@@ -197,9 +197,9 @@ def _yaw_total():
     last look, going the short way round. 179 to -179 then counts as 2 degrees,
     not -358.
 
-    That only works if we look at least once every half turn. The turn loop
-    looks every 15 ms, and a drive never gets 45 degrees off straight, so that
-    is easy. arc_turn does not look, so an arc of more than 180 loses count.
+    That only works if we look at least once every half turn. The turn and arc
+    loops look every 15 ms, and a drive never gets 45 degrees off straight, so
+    that is easy.
     """
     global _YAW_LAST, _YAW_TOTAL
     now = _yaw_cw()
@@ -735,19 +735,105 @@ async def face(bearing_deg, shortest=True, stop_early_deg=0.0, **kwargs):
 # -----------------------------
 # Arcs, attachments, little moves
 # -----------------------------
-# The blocks have none of these. They come from toolkit.py, because that is what
-# the lessons in code/learn/ teach.
+# The blocks have none of these. The attachment helpers come from toolkit.py,
+# because that is what the lessons in code/learn/ teach. arc_turn started there
+# too, but it steers by the gyro now. The lessons still teach toolkit.py's one.
 
 
-async def arc_turn(radius_cm, angle_deg, velocity=400, stop_mode=motor.BRAKE):
-    """Drive a curve instead of turning on the spot. Roughly."""
-    if radius_cm <= 0:
+async def arc_turn(radius_cm, angle_deg, velocity=400, reverse=False,
+                   stop_mode=motor.BRAKE, kp=KP_STRAIGHT, kd=KD_STRAIGHT,
+                   timeout_ms=DEFAULT_TIMEOUT_MS):
+    """Drive a curve instead of turning on the spot, steered by the gyro.
+
+    radius_cm is measured to the middle of the robot, halfway between the
+    wheels. angle_deg is how far the nose turns. Positive is right, the same as
+    turn_deg. velocity is how fast the middle of the robot goes. reverse=True
+    drives the curve backwards: the nose still turns the way angle_deg says,
+    and the back of the robot swings the other way.
+
+    It stops when the gyro says the robot has turned far enough. On the way it
+    checks the heading against how far the wheels have gone. On a true curve
+    the two keep in step, so if the heading gets ahead or falls behind, it
+    steers back onto the curve. That is why the radius comes out right even
+    when TRACK_W_MM is a little off.
+    """
+    smallest = TRACK_W_MM / 20.0          # half the track, in cm
+    if radius_cm < smallest:
+        raise ValueError(
+            "arc_turn needs a radius of at least %.1f cm, half the track "
+            "width. Any tighter and the inside wheel runs backwards. For a "
+            "turn on the spot, use turn_deg. For a curve to the left, give a "
+            "negative angle, not a negative radius." % smallest)
+    if angle_deg == 0:
         return
-    s = int(_clamp((TRACK_W_MM / (2.0 * radius_cm * 10.0)) * 100.0, -100.0, 100.0))
-    arc_len_cm = abs(radius_cm * (angle_deg * pi / 180.0))
-    await motor_pair.move_for_degrees(PAIR, _cm_to_deg(arc_len_cm),
-                                      s if angle_deg > 0 else -s,
-                                      velocity=velocity, stop=stop_mode)
+
+    turn = 1.0 if angle_deg > 0 else -1.0
+    direction = -1.0 if reverse else 1.0
+    speed = abs(int(velocity))
+    # The outside wheel goes round a bigger circle than the middle of the
+    # robot, and the inside wheel round a smaller one. k is how much bigger.
+    k = (TRACK_W_MM / 10.0) / (2.0 * radius_cm)
+    left = direction * speed + turn * speed * k
+    right = direction * speed - turn * speed * k
+
+    motor.reset_relative_position(LEFT_DRIVE, 0)
+    motor.reset_relative_position(RIGHT_DRIVE, 0)
+    await _settle()
+    start = bearing()
+    target = start + angle_deg
+
+    last_error = 0.0
+    steps = 0
+    max_steps = int(timeout_ms / LOOP_MS)
+    timed_out = False
+
+    while True:
+        now = bearing()
+        if turn * (target - now) <= 0:
+            break
+        steps += 1
+        if steps > max_steps:
+            timed_out = True
+            if DEBUG:
+                print("arc gave up", round(target - now, 2), "degrees short")
+            break
+
+        # On a true curve the nose has turned by distance / radius, in radians.
+        # The gap between that and the gyro is the mistake.
+        travelled_cm = _deg_to_cm(_drive_degrees())
+        on_curve = start + turn * travelled_cm / radius_cm * 180.0 / pi
+        error = now - on_curve
+        if abs(error) > RUNAWAY_DEG:
+            motor_pair.stop(PAIR, stop=motor.BRAKE)
+            raise RuntimeError(
+                "Arc is %.0f degrees off its curve, so it stopped. It is "
+                "turning the wrong way. Either YAW_SIGN is wrong, or "
+                "LEFT_DRIVE and RIGHT_DRIVE are swapped. Run "
+                "bench_check_yaw_sign() and watch which way the robot turns."
+                % abs(error))
+
+        # The same push back as drive_cm, on top of the two curve speeds.
+        trim = -(kp * error + kd * (error - last_error))
+        last_error = error
+        _tank(left + trim, right - trim)
+
+        if DEBUG:
+            print("arc cm:", round(travelled_cm, 1), "bearing:", round(now, 2),
+                  "off curve:", round(error, 2))
+        await runloop.sleep_ms(LOOP_MS)
+
+    motor_pair.stop(PAIR, stop=stop_mode)
+    await runloop.sleep_ms(200)
+    # Stuck against something. Spinning on the spot would not help.
+    if timed_out:
+        return
+    # The robot rolls on a little after the brakes. Same fix as the turns.
+    await _turn_to_bearing(target, stop_mode=stop_mode)
+
+
+async def arc_turn_gyro(radius_cm, angle_deg, **kwargs):
+    """The same thing as arc_turn. Both names work, both use the gyro."""
+    await arc_turn(radius_cm, angle_deg, **kwargs)
 
 
 def _attachment_args(degrees, velocity):

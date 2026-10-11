@@ -24,6 +24,7 @@ sensors. See [`../my-blocks.md`](../my-blocks.md) for the block-by-block mapping
 | A drive that ramps up and down | `advanced.py`, `drive_cm` |
 | A gyro turn that actually works | `advanced.py`, `turn_deg` |
 | Turns whose errors do not pile up | `advanced.py`, `face` |
+| A curve that ends where it should | `advanced.py`, `arc_turn` |
 
 Neither imports the other. They disagree in one place, described below.
 
@@ -46,6 +47,15 @@ seconds and 4.26 degrees out, against 1.18 seconds and 0.58 degrees for the gyro
 turn. It was slower *and* worse, so it was deleted. `turn_deg` now is the gyro
 turn, and `turn_deg_gyro` is a second name for the same function.
 
+**`arc_turn` steers by the gyro here too.** Since 27 September 2026 it checks
+the heading against how far the wheels have gone, and stops when the gyro says
+the robot has turned far enough. The old one steered by a formula and turned
+121.6 degrees when asked for 90 on the pretend robot. `radius_cm` is measured to
+the middle of the robot, and `reverse=True` drives the curve backwards. A radius
+under 6.5 cm, half the track, raises a `ValueError`. `arc_turn_gyro` is a second
+name for the same function. The toolkit's `arc_turn` is unchanged, because
+lessons 5 and 6 teach its bug.
+
 What changes is what happens underneath:
 
 | Function | `toolkit.py` | `advanced.py` |
@@ -54,6 +64,7 @@ What changes is what happens underneath:
 | `drive_cm_gyro` | steering loop with five tuning knobs | the same function as `drive_cm` |
 | `turn_deg` | counts wheel degrees, needs `TRACK_W_MM` | spins on the gyro |
 | `turn_deg_gyro` | never moves the motors, see `code/learn/10-gyro.md` | the same function as `turn_deg` |
+| `arc_turn` | counts wheel degrees, turns too far | follows the curve on the gyro |
 
 Some toolkit arguments are gone, because they describe a control loop
 `advanced.py` does not have: `steer_limit`, `deadband_deg`, `steer_rate_limit`,
