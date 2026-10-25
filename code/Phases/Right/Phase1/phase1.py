@@ -809,8 +809,8 @@ async def main():
     await init_robot(default_speed=500)
     print (set_calibration_scale(179/180))
     # Mission XYZ Oct 11
-    motor.run_for_degrees(port.C,350,1000)
     await drive_cm(-50,1000)
+    motor.run_for_degrees(port.C,350,1000)
     await drive_cm(-22)
     await motor.run_for_degrees(port.C,-60,1000)
     await drive_cm(8)
@@ -831,7 +831,7 @@ async def main():
     #Drive towards the ant
     await drive_cm(-30)
     await face(45)
-    await drive_cm(-22, velocity=200) 
+    await drive_cm(-22, velocity=300) 
     await drive_cm(10)
     await face (130)
     await drive_cm(-20)
