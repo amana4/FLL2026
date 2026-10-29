@@ -13,9 +13,9 @@ are excluded in `mkdocs.yml`.
 | | |
 | --- | --- |
 | Expected total, 5 families at $200 | **$1,000.00** |
-| Recorded spend so far | **$440.23** |
-| Remaining on paper, once all contributions are in | **$559.77** |
-| Received so far | _fill in_ |
+| Recorded spend so far | **$663.23** |
+| Received so far, all 5 families | **$1,000.00** |
+| Cash in hand | **$336.77** |
 
 ## Open question: the robot kits are not on this receipt
 
@@ -41,7 +41,7 @@ Worth resolving before more money is collected, because the answer changes wheth
 $1,000 is enough. A SPIKE Prime set is a few hundred dollars, so this is not a
 rounding error.
 
-Until it is settled, treat $440.23 as the *recorded* spend rather than the total
+Until it is settled, treat the recorded spend as a floor rather than the total
 spend.
 
 ## Contributions
@@ -51,12 +51,12 @@ Families are listed by slot rather than name. The mapping is in
 
 | Family | Slot | Expected | Received | Date | Method |
 | --- | --- | --- | --- | --- | --- |
-| Family 1 | Kid 1 | $200.00 | | | |
-| Family 2 | Kid 2 | $200.00 | | | |
-| Family 3 | Kid 3 | $200.00 | | | |
-| Family 4 | Kid 4 | $200.00 | | | |
-| Family 5 | Kid 5 | $200.00 | | | |
-| **Total** | | **$1,000.00** | | | |
+| Family 1 | Kid 1 | $200.00 | $200.00 | | |
+| Family 2 | Kid 2 | $200.00 | $200.00 | | |
+| Family 3 | Kid 3 | $200.00 | $200.00 | | |
+| Family 4 | Kid 4 | $200.00 | $200.00 | | |
+| Family 5 | Kid 5 | $200.00 | $200.00 | | |
+| **Total** | | **$1,000.00** | **$1,000.00** | | |
 
 ## Expenses so far
 
@@ -65,12 +65,19 @@ Families are listed by slot rather than name. The mapping is in
 | 30 Jul 2026 | Team registration (`F27-Team-FLLCH-REG`) | $285.00 | | Sales order SO164149 |
 | 30 Jul 2026 | BIOGLOW Challenge Set (`F27-FLL-CHLNG-SET`) | $105.00 | | same order |
 | 30 Jul 2026 | Shipping and tax | $50.23 | | $20.00 + $30.23 |
-| | **Total** | **$440.23** | | |
+| 23 Sep 2026 | Tournament registration, La Costa Canyon, 14 Nov 2026 | $200.00 | | Invoice 71667-377510 |
+| 18 Oct 2026 | Order T518449955 — item not stated | $23.00 | | $16.36 + $4.99 shipping + $1.65 tax |
+| | **Total** | **$663.23** | | |
 | ? | **SPIKE Prime sets — receipt missing** | **unknown** | | See the open question below |
 
-The three lines above are the itemised order. Keep the receipt outside the repo —
+The first three lines are the itemised order SO164149. Keep the receipt outside the repo —
 it carries a billing address, so `.gitignore` blocks it. A copy is in
 `~/Documents/FLL2026-private/`.
+
+The tournament fee is invoiced, not yet recorded as paid. CA SoCal FLL prefers
+Zelle to `socalfllrobotics@gmail.com`; PayPal and cheque (payable to FIRST CA
+Robotics) also work. Put team number 71667 on the payment. Questions go to Cathy
+Schulz at `cschulz@firstpartners.org`.
 
 ## Still to come
 
@@ -79,13 +86,13 @@ Rough list, no figures yet. Fill in estimates as you price them.
 | Item | How necessary | Note |
 | --- | --- | --- |
 | Printing the Engineering Notebook | Essential | Colour printing adds up |
-| Travel to the competition | Essential | Early November |
+| Travel to the competition | Essential | La Costa Canyon, 14 November 2026 |
 | Competition table and border walls | Recommended | Timber, per the official Table Building Instructions. You can practise on the floor, but matches are on tables and robots behave differently. |
 | Spare motors | Recommended | Medium angular motors fail most often |
 | Spare LEGO parts | Recommended | Beams, pins, axles |
 | Storage boxes | Recommended | Sorted parts save real time every session |
 | Spare hub | Optional | A dead hub on competition day ends the season |
-| Team shirts | Optional | |
+| Team shirts | Optional | About $175: $15 each, 2 per student for 5 students ($150), plus $25 for coaches |
 | Judge handouts | Optional | A few printed copies |
 | Snacks across 26 meetings | Optional | Adds up more than you would think |
 
