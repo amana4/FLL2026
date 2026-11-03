@@ -903,6 +903,7 @@ async def main():
     await face(12)
     await drive_cm(-4)
     await motor.run_for_degrees(attachment2,330,280)
-    # Run the main loop
-    runloop.run(main())
+    
+# Run the main loop
+runloop.run(main())
 
