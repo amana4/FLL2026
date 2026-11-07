@@ -894,18 +894,16 @@ async def bench_check_yaw_sign():
 # Main program
 # -----------------------------
 async def main():
-
-    #Mission 5 (Reaching roots)
     await init_robot(default_speed=1000)
     #await motor.run_for_degrees(attachment2, -420, 500)
-    await motor.run_for_degrees(attachment2, -430, 500)
+    motor.run_for_degrees(attachment2, -430, 500)
     await drive_cm(-71,velocity=800)
-    await face(-27)
-    await drive_cm(-9)
+    await face(-20) #was 27
+    await drive_cm(-9) #was -9
     await face(0)
-    await drive_cm(-1.25)
-    motor.run_for_degrees(attachment2, 400, 1100)
-    await drive_cm(75,velocity=1000)
+    await drive_cm(-1.25) 
+    await motor.run_for_degrees(attachment2, 400, 1100)
+    await drive_cm(78,velocity=1100)
 
 
 # Run the main loop
