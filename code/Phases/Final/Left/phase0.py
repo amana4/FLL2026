@@ -1,3 +1,12 @@
+# GENERATED FILE — do not edit above the marker.
+#
+# The part above the marker is a copy of code/library/advanced.py. Refresh it
+# with:
+#
+#    python3 tools/build-mission.py 'code/missions/Mission 1-2-3 together/mission.py'
+#
+# Edit below the marker. That is where the ports and the mission live.
+
 # Advanced library — Python version of our Word Blocks library
 #
 # This is the same movement code as the SPIKE App project "Advanced Coding 26",
@@ -27,7 +36,7 @@ LEFT_DRIVE = port.F
 RIGHT_DRIVE = port.A
 
 attachment1 = port.C
-attachment2 = port.E    # not confirmed
+attachment2 = port.D        # not confirmed
 
 WHEEL_D_MM = 62.4            # measure this. Everything depends on it
 TRACK_W_MM = 130.0            # only arc_turn uses this one
@@ -888,22 +897,54 @@ async def bench_check_yaw_sign():
     return change
 
 
+# ===== MISSION CODE BELOW. THE GENERATOR DOES NOT TOUCH THIS =====
+#
+# Missions 1, 2 and 3 in one run, on the advanced library.
+#
+# Everything above the marker is generated from code/library/advanced.py.
+# Refresh it with:python3 tools/build-mission.py
+#
+# Ports come from the library above (F left, A right). Override them here
+# if this robot is wired differently, and the override survives a rebuild.
 
 
 # -----------------------------
 # Main program
 # -----------------------------
+# Missions 3, 2 and 1 in one run, in that order.
+#
+# The attachment is on the back of the robot, so the robot reverses into each
+# model. Every face() counts from base, which is the way the robot points when
+# init_robot() runs. Put the robot down in base the same way every time.
 async def main():
-
-    #Mission 1 - Drone Survey and Misson 15 Biocentric architecture and move to right side
-
+    # Pair the wheels and zero the gyro. This spot is base. Any drive that does
+    # not say how fast goes at 800 degrees per second.
     await init_robot(default_speed=500)
-    await drive_cm(-92,velocity=1100)
-    await face (0)
+
+    # On our mat the robot went 179 cm when asked for 180, so every distance is
+    # scaled to match.
+    print (set_calibration_scale(179/180))
+
+    #mission 3 (Flip the Rock)
+    # Flip the Rock. Back 44 cm into the model, then forward 20 cm to clear it.
+    await drive_cm(-44)
     await drive_cm(22)
-    await face (-45)
-    await drive_cm (-35)
-    await face (10)
-    await drive_cm(-90,velocity=1000)
+
+    #mission 2 (Exploding seeds)
+    # Exploding Seeds. Turn to 79 degrees right of base.
+    await face(90)
+    await drive_cm(-36)
+    await face(46)
+    
+    #bring down the attachement 
+    await motor.run_for_degrees(attachment1, 370, 500)
+    await drive_cm(-7)
+    await motor.run_for_degrees(attachment1, -120, 1000)
+
+    #Push down while goig back 
+    drive_cm(35,velocity=1100)
+    motor.run_for_degrees(attachment1, -300, 200)
+
+  
 # Run the main loop
 runloop.run(main())

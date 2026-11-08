@@ -894,16 +894,36 @@ async def bench_check_yaw_sign():
 # Main program
 # -----------------------------
 async def main():
-
-    #Missson 8 - tangled tree
     await init_robot(default_speed=500)
-    await drive_cm(-58)
-    await face(80)
-    await drive_cm(-24)
-    await face(12)
-    await drive_cm(-4)
-    await motor.run_for_degrees(attachment2,330,280)
-    
+    #await motor.run_for_degrees(attachment2, -420, 500)
+    await drive_cm(-65,velocity=800)
+    await face(90) 
+
+    await drive_cm(-28)
+    #face the root
+    await face(0)
+    #bring down the attchment 
+    await motor.run_for_degrees(attachment2, -270, 500)
+    #drive toward the root
+    await drive_cm(-13,velocity=300)
+    #bringup the atthcment while driving back
+    motor.run_for_degrees(attachment2, 300, 1000)
+    await drive_cm(19,velocity=350)
+
+    # #Drive to right side
+    await face(92)
+    #motor.run_for_degrees(attachment2, 100, 500)
+    await drive_cm(-17,velocity=1000)
+    await face(180)
+    await drive_cm(-37,velocity=1000)
+    await face(91)
+    await drive_cm(-100,velocity=1100)
+    await face(0)
+    await drive_cm(20,velocity=1100)
+
+
+
+
 # Run the main loop
 runloop.run(main())
 

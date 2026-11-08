@@ -27,7 +27,7 @@ LEFT_DRIVE = port.F
 RIGHT_DRIVE = port.A
 
 attachment1 = port.C
-attachment2 = port.E       # not confirmed
+attachment2 = port.E    # not confirmed
 
 WHEEL_D_MM = 62.4            # measure this. Everything depends on it
 TRACK_W_MM = 130.0            # only arc_turn uses this one
@@ -894,18 +894,13 @@ async def bench_check_yaw_sign():
 # Main program
 # -----------------------------
 async def main():
-    await init_robot(default_speed=1000)
-    #await motor.run_for_degrees(attachment2, -420, 500)
-    motor.run_for_degrees(attachment2, -430, 500)
-    await drive_cm(-71,velocity=800)
-    await face(-20) #was 27
-    await drive_cm(-9) #was -9
-    await face(0)
-    await drive_cm(-1.25) 
-    await motor.run_for_degrees(attachment2, 400, 1100)
-    await drive_cm(78,velocity=1100)
 
+    #Mission 1 - Drone Survey and Misson 15 Biocentric architecture and move to right side
+
+    await init_robot(default_speed=500)
+    await drive_cm(-92,velocity=1100)
+    await face (0)
+    await drive_cm(92,velocity=1100)
 
 # Run the main loop
 runloop.run(main())
-
