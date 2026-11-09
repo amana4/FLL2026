@@ -36,7 +36,7 @@ LEFT_DRIVE = port.F
 RIGHT_DRIVE = port.A
 
 attachment1 = port.C
-attachment2 = port.D        # not confirmed
+attachment2 = port.E      # not confirmed
 
 WHEEL_D_MM = 62.4            # measure this. Everything depends on it
 TRACK_W_MM = 130.0            # only arc_turn uses this one
@@ -936,18 +936,18 @@ async def main():
     #mission 2 (Exploding seeds)
     # Exploding Seeds. Turn to 79 degrees right of base.
     await face(90)
-    await drive_cm(-36)
+    await drive_cm(-24)
     await face(46)
-    
-    #bring down the attachement 
-    await motor.run_for_degrees(attachment1, 365, 500)
-    await drive_cm(-9)
-    #bring up
-    await motor.run_for_degrees(attachment1, -150, 1000)
 
-    #Push down while goig back 
+    # #bring down the attachement
+    await motor.run_for_degrees(attachment2, -380, 1000)
+    await drive_cm(-22)
+    #bring up
+    await motor.run_for_degrees(attachment2, 200, 1000)
+    motor.run_for_degrees(attachment2, 180, 1100)
+    # # #Push down while goig back
     await drive_cm(35,velocity=1100)
 
-  
+
 # Run the main loop
 runloop.run(main())
