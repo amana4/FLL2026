@@ -808,20 +808,20 @@ async def bench_check_yaw_sign():
 async def main():
     await init_robot(default_speed=500)
     print (set_calibration_scale(179/180))
-    
-    
+
+
  # Mission XYZ Oct 11
     await drive_cm(-50,1000)
 ##########################Mission Pull####################
     #ensure the robot is aligned after running fast
     await face(0)
     motor.run_for_degrees(port.C,360,1000) #was 350
-    
+
     # Now drive to it
-    await drive_cm(-22)
+    await drive_cm(-23)
     #if the atachmnet is too high the pull does not work
     await motor.run_for_degrees(port.C,-57,1000)
-    await drive_cm(8)
+    await drive_cm(9)
     #push the attachment up to avoid getting it snagged whilt turning in next step
     motor.run_for_degrees(port.C,-15, 1000)
     await drive_cm(-8)
@@ -844,9 +844,9 @@ async def main():
     await drive_cm(-28) #was 30
     #face the ant
     await face(45)
-    await drive_cm(-15, velocity=200) 
+    await drive_cm(-15, velocity=230)
     #Mkae sure ant is all the way in
-    await drive_cm(-10, velocity=1100) 
+    await drive_cm(-10, velocity=1100)
     await drive_cm(10) #was 10
     await face (130)
     await drive_cm(-18)
@@ -862,7 +862,7 @@ async def main():
     await drive_cm(10)
     await face(-10)
     motor.run_for_degrees(port.E,-350, -1000)
-    await drive_cm(67, velocity=1000)
+    await drive_cm(67, velocity=1100)
 
 
 

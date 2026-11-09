@@ -917,12 +917,7 @@ async def main():
     await face(180)
     await drive_cm(-37,velocity=1000)
     await face(91)
-    await drive_cm(-100,velocity=1100)
-    await face(0)
-    await drive_cm(20,velocity=1100)
-
-
-
+    await drive_cm(-130,velocity=1100)
 
 # Run the main loop
 runloop.run(main())
