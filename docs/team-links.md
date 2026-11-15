@@ -51,6 +51,9 @@ Fill these in as they exist.
 | After-class notes form (what the kids fill in) | <https://docs.google.com/forms/d/e/1FAIpQLSdZLffhEKDjB5kv6IGmUgxbquTiqsvH47d2jKIVPAcYK1TXQg/viewform> |
 | After-class notes form — edit the questions | <https://docs.google.com/forms/d/1FrGEAl5az6Peacy8POCYNkS58cCG2dghD_3KPgBLSX8/edit> |
 | After-class notes responses (Google Sheets) | <https://docs.google.com/spreadsheets/d/1-IdeSZyUmC_o6YaDYDrApmv3IxJiKFbuYZR3TlXOy34/edit> |
+| Robot Design test form (what the kids fill in) | <https://docs.google.com/forms/d/e/1FAIpQLSdRh4IipvXHXhiSVWmqY-XLN85Sy2JrgbQs10BAixYI_1raFg/viewform> |
+| Robot Design test form, edit the questions | <https://docs.google.com/forms/d/1eteJly-dZSm7b7vIcV7ybCXjvdxN5ORJSrpm8mJl5Co/edit> |
+| Robot Design test responses (Google Sheets) | _paste once created_ |
 | **Bee field log data** (Google Sheets) | _paste the SHEET URL the script printed_ |
 | **Bee field log photos** (Drive folder, private) | _paste the PHOTO FOLDER URL_ |
 | Bee field log — edit the script | <https://script.google.com> — the project is called "Bee data collector" |

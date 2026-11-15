@@ -5,6 +5,8 @@ show judges.
 
 | File | What's in it |
 | --- | --- |
+| [`our-robot-explained.md`](our-robot-explained.md) | Why the robot and its code are the way they are. Read this before judging |
+| [`robot-design-test.md`](robot-design-test.md) | A quiz and open questions on that page |
 | [`chassis.md`](chassis.md) | The driving base and its sensors |
 | [`design-log.md`](design-log.md) | Dated record of what we changed and why |
 | [`attachments/`](attachments/README.md) | One file per attachment |
@@ -33,15 +35,23 @@ The criteria the deck argues for are written up as a decision table in
 
 ## What Robot Design judging actually rewards
 
-Judges are not scoring "is the robot impressive." They score, roughly:
+Judges are not scoring "is the robot impressive." The official rubric
+(`fll-challenge-bioglow-rubrics-color.pdf`, page 3) has five rows:
 
-- **Identify** — did you understand the mission problems before building?
-- **Design** — is the build deliberate, and can you explain the choices?
-- **Build** — is it durable, and did you test it?
-- **Program** — is the code structured and understandable?
-- **Iterate** — **can you show what failed and how you improved it?**
+- **Identify**: did you choose missions on purpose, and use building and coding
+  resources to support that choice?
+- **Design**: did all team members contribute ideas, and do all of them have
+  building and coding skills?
+- **Create**: can you explain what is original or improved about your
+  attachments, and about your code or sensor use?
+- **Iterate**: **can you show repeated testing, and what you improved because
+  of it?**
+- **Communicate**: can you explain what you learned, and do you show pride in
+  the work?
 
-That last one carries enormous weight and is the easiest to lose by not writing
+The exact wording is in [Our Robot, Explained](our-robot-explained.md#how-judges-score-robot-design).
+
+Iterate carries enormous weight and is the easiest to lose by not writing
 things down. A robot that got worse and then better, documented, beats a robot
 that was fine from the start with no record.
 

@@ -254,6 +254,8 @@ nav:
           - M15 Biocentric Architecture: robot-game/missions/M15-biocentric-architecture.md
       - Robot Design:
           - robot-design/README.md
+          - Our robot, explained: robot-design/our-robot-explained.md
+          - Robot Design test: robot-design/robot-design-test.md
           - The driving base: robot-design/chassis.md
           - Attachments: robot-design/attachments/README.md
           - BOXOR frame attachment: robot-design/attachments/boxor-frame.md
