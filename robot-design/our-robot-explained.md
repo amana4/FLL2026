@@ -1,9 +1,9 @@
 # Our Robot, Explained
 
-Read this before the [Robot Design test](robot-design-test.md). It collects in
-one place what our robot is, how its code works, and why we made the choices we
-made. Judges will ask any of you about any part of it, so everyone reads all of
-it, not just their own part.
+This page is about **our** robot: how we built it, how the code works, and why
+we made the choices we made. Read it all before you take the
+[Robot Design test](robot-design-test.md). The judges can ask any of us about
+any part of the robot, not just the part we worked on.
 
 **On this page:**
 
@@ -15,141 +15,140 @@ it, not just their own part.
 - [5. Testing and changing things](#5-testing-and-changing-things)
 - [6. Words to know](#6-words-to-know)
 
-The page has two kinds of content.
-
-**Facts.** These come from our code, our design log and our git history. Each
-one says where it came from, so you can check it.
-
-**Team to answer.** Some of the *why* was never written down. Nobody else can
-fill those boxes in, because only you know why you did it. They look like this:
+You will see boxes like this one:
 
 !!! question "Team to answer"
-    A question only the team can answer. Bring your answer to the brainstorm.
+    These are questions only our team can answer. The answer is in your head,
+    not on this page. Bring your answer to the brainstorm.
 
-Important: do not invent an answer for a box you do not know. "I don't know,
-Kid 3 built that part" is a fine answer in the judging room. A made-up reason
-that falls apart at the next question is not.
+Important: if you don't know an answer, don't make one up. In the judging room,
+"I don't know, my teammate built that part" is a fine answer. A made-up answer
+falls apart as soon as the judge asks one more question.
 
 ## How judges score Robot Design
 
-Robot Design judges use a rubric with five rows. This wording is copied from
-the official rubric, `fll-challenge-bioglow-rubrics-color.pdf`, page 3. For each
-row, the right-hand column is what you need for **Accomplished**, which is 3 out
-of 4.
+The judges use a score sheet called a **rubric**. It has five parts, and each
+part has two lines. The judges give 1 to 4 points on every line. To get
+**3 points (Accomplished)**, we need to show the things in the right-hand
+column.
 
-| Row | What the row is about | To score Accomplished |
+The words in the middle and right columns are copied exactly from the official
+rubric, so you will recognise them on the day.
+
+| Row | In plain words | Official words for 3 points |
 | --- | --- | --- |
-| **IDENTIFY** | Team determined which missions to attempt, explored building and coding resources, and sought guidance as needed. | Clear evidence of mission strategy. Clear use of building or coding resources to support their mission strategy. |
-| **DESIGN** | Team members worked collaboratively on their designs and developed the building and coding skills needed. | Clear evidence that all team members contributed ideas. Clear evidence of building and coding skills in all team members. |
-| **CREATE** | Team developed original designs or improved on existing ones according to their mission strategy. | Clear explanation of innovative attachments and their purpose. Clear explanation of innovative code and/or sensor use. |
-| **ITERATE** | Team repeatedly tested their robot and code to identify areas for improvement and incorporated the findings into their solutions. | Clear evidence of repeated testing of their robot and code. Clear evidence of improvements based on testing. |
-| **COMMUNICATE** | Team effectively explained what they learned from the robot design process and celebrated their progress. | Detailed explanation of process and lessons learned. Team clearly shows pride or enthusiasm for their work. |
+| **IDENTIFY** | We chose our missions on purpose, and we looked for help and ideas. | Clear evidence of mission strategy. Clear use of building or coding resources to support their mission strategy. |
+| **DESIGN** | Everyone on the team had ideas, and everyone can build and code. | Clear evidence that all team members contributed ideas. Clear evidence of building and coding skills in all team members. |
+| **CREATE** | We can explain what is clever about our attachments and our code. | Clear explanation of innovative attachments and their purpose. Clear explanation of innovative code and/or sensor use. |
+| **ITERATE** | We tested again and again, and we made the robot better each time. | Clear evidence of repeated testing of their robot and code. Clear evidence of improvements based on testing. |
+| **COMMUNICATE** | We can tell the story of what we learned, and we are proud of it. | Detailed explanation of process and lessons learned. Team clearly shows pride or enthusiasm for their work. |
 
-Some of these lines also count toward the **Core Values** award. On the rubric
-they have a gear-shaped box instead of a square one. They are:
+Some lines on the rubric have a little **gear** picture next to them. Those
+lines count for the **Core Values** award too. They are about using help and
+ideas, everyone having ideas, getting better from testing, and both
+COMMUNICATE lines.
 
-- Using building or coding resources (IDENTIFY)
-- All team members contributing ideas (DESIGN)
-- Improvements based on testing (ITERATE)
-- Both COMMUNICATE lines
-
-Note the words "all team members" in the DESIGN row. Judges choose who they ask.
-One person who knows everything scores lower than five people who each know
-their part well.
+Look at the word **"all"** in the DESIGN row. The judges pick who answers each
+question. So it is better for all five of us to know our robot than for one
+person to know everything.
 
 ## 1. The driving base
 
-**What is plugged in where.** This is from the code we use now, in
-`code/Phases/Final/`:
+The **driving base** is the main part of the robot: the hub, the two wheels and
+their motors. The attachments go on top of it.
+
+**What is plugged in where.** The hub has six sockets, called A to F. This is
+how our robot is wired in the final code:
 
 | Socket | What is plugged in |
 | --- | --- |
-| F | Left drive motor |
-| A | Right drive motor |
+| F | Left wheel motor |
+| A | Right wheel motor |
 | C | Attachment motor (`attachment1`) |
-| E | Attachment motor (`attachment2` in `Phase 5.py` and `phase3.py`) |
+| E | Attachment motor (`attachment2`) |
 
-This took three tries to get right, which is itself a good ITERATE story. On
-13 September 2026 the team read the sockets off the hub and fixed the code to
-match. On 20 September the hub disagreed: the robot stopped with the error
-`OSError: [Errno 19] ENODEV`, which means "no motor on that socket". Drive
-motors on F and A worked. Then `Phase 5.py` has the note `confirmed :D` next to
-socket E. (Sources: [design log](design-log.md),
-[library notes](../code/library/README.md).)
+It took us three tries to get this right. On 13 September we read the sockets
+off the hub and wrote them into the code. On 20 September the robot stopped
+with an error that means "there is no motor in that socket". We tried again,
+and the wheel motors worked on F and A. Later, someone wrote `confirmed :D`
+next to socket E in `Phase 5.py`. A mistake, a test, and a fix: that is a good
+story for ITERATE.
 
-Note: some older pages, such as the [BOXOR frame page](attachments/boxor-frame.md),
-still show the 13 September wiring. The final code is the one that runs.
+**How the robot finds its way.** The robot cannot see. It uses two things to
+know where it is:
 
-**How the robot finds its way.** It uses the **gyro** inside the hub to know
-which way it points, and the **motor encoders** to count how far the wheels
-have turned. On 20 September 2026 the team decided not to use the colour
-sensors, and the line-following code was removed. (Source:
-[library notes](../code/library/README.md).)
+- The **gyro** is a sensor inside the hub. It knows which way the robot is
+  pointing.
+- The **motor encoders** count how far each wheel has turned, so the robot
+  knows how far it has driven.
 
-That choice has a cost. The gyro can correct which way the robot *points*, but
-nothing corrects how *far* it has gone. The code fixes that a different way:
-the robot backs into a wall or a model and lets it push the robot square.
+Our robot also had two **colour sensors**, which can follow the black lines on
+the mat. On 20 September the team decided not to use them, and that code was
+removed.
 
-**The hub** is mounted flat and face up, so the centre button can be pressed
-with one hand at the table. (Source: [BOXOR frame page](attachments/boxor-frame.md).)
+That choice has a downside. The gyro can fix which way the robot *points*, but
+nothing fixes how *far* it has gone. So sometimes the robot backs gently into a
+wall or a model, and that pushes it straight again.
 
-**Wheel size.** The code assumes wheels 62.4 mm across. The design log says
-nobody has checked this with calipers yet.
+**The hub** lies flat and face up. That way, you can press the big button with
+one hand at the table.
+
+**The wheels.** The code expects wheels that are 62.4 mm across. Nobody has
+measured them yet to check.
 
 !!! question "Team to answer"
-    - Why did we pick this driving base? What did we like about it from the
+    - Why did we pick this driving base? What did we like from the
       [six chassis designs](chassis-designs-slides.html) we looked at?
     - Which wheels are on the robot, and why those?
-    - Why did we stop using the colour sensors? Was it the lines on the mat,
-      the time, or something else?
-    - Where is the heavy part of the robot? Does it tip or rock when it stops?
+    - Why did we stop using the colour sensors?
+    - Where is the heaviest part of the robot? Does it wobble when it stops?
 
 ## 2. Attachments
 
-**The BOXOR frame.** Our attachment frame comes from a published design, the
-BOXOR Frame Attachment by Next Level Teacher. A motor turns a **bevel gear
-pair**, which turns the movement through 90 degrees and swings an arm. Change
-the arm, and the same frame does a different job. (Source:
-[BOXOR frame page](attachments/boxor-frame.md).)
+**Attachments** are the parts we add to the driving base to do the missions,
+like arms that push, lift or pull.
 
-Using a published design is allowed. The CREATE row says "original designs **or
-improved on existing ones**". So the strong answer is not "we designed it all
-ourselves". It is "we started from this design, and here is what we changed and
+**The BOXOR frame.** Our attachment frame comes from a design by Next Level
+Teacher, called the BOXOR Frame Attachment. Inside it is a **bevel gear pair**:
+two gears that meet at a corner. When the motor turns, the gears turn the
+movement around the corner, through 90 degrees, and that swings an arm. Put a
+different arm on, and the same frame can do a different job.
+
+Starting from someone else's design is allowed. The CREATE row says "original
+designs **or improved on existing ones**". So don't say "we made it all up
+ourselves". Say "we started with this design, and this is what we changed, and
 why".
 
-**Where it sits.** In the final code, the attachment is on the **back** of the
-robot. So the robot drives backwards into each model, and most distances in the
-code are negative. (Source: the comments in `code/Phases/Final/phase0.py`.)
+**Where it goes.** In the final code, the attachment is on the **back** of the
+robot. That is why the robot drives backwards into most models, and why so many
+distances in the code have a minus sign.
 
-**Photos.** There are 11 photos of the final attachments from 8 November 2026,
-in `code/Phases/Final/attachment pics/`. Ask the coach to show them, because
-most browsers cannot open that file type.
+**Photos.** There are 11 photos of the final attachments, taken on 8 November.
+Ask the coach to show them.
 
 !!! question "Team to answer"
-    - What did we change from the BOXOR instructions? Each change is a CREATE
+    - What did we change from the BOXOR instructions? Every change is a CREATE
       answer.
-    - How many different arms do we have, and which mission uses each one?
-    - How long does an attachment swap take? Time it with a stopwatch.
-    - Why did we move the attachment to the back of the robot?
+    - How many different arms do we have? Which mission uses each one?
+    - How long does it take to swap an attachment? Time it with a stopwatch.
+    - Why did we put the attachment on the back of the robot?
 
 ## 3. The code
 
-**Why Python.** This season the team moved from Word Blocks to Python.
-Last season's team had good, tuned Python code to start from. Git can also
-show exactly what changed in a `.py` file, but not in a Word Blocks file.
-(Source: [code overview](../code/README.md).)
+**Why Python.** At the start of the season we used Word Blocks, the
+drag-and-drop blocks in the SPIKE app. Then we moved to Python, which is typed
+code. Last year's team left us good Python code to start from. Also, with
+Python, git can show us exactly which line changed and when.
 
-**Our library.** Every program starts with a copy of
-`code/library/advanced.py`. It is a Python version of the Word Blocks library
-"Advanced Coding 26". The team found **eight bugs** in the blocks by reading
-them, and three more by testing on the robot, and fixed all eleven. Two
-examples:
+**Our library.** A **library** is a set of commands we wrote once and use in
+every program. Ours is called `advanced.py`. It started as a copy of a Word
+Blocks library called "Advanced Coding 26". When the team turned the blocks
+into Python, they found **eight bugs** just by reading the blocks, and three
+more by testing on the robot. They fixed all eleven. Two examples:
 
-- The blocks used 3.146 for pi. Python uses the exact value.
-- In the line-following blocks, every "wait until" could wait forever. Miss the
-  line once and the robot sits still for the rest of the match.
-
-The full list is in the [library notes](../code/library/README.md).
+- The blocks used 3.146 for pi. The real value starts 3.14159.
+- In the line-following blocks, the robot could wait for a line forever. If it
+  missed the line once, it would sit still for the rest of the match.
 
 **The main commands.**
 
@@ -158,86 +157,92 @@ The full list is in the [library notes](../code/library/README.md).
 | `drive_cm(30)` | Drives 30 cm forwards. It speeds up gently, slows down gently, and uses the gyro to stay straight. `drive_cm(-30)` drives backwards. |
 | `face(90)` | Turns until the robot points 90 degrees away from the way it pointed when the program started in base. |
 | `motor.run_for_degrees(attachment2, -380, 1000)` | Turns an attachment motor 380 degrees backwards, at speed 1000. |
-| `init_robot(default_speed=500)` | Starts the program. It pairs the wheels and zeroes the gyro, so the spot it starts in becomes "base". |
+| `init_robot(default_speed=500)` | Starts the program. It resets the gyro to zero, so the way the robot points at the start becomes "base". |
 
-**Why `face`, and not "turn 90 degrees".** A turn that lands one degree short
-passes that mistake on to the next turn, and the mistakes add up. `face` always
-measures from base, so a mistake in one turn does not pass to the next. The
-code notes say four turns round a square end about 1 degree out with `face`,
-instead of 17 degrees out. (Source: the comment above `face` in `advanced.py`.)
+**Why we use `face`.** Imagine you turn, and you are one degree off. If the next
+turn starts from there, you are still one degree off, and the mistakes add up.
+`face` always measures from base, the way the robot pointed at the start. So a
+small mistake in one turn does not get passed on to the next turn. Our code
+notes say: drive round a square with `face`, and you end about 1 degree off.
+Without it, you can end 17 degrees off.
 
-**Why the gyro turn.** The team measured the old turn, which only counted wheel
-rotations. It took 1.54 seconds and was 4.26 degrees out. The gyro turn took
-1.18 seconds and was 0.58 degrees out. It was faster *and* more accurate, so
-the old turn was deleted. (Source: [library notes](../code/library/README.md).)
+**Why we use the gyro to turn.** The old turn just counted how far the wheels
+turned. The team timed and measured both:
 
-**Why `YAW_SIGN = -1`.** This tells the code which way the gyro counts. Ours
-counts up when the robot turns anticlockwise. The team found this on
-20 September 2026, when `drive_cm(-44)` made the robot spin on the spot instead
-of driving. The blocks had it the wrong way round.
+| | Time | How far off |
+| --- | --- | --- |
+| Old turn (counting wheels) | 1.54 seconds | 4.26 degrees |
+| Gyro turn | 1.18 seconds | 0.58 degrees |
 
-**The safety stop.** If a straight drive goes more than 45 degrees off course,
-the robot brakes and stops with an error. Before this was added, a wrong
-setting made the robot keep spinning, because the code counted the spin as
-driving forwards.
+The gyro turn was faster *and* more accurate, so we deleted the old one.
+
+**`YAW_SIGN = -1`.** This line tells the code which way the gyro counts. Ours
+counts up when the robot turns anticlockwise. We found out on 20 September,
+when `drive_cm(-44)` should have driven backwards, but the robot spun round on
+the spot instead. The Word Blocks had this the wrong way round.
+
+**The safety stop.** If the robot goes more than 45 degrees off course while
+driving straight, it brakes and stops with an error. Before we added this, a
+wrong setting made the robot spin and spin, because the code thought the
+spinning was driving forwards.
 
 **The calibration line.** Most programs have `set_calibration_scale(179/180)`.
-On our mat, the robot drove 179 cm when asked for 180, so every distance is
-scaled to match.
+We asked the robot to drive 180 cm, and it drove 179 cm. This line fixes every
+distance to match our real robot.
 
-**Centimetres, not millimetres.** The Word Blocks used millimetres, and Python
-uses centimetres. So `.Forward 300` in blocks is `drive_cm(30)` in Python.
+**Centimetres, not millimetres.** Word Blocks used millimetres. Our Python uses
+centimetres. So `.Forward 300` in blocks is the same as `drive_cm(30)` in
+Python.
 
 !!! question "Team to answer"
-    - Who wrote which program? This goes in [who did what](../docs/who-did-what.md).
-    - Which bug was the hardest to find, and how did you find it?
+    - Who wrote which program? Add it to [who did what](../docs/who-did-what.md).
+    - Which bug was the hardest to find? How did you find it?
     - What would you explain first to a judge who has never seen Python?
 
 ## 4. Mission strategy and the runs
 
-Our final programs are in `code/Phases/Final/`. This is what each one does,
-read from the code and its comments:
+A **run** is one trip from base onto the field and back. Our final programs are
+in `code/Phases/Final/`. Here is what each one does:
 
-| Program | What the code does |
+| Program | What it does |
 | --- | --- |
-| `phase0.py` and `phase0-alt.py` | **M03 Flip the Rock**: backs 44 cm into the rock. Then **M02 Exploding Seeds**: turns, backs up, and uses the attachment. `phase0-alt.py` adds a straighten-up after hitting the rock (see section 5). |
-| `phase1.py` and `phase2.py` | At the moment these hold the same code as `phase0-alt.py`. |
-| `phase3.py` | Faces "the root", lowers the attachment, and drives back while lifting it. That matches **M05 Reaching Roots**. Then it drives across to the right side. |
+| `phase0.py` and `phase0-alt.py` | **M03 Flip the Rock**: backs 44 cm into the rock. Then **M02 Exploding Seeds**: turns, backs up, and uses the attachment. `phase0-alt.py` also straightens up after hitting the rock (see section 5). |
+| `phase1.py` and `phase2.py` | Right now these are copies of `phase0-alt.py`. Ask the coach. |
+| `phase3.py` | Turns to face "the root", lowers the attachment, and drives back while lifting it. That is **M05 Reaching Roots**. Then it drives across to the right side. |
 | `Phase 5.py` | Four jobs in one run. The code calls them "Pull", "open door", "ant" and "Tree support". Then it drives back to base. |
 | `Phase 6.py` | **M13 Keystone Species**, then back to base. |
 
-The [strategy page](../robot-game/strategy.md) has FIRST's own advice on choosing
-missions: pick missions that use push, pull or lift, that are close to a launch
-area, and that are easy to get home from.
+FIRST gives some advice for choosing missions. Pick missions that need simple
+moves like push, pull or lift. Pick missions close to where the robot starts,
+and easy to get home from. (It is on our [strategy page](../robot-game/strategy.md).)
 
 !!! question "Team to answer"
-    - The `phase0.py` comment says "Missions 3, 2 and 1", but the code only does
-      3 and 2. Does the robot also do M01 Drone Survey in this run?
-    - Which mission numbers are "Pull", "open door", "ant" and "Tree support"
-      in `Phase 5.py`?
+    - The `phase0.py` notes say "Missions 3, 2 and 1", but the code only does 3
+      and 2. Does the robot also do M01 Drone Survey in this run?
+    - Which mission numbers are "Pull", "open door", "ant" and "Tree support"?
     - Which missions did we decide **not** to do, and why? "It was too hard" is
-      a weak answer. "It was worth 10 points but took 40 seconds" is a strong
+      a weak answer. "It was only 10 points and took 40 seconds" is a strong
       one.
-    - Why are the runs grouped the way they are?
+    - Why did we group the missions into runs this way?
     - What is our best score in practice?
 
 ## 5. Testing and changing things
 
-The ITERATE row wants proof that we tested, found problems, and changed
-things. Our git history shows a lot of this. Some examples:
+The ITERATE row wants to see that we tested, found problems, and fixed them.
+Git keeps a record of every change, so we can see our story:
 
-| Date | What happened |
+| When | What happened |
 | --- | --- |
-| 13 Sep 2026 | Found that the code had the wrong sockets for the motors and sensors, and fixed it. Found that the simulator mat was 236 cm wide, but the real mat is 200 cm. |
-| 20 Sep 2026 | Found the gyro counted the other way (`YAW_SIGN`). Found the drive motors were on F and A. Decided to stop using the colour sensors. |
-| 26 Sep 2026 | Fixed a bug where the gyro jumps from 180 to -179, which made some turns spin for 30 seconds. |
-| 10 to 11 Oct 2026 | First run programs. Fixed the curve turn, then tuned the mission paths. |
-| 25 to 31 Oct 2026 | Programs for the right-hand side of the field, including Keystone Species. |
-| 1 Nov 2026 | First versions of the final programs. |
-| 7 to 13 Nov 2026 | Tuning the final programs. |
+| 13 Sep | Fixed the wrong sockets in the code. Found that our pretend mat on the computer was 236 cm wide, but the real mat is 200 cm. |
+| 20 Sep | Found the gyro counted the other way (`YAW_SIGN`). Found the wheel motors were on F and A. Stopped using the colour sensors. |
+| 26 Sep | Fixed a bug when the gyro goes past 180. It jumps to -179, and some turns spun for 30 seconds. |
+| 10 to 11 Oct | Wrote the first run programs. Fixed the curved turn, then tuned the paths. |
+| 25 to 31 Oct | Wrote programs for the right side of the field, including Keystone Species. |
+| 1 Nov | Wrote the first versions of the final programs. |
+| 7 to 13 Nov | Tuned the final programs. |
 
-**Tuning you can see in the code.** Many lines have a comment such as
-`#was 60`. Each one is a number someone changed after a test run. In
+**Tuning you can see in the code.** Lots of lines have a note like `#was 60`.
+Each one is a number someone changed after a test run. Here are some from
 `Phase 5.py`:
 
 - `await drive_cm(14) #was 12`
@@ -245,42 +250,53 @@ things. Our git history shows a lot of this. Some examples:
 - `await drive_cm(-28) #was 30`
 - `motor.run_for_degrees(port.C,360,1000) #was 350`
 
-**A fix from testing.** When the robot backs into the rock in M03, the hit
-knocks it a little crooked. `phase0-alt.py` adds `await face(0)` straight after,
-with the comment "Straighten post collision before backing off for accuracy".
-That is a test, a problem, and a fix, which is exactly what ITERATE asks for.
+**A fix from testing.** In M03, the robot backs into the rock. The bump knocks
+it a little crooked. So `phase0-alt.py` adds `await face(0)` right after the
+bump, to straighten up. The note in the code says "Straighten post collision
+before backing off for accuracy". We tested, found a problem, and fixed it.
+That is exactly what ITERATE means.
 
-Note: the [design log](design-log.md) has only two entries, both from September.
-Everything after that is in git and in people's memories. Writing it up is part
-of the brainstorm.
+Note: our [design log](design-log.md) only has two entries, both from September.
+Everything since then is in git and in our memories. We will write it up at the
+brainstorm.
 
 !!! question "Team to answer"
     - Pick one `#was` line. Who changed it, and what went wrong before?
-    - What is the success rate of each run? For example, "8 out of 10".
-    - What is the biggest thing we changed on the robot itself, not the code?
-      Do we have a photo of the version before?
+    - How often does each run work? For example, "8 out of 10 times".
+    - What is the biggest change we made to the robot itself, not the code?
+      Do we have a photo of how it looked before?
 
 ## 6. Words to know
 
+**Attachment.** A part we add to the robot to do a mission, like an arm.
+
+**Base.** The way the robot points when the program starts. Every `face` turn
+is measured from base.
+
+**Bevel gears.** Two gears that meet at a corner, so the turning movement goes
+around the corner.
+
+**Calibration.** Measuring what the real robot does, then changing the code to
+match, like `set_calibration_scale(179/180)`.
+
+**Driving base.** The main part of the robot: the hub, wheels and motors.
+
+**Encoder.** The part inside a motor that counts how far it has turned.
+
 **Gyro.** The sensor inside the hub that knows which way the robot points.
+
+**Iterate.** Test it, find a problem, change something, and test again.
+
+**Library.** Commands we wrote once and use in every program.
+
+**Rubric.** The judges' score sheet.
+
+**Run.** One trip from base onto the field and back.
 
 **Yaw.** The direction the robot points, as a number of degrees.
 
-**Encoder.** The part of a motor that counts how far it has turned.
-
-**Base.** The way the robot points when the program starts. Every `face` turn
-measures from base.
-
-**Bevel gears.** Two gears that meet at a right angle, so the turning movement
-changes direction by 90 degrees.
-
-**Calibration.** Measuring how the real robot behaves and adjusting the code to
-match, like `set_calibration_scale(179/180)`.
-
-**Iterate.** Test, find a problem, change something, test again.
-
 ## Next
 
-When you have read this page, do the [Robot Design test](robot-design-test.md).
+When you have read everything, take the [Robot Design test](robot-design-test.md).
 
 --8<-- "includes/abbreviations.md"
