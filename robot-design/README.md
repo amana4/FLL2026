@@ -1,61 +1,28 @@
 # Robot Design
 
-The physical robot: how it's built, why it's built that way, and the evidence we
-show judges.
+Everything about how our robot is built, why it is built that way, and how
+to explain it to the judges.
 
-| File | What's in it |
+## Start here
+
+1. Read [Our Robot, Explained](our-robot-explained.md). It covers the driving
+   base, the attachments, the code, the missions, and what we tested and
+   changed.
+2. Then take the [Robot Design test](robot-design-test.md).
+
+## Team workspace
+
+These are the pages the build team works in. They are full of tables still to
+fill in, so read Our Robot, Explained first.
+
+| Page | What's in it |
 | --- | --- |
-| [`our-robot-explained.md`](our-robot-explained.md) | Why the robot and its code are the way they are. Read this before judging |
-| [`robot-design-test.md`](robot-design-test.md) | A quiz and open questions on that page |
-| [`chassis.md`](chassis.md) | The driving base and its sensors |
-| [`design-log.md`](design-log.md) | Dated record of what we changed and why |
-| [`attachments/`](attachments/README.md) | One file per attachment |
-
-## Before we design ours: what other teams worked out
-
-**Six chassis designs, side by side** — ten slides comparing HummerOne Pro, Xbot,
-YellowBot v1 and v2, Track-X and Boxor, and pulling out the choices the good ones
-all make. About fifteen to twenty minutes.
-
-| Format | File | Use it for |
-| --- | --- | --- |
-| PowerPoint | `robot-design/chassis-designs.pptx` | Presenting. Opens in PowerPoint, Keynote or Google Slides. Every diagram is editable shapes, not a picture. |
-| Web page | [in the browser](chassis-designs-slides.html) | Reading on a laptop or phone. Arrow keys to move; prints one slide per page. |
-
-Both come from the same content. If you change one, regenerate the other —
-`python3 tools/make-design-pptx.py` rebuilds the PowerPoint.
-
-The point is not to copy one design. It is that every one on that list was
-somebody's best idea, and the newer ones are better because they collected the
-good bits from the older ones. That is exactly what the ITERATE criterion
-rewards, so the discussion doubles as judging practice.
-
-The criteria the deck argues for are written up as a decision table in
-[`chassis.md`](chassis.md) — fill that in as the team decides.
-
-## What Robot Design judging actually rewards
-
-Judges are not scoring "is the robot impressive." The official rubric
-(`fll-challenge-bioglow-rubrics-color.pdf`, page 3) has five rows:
-
-- **Identify**: did you choose missions on purpose, and use building and coding
-  resources to support that choice?
-- **Design**: did all team members contribute ideas, and do all of them have
-  building and coding skills?
-- **Create**: can you explain what is original or improved about your
-  attachments, and about your code or sensor use?
-- **Iterate**: **can you show repeated testing, and what you improved because
-  of it?**
-- **Communicate**: can you explain what you learned, and do you show pride in
-  the work?
-
-The exact wording is in [Our Robot, Explained](our-robot-explained.md#how-judges-score-robot-design).
-
-Iterate carries enormous weight and is the easiest to lose by not writing
-things down. A robot that got worse and then better, documented, beats a robot
-that was fine from the start with no record.
-
-Keep [`design-log.md`](design-log.md) current. It's the whole answer to "iterate."
+| [Design log](design-log.md) | Dated record of what we changed and why. This is the evidence for ITERATE |
+| [Driving base details](chassis.md) | What we aimed for, and the tables for measurements |
+| [Attachments list](attachments/README.md) | One page per attachment |
+| [BOXOR frame](attachments/boxor-frame.md) | The attachment frame, its gears, and the wiring |
+| [When something breaks](troubleshooting.md) | Fixes for common problems |
+| [Six chassis designs](chassis-designs-slides.html) | Ten slides comparing other teams' driving bases. Also in `robot-design/chassis-designs.pptx`; `python3 tools/make-design-pptx.py` rebuilds it |
 
 ## Design principles
 

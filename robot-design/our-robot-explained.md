@@ -5,6 +5,16 @@ one place what our robot is, how its code works, and why we made the choices we
 made. Judges will ask any of you about any part of it, so everyone reads all of
 it, not just their own part.
 
+**On this page:**
+
+- [How judges score Robot Design](#how-judges-score-robot-design)
+- [1. The driving base](#1-the-driving-base)
+- [2. Attachments](#2-attachments)
+- [3. The code](#3-the-code)
+- [4. Mission strategy and the runs](#4-mission-strategy-and-the-runs)
+- [5. Testing and changing things](#5-testing-and-changing-things)
+- [6. Words to know](#6-words-to-know)
+
 The page has two kinds of content.
 
 **Facts.** These come from our code, our design log and our git history. Each

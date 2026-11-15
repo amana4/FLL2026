@@ -5,7 +5,7 @@
 | Name | BOXOR frame attachment |
 | Used by run | _TODO — link_ |
 | Missions | _TODO — links_ |
-| Motor(s) / port | **Two.** Left on port C (`attachment1`), right on port D (`attachment2`) |
+| Motor(s) / port | **Two.** Port C (`attachment1`) and port E (`attachment2`), in the final code |
 | Passive or powered | Powered, through a bevel gear pair |
 | Swap time | _TODO_ s |
 
@@ -20,28 +20,31 @@ up the same way every time, which is design goal 3 in
 [`README.md`](README.md).
 
 **Two are fitted**, mirrored left and right across the front of the robot. Each has
-its own gear cluster, its own arm, and its own motor.
+its own gear cluster, its own arm, and its own mot## The wiring
 
-## The wiring, confirmed
-
-Six sockets, six things, one each. Read off the hub on 13 September 2026.
+This is the wiring in the final programs in `code/Phases/Final/`, which is the
+code the robot runs:
 
 | Socket | What is plugged in |
 | --- | --- |
-| A | Left drive motor |
-| B | Right drive motor |
-| C | Left attachment motor |
-| D | Right attachment motor |
-| E | Left colour sensor |
-| F | Right colour sensor |
+| F | Left drive motor |
+| A | Right drive motor |
+| C | Attachment motor (`attachment1`) |
+| E | Attachment motor (`attachment2`) |
 
-`toolkit.py` now matches this. It did not before, and the mismatch was serious
-rather than cosmetic: the file paired **port F** as a drive motor, and port F is a
-colour sensor. It also had the left and right drive motors swapped.
+It took three tries to get here. On 13 September 2026 the sockets were read off
+the hub as A and B for the drive motors, C and D for the attachments, and E and F
+for the colour sensors, and `toolkit.py` was changed to match. On 20 September
+the hub disagreed: `init_robot` raised `OSError: [Errno 19] ENODEV`, meaning no
+motor on A or B, and F and A worked. The colour sensors were dropped the same
+day. `Phase 5.py` later marks socket E as `confirmed :D`.
 
-The likely story is that somebody fixed the ports in the SPIKE App and the fix
-never came back to the repo, because a program cannot be pulled off the hub.
-[Lesson 3](../../code/learn/03-ports.md) tells the whole story as a worked example.
+The likely story behind the first mismatch is that somebody fixed the ports in
+the SPIKE App and the fix never came back to the repo, because a program cannot
+be pulled off the hub. [Lesson 3](../../code/learn/03-ports.md) tells that story
+as a worked example.
+
+le.
 
 ## Source
 

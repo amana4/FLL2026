@@ -254,13 +254,18 @@ nav:
           - M15 Biocentric Architecture: robot-game/missions/M15-biocentric-architecture.md
       - Robot Design:
           - robot-design/README.md
-          - Our robot, explained: robot-design/our-robot-explained.md
-          - Robot Design test: robot-design/robot-design-test.md
-          - The driving base: robot-design/chassis.md
-          - Attachments: robot-design/attachments/README.md
-          - BOXOR frame attachment: robot-design/attachments/boxor-frame.md
-          - Design log — what we changed: robot-design/design-log.md
-          - When something breaks: robot-design/troubleshooting.md
+          - Our Robot, Explained: robot-design/our-robot-explained.md
+          - Take the test: robot-design/robot-design-test.md
+          # The kid path is the two pages above. The working pages below are
+          # grouped in the menu only; the files stay where they are, because
+          # many pages link to them. The slides are linked from README.md, not
+          # listed here, so the footer "Next" never opens a slide deck.
+          - Team workspace:
+              - Design log: robot-design/design-log.md
+              - Driving base details: robot-design/chassis.md
+              - Attachments list: robot-design/attachments/README.md
+              - BOXOR frame: robot-design/attachments/boxor-frame.md
+              - When something breaks: robot-design/troubleshooting.md
       - Code:
           - code/README.md
           - Learn Python:
