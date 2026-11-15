@@ -60,6 +60,8 @@ their motors. The attachments go on top of it.
 **What is plugged in where.** The hub has six sockets, called A to F. This is
 how our robot is wired in the final code:
 
+![A map of our robot seen from above. The left wheel motor is on socket F and the right wheel motor is on socket A. The hub is in the middle. The attachment is on the back, with motors on sockets C and E.](diagrams/robot-wiring.svg){ loading=lazy }
+
 | Socket | What is plugged in |
 | --- | --- |
 | F | Left wheel motor |
@@ -114,6 +116,11 @@ two gears that meet at a corner. When the motor turns, the gears turn the
 movement around the corner, through 90 degrees, and that swings an arm. Put a
 different arm on, and the same frame can do a different job.
 
+<figure markdown="span">
+  ![The BOXOR frame on the mat, with two black arms. The tan gears near the bottom are the bevel gears.](photos/attachment-1.jpg){ width="420" loading=lazy }
+  <figcaption>The BOXOR frame. The tan gears near the bottom are the bevel gears.</figcaption>
+</figure>
+
 Starting from someone else's design is allowed. The CREATE row says "original
 designs **or improved on existing ones**". So don't say "we made it all up
 ourselves". Say "we started with this design, and this is what we changed, and
@@ -124,7 +131,24 @@ robot. That is why the robot drives backwards into most models, and why so many
 distances in the code have a minus sign.
 
 **Photos.** There are 11 photos of the final attachments, taken on 8 November.
-Ask the coach to show them.
+Five of them are on this page. Open the box below to see more.
+
+??? note "More attachment photos"
+    ![The BOXOR frame from another side, with two black arms.](photos/attachment-2.jpg){ width="360" loading=lazy }
+
+    The same frame from another side.
+
+    ![A frame with a long yellow arm, a black ring and red tips.](photos/attachment-3.jpg){ width="360" loading=lazy }
+
+    An attachment with a ring and red tips.
+
+    ![A long L-shaped arm made of black and yellow beams.](photos/attachment-4.jpg){ width="360" loading=lazy }
+
+    A long L-shaped arm.
+
+    ![A small part built from yellow, blue, green and pink bricks.](photos/attachment-5.jpg){ width="300" loading=lazy }
+
+    A small brick part. What is it for?
 
 !!! question "Team to answer"
     - What did we change from the BOXOR instructions? Every change is a CREATE
@@ -165,6 +189,8 @@ turn starts from there, you are still one degree off, and the mistakes add up.
 small mistake in one turn does not get passed on to the next turn. Our code
 notes say: drive round a square with `face`, and you end about 1 degree off.
 Without it, you can end 17 degrees off.
+
+![Two paths round a square. Turning 90 degrees each time ends 17 degrees off, because the small mistakes add up. Using face ends about 1 degree off.](diagrams/face-square.svg){ loading=lazy }
 
 **Why we use the gyro to turn.** The old turn just counted how far the wheels
 turned. The team timed and measured both:
@@ -255,6 +281,8 @@ it a little crooked. So `phase0-alt.py` adds `await face(0)` right after the
 bump, to straighten up. The note in the code says "Straighten post collision
 before backing off for accuracy". We tested, found a problem, and fixed it.
 That is exactly what ITERATE means.
+
+![A loop of four steps: test it, find a problem, change something, test again. The example is M03: the bump knocks the robot crooked, so we added await face(0).](diagrams/iterate-loop.svg){ loading=lazy }
 
 Note: our [design log](design-log.md) only has two entries, both from September.
 Everything since then is in git and in our memories. We will write it up at the
