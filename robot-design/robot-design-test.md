@@ -1,13 +1,14 @@
 # Robot Design Test
 
-Do this after you have read [Our Robot, Explained](our-robot-explained.md).
-Keep that page open in another tab. Looking things up is allowed, and it is the
-point: you learn the answer by finding it.
+Do this after you have read [Our Robot, Explained](our-robot-explained.md) and
+[How Our Code Is Designed](how-our-code-works.md). Keep both pages open in
+other tabs. Looking things up is allowed, and it is the point: you learn the
+answer by finding it.
 
 The test has two parts.
 
-**Part 1: Quick quiz.** Twelve multiple-choice questions about our robot, our
-code and the rubric. The form marks them as soon as you press Submit and shows
+**Part 1: Quick quiz.** Eighteen multiple-choice questions about our robot,
+our code and the rubric. The last six are about How Our Code Is Designed. The form marks them as soon as you press Submit and shows
 your score. If you get one wrong, read the hint, go back to the page, and take
 the test again. You can take it as many times as you like.
 
@@ -70,6 +71,13 @@ So you can think about them before you open the form:
 
 - Explain our robot to a judge in three sentences.
 - What are you most proud of?
+
+**CODE**
+
+- Write the steps of `Phase 6.py` (Keystone Species) as a flowchart in words,
+  one step on each line.
+- At the end of `phase0-alt.py` the arm lifts while the robot drives home. How
+  much time does that save, and whose idea was it?
 
 **And one more:** what do you not know yet, that we should sort out in class?
 

@@ -26,6 +26,12 @@
  *     going back to the page.
  *   - Responses tab, Sheets icon, to create the linked spreadsheet.
  *
+ * ADDING THE CODE DESIGN QUESTIONS TO THE LIVE FORM (15 November 2026)
+ *   The live form was made before CODE_QUIZ and CODE_OPEN existed. To add
+ *   them without changing its link, paste this file into the same project,
+ *   pick "addCodeDesignQuestions" in the dropdown, and click Run. Do not run
+ *   createRobotDesignTestForm again: that makes a second, separate form.
+ *
  * NAMES
  * The 15 August 2026 decision to show first names covers the after-class notes
  * form only. This form is also embedded on the public site, so the coach
@@ -202,20 +208,153 @@ var OPEN = [
    '"I don\'t know" is a good answer if it is true.']
 ];
 
-function sectionName(n) {
-  return n === 0 ? 'the rubric table at the top of ' + PAGE
-                 : 'section ' + n + ' of ' + PAGE;
+// Added on 15 November 2026 for robot-design/how-our-code-works.md. The live
+// form got these from addCodeDesignQuestions(); a fresh form gets them from
+// createRobotDesignTestForm(). Same format as QUIZ, plus the page they are on.
+var CODE_PAGE = 'How Our Code Is Designed';
+
+var CODE_QUIZ = [
+  {
+    title: 'Our code is built in layers. What does the library, advanced.py, do?',
+    choices: [
+      'Says how to do each move: speed up, steer with the gyro, stop on the mark',
+      'Says which missions to do, and in what order',
+      'Turns the motors by itself, with no code',
+      'Keeps the score during the match'
+    ],
+    page: CODE_PAGE,
+    section: 1,
+    why: 'The run programs say what to do. The library says how. Fix the ' +
+         'library once, and every run gets better.'
+  },
+  {
+    title: 'Why does every run program carry its own copy of the library?',
+    choices: [
+      'The SPIKE app cannot load one file from another',
+      'Every run needs a different library',
+      'The rules say each program must be one file',
+      'It makes the program run faster'
+    ],
+    page: CODE_PAGE,
+    section: 2,
+    why: 'So build-mission.py copies the library in, above the marker line, ' +
+         'and never touches the mission below it.'
+  },
+  {
+    title: 'During drive_cm, the robot drifts 5 degrees to the left. What does ' +
+           'the code do?',
+    choices: [
+      'Steers back to the right. The further off it is, the harder it steers',
+      'Steers right by the same amount, however far off it is',
+      'Brakes and stops with an error',
+      'Nothing. It only checks the gyro at the end'
+    ],
+    page: CODE_PAGE,
+    section: 3,
+    why: 'It reads the gyro about 66 times a second and steers against the ' +
+         'error. It only stops if it gets more than 45 degrees off.'
+  },
+  {
+    title: 'Why does face check the gyro again after braking?',
+    choices: [
+      'The robot rolls about 2.4 degrees after braking, and face fixes that',
+      'The gyro needs time to warm up',
+      'To wait for the attachment to finish',
+      'To reset the gyro to zero'
+    ],
+    page: CODE_PAGE,
+    section: 4,
+    why: 'It waits 0.15 seconds, looks again, and turns a bit more if it ' +
+         'rolled past.'
+  },
+  {
+    title: 'What happens if you leave out await before an arm command?',
+    choices: [
+      'The arm starts moving and the next line starts at once, so both ' +
+        'happen together',
+      'The arm does not move at all',
+      'The program stops with an error',
+      'The arm moves twice'
+    ],
+    page: CODE_PAGE,
+    section: 5,
+    why: 'At the end of phase0-alt.py the arm lifts while the robot drives ' +
+         'home. That saves match time.'
+  },
+  {
+    title: 'A straight drive gets more than 45 degrees off course. What does ' +
+           'our code do?',
+    choices: [
+      'Brakes and stops with an error',
+      'Keeps driving and hopes for the best',
+      'Turns round and drives home',
+      'Speeds up to get there faster'
+    ],
+    page: CODE_PAGE,
+    section: 7,
+    why: 'We added that after the robot spun off the table in testing on ' +
+         '20 September.'
+  }
+];
+
+var CODE_OPEN = [
+  ['CODE: Write the steps of Phase 6.py (Keystone Species) as a flowchart in ' +
+   'words, one step on each line.',
+   'The code is in section 6 of ' + CODE_PAGE + '.'],
+  ['CODE: At the end of phase0-alt.py the arm lifts while the robot drives ' +
+   'home. How much time does that save, and whose idea was it?', '']
+];
+
+function sectionName(q) {
+  var page = q.page || PAGE;
+  return q.section === 0 ? 'the rubric table at the top of ' + page
+                         : 'section ' + q.section + ' of ' + page;
+}
+
+var DESCRIPTION =
+  'Read "' + PAGE + '" and "' + CODE_PAGE + '" first, and keep them open. ' +
+  'Looking things up is allowed. Part 1 is marked as soon as you submit, and ' +
+  'you can take it again as many times as you like. Part 2 has no right ' +
+  'answers: write what you would say to a judge.';
+
+// n is the question's place in the whole quiz. The right choice lands at
+// position n % 4, so "always pick the first one" does not work.
+function addQuizItem(form, q, n) {
+  var k = n % q.choices.length;
+  var right = q.choices[0];
+  var order = q.choices.slice(q.choices.length - k)
+    .concat(q.choices.slice(0, q.choices.length - k));
+  var item = form.addMultipleChoiceItem();
+  item.setTitle(q.title)
+    .setChoices(order.map(function (text) {
+      return item.createChoice(text, text === right);
+    }))
+    .setPoints(1)
+    .setRequired(true)
+    .setFeedbackForCorrect(
+      FormApp.createFeedback().setText('Right. ' + q.why).build())
+    .setFeedbackForIncorrect(
+      FormApp.createFeedback()
+        .setText('Not quite. Read ' + sectionName(q) + ' again.')
+        .build());
+  return item;
+}
+
+function addOpenItem(form, q) {
+  var item = form.addParagraphTextItem().setTitle(q[0]);
+  if (q[1]) item.setHelpText(q[1]);
+  return item;
+}
+
+// The open questions in order: the new CODE ones go just before the last one.
+function allOpen() {
+  return OPEN.slice(0, -1).concat(CODE_OPEN, OPEN.slice(-1));
 }
 
 function createRobotDesignTestForm() {
   var form = FormApp.create('FLL BIOGLOW: Robot Design test');
 
-  form.setDescription(
-    'Read "' + PAGE + '" first and keep it open. Looking things up is allowed. ' +
-    'Part 1 is marked as soon as you submit, and you can take it again as ' +
-    'many times as you like. Part 2 has no right answers: write what you ' +
-    'would say to a judge.'
-  );
+  form.setDescription(DESCRIPTION);
 
   form.setIsQuiz(true);
   // No email collection, so no login is needed, and no children's addresses
@@ -239,25 +378,8 @@ function createRobotDesignTestForm() {
     .setTitle('Part 1: Quick quiz')
     .setHelpText('One point each.');
 
-  QUIZ.forEach(function (q, n) {
-    // Rotate so the right choice lands at position n % 4.
-    var k = n % q.choices.length;
-    var right = q.choices[0];
-    var order = q.choices.slice(q.choices.length - k)
-      .concat(q.choices.slice(0, q.choices.length - k));
-    var item = form.addMultipleChoiceItem();
-    item.setTitle(q.title)
-      .setChoices(order.map(function (text) {
-        return item.createChoice(text, text === right);
-      }))
-      .setPoints(1)
-      .setRequired(true)
-      .setFeedbackForCorrect(
-        FormApp.createFeedback().setText('Right. ' + q.why).build())
-      .setFeedbackForIncorrect(
-        FormApp.createFeedback()
-          .setText('Not quite. Read ' + sectionName(q.section) + ' again.')
-          .build());
+  QUIZ.concat(CODE_QUIZ).forEach(function (q, n) {
+    addQuizItem(form, q, n);
   });
 
   form.addPageBreakItem()
@@ -267,9 +389,8 @@ function createRobotDesignTestForm() {
       'would say it to a judge. Short is fine. Skip any you cannot answer.'
     );
 
-  OPEN.forEach(function (q) {
-    var item = form.addParagraphTextItem().setTitle(q[0]);
-    if (q[1]) item.setHelpText(q[1]);
+  allOpen().forEach(function (q) {
+    addOpenItem(form, q);
   });
 
   var published = form.getPublishedUrl();
@@ -283,4 +404,44 @@ function createRobotDesignTestForm() {
   Logger.log('');
   Logger.log('Next: publish the form, set the quiz settings listed at the top');
   Logger.log('of this script, then Responses tab > Sheets icon.');
+}
+
+// The live form, from its edit link in docs/team-links.md.
+var LIVE_FORM_ID = '1eteJly-dZSm7b7vIcV7ybCXjvdxN5ORJSrpm8mJl5Co';
+
+/**
+ * Adds CODE_QUIZ and CODE_OPEN to the live form, in place. The link, the
+ * embed on the site, and the answers already sent all stay as they are.
+ * Safe to run twice: the second run sees the questions and does nothing.
+ */
+function addCodeDesignQuestions() {
+  var form = FormApp.openById(LIVE_FORM_ID);
+  var titles = form.getItems().map(function (it) { return it.getTitle(); });
+  if (titles.indexOf(CODE_QUIZ[0].title) !== -1) {
+    Logger.log('The code design questions are already there. Nothing changed.');
+    return;
+  }
+
+  form.setDescription(DESCRIPTION);
+
+  // New quiz questions go just before the Part 2 page break.
+  var items = form.getItems();
+  var pageBreak = -1;
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].getType() === FormApp.ItemType.PAGE_BREAK) { pageBreak = i; break; }
+  }
+  if (pageBreak === -1) throw new Error('Could not find the Part 2 page break.');
+  CODE_QUIZ.forEach(function (q, j) {
+    var item = addQuizItem(form, q, QUIZ.length + j);
+    form.moveItem(item, pageBreak + j);
+  });
+
+  // New open questions go just before the last question.
+  CODE_OPEN.forEach(function (q) {
+    var item = addOpenItem(form, q);
+    form.moveItem(item, form.getItems().length - 2);
+  });
+
+  Logger.log('Added ' + CODE_QUIZ.length + ' quiz questions and ' +
+             CODE_OPEN.length + ' open questions. The link has not changed.');
 }
