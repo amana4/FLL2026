@@ -149,8 +149,8 @@ measured them yet to check.
 **Attachments** are the parts we add to the driving base to do the missions,
 like arms that push, lift or pull.
 
-**The BOXOR frame.** Our attachment frame comes from a design by Next Level
-Teacher, called the BOXOR Frame Attachment. Inside it is a **bevel gear pair**:
+**The BOXOR frame.** Our attachment frame comes from a published design, called
+the BOXOR Frame Attachment. Inside it is a **bevel gear pair**:
 two gears that meet at a corner. When the motor turns, the gears turn the
 movement around the corner, through 90 degrees, and that swings an arm. Put a
 different arm on, and the same frame can do a different job.

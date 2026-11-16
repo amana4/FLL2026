@@ -48,7 +48,7 @@ le.
 
 ## Source
 
-**BOXOR Frame Attachment**, by Next Level Teacher. Ten pages, eight build steps.
+**BOXOR Frame Attachment**, a published design. Ten pages, eight build steps.
 
 The instruction PDF is **not** in this repo. It is somebody else's material and
 this repo is public, so it stays on the coach's machine. Ask the coach for it.
@@ -139,7 +139,7 @@ can model this attachment, and they are also what the
 
 | Version | Date | What changed | Why |
 | --- | --- | --- | --- |
-| v1 | 13 Sep 2026 | Built from the Next Level Teacher instructions, unmodified | Starting point |
+| v1 | 13 Sep 2026 | Built from the published instructions, unmodified | Starting point |
 
 ## Reliability
 
