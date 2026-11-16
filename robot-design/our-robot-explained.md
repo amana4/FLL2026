@@ -57,6 +57,42 @@ person to know everything.
 The **driving base** is the main part of the robot: the hub, the two wheels and
 their motors. The attachments go on top of it.
 
+**The shape: a box with straight walls.** Our driving base is a box. Its outside
+walls are straight and flat, with nothing sticking out of the sides.
+
+![Two pictures from above. A robot put down crooked touches the wall with one corner. Pushed flat, the whole side touches the wall and the robot sits square.](diagrams/wall-squaring.svg){ loading=lazy }
+
+Here is why that matters. Push a flat wall against another flat wall, and it
+can only sit one way: square. So:
+
+- **Every run starts square.** Push the robot back against the wall of the
+  field, and it points the same way every time. No measuring, no code.
+- **The robot can square up again during a run.** It backs gently into a wall
+  or a model, and that pushes it straight. Our code does this, because nothing
+  else fixes how *far* the robot has gone (see "How the robot finds its way"
+  below).
+
+A robot with round corners or bits sticking out would sit a little differently
+every time.
+
+**The wheels are inside the frame.** You can't see the wheels from the side,
+because the frame goes around them. That helps in three ways:
+
+- When the robot pushes against a wall or a model, the **frame** touches it,
+  not a wheel. A wheel rubbing on something would steer the robot off course.
+- The wheels can't catch on a model and knock it over.
+- Each wheel is held on **both sides**: the motor on one side, the frame on the
+  other. A wheel held on one side only can bend inwards under a heavy
+  attachment, and then the robot stops driving straight.
+
+!!! tip "Say it to a judge: Why is your robot shaped like that?"
+    **Weak:** "It's a box."
+
+    **Strong:** "Our robot is a box with flat walls and the wheels inside. When
+    we push it back against the wall, it can only sit square, so every run
+    starts the same way. It can square up on a wall during a run too. And the
+    wheels can't rub on anything and steer us off course."
+
 **What is plugged in where.** The hub has six sockets, called A to F. This is
 how our robot is wired in the final code:
 
@@ -104,6 +140,9 @@ measured them yet to check.
     - Which wheels are on the robot, and why those?
     - Why did we stop using the colour sensors?
     - Where is the heaviest part of the robot? Does it wobble when it stops?
+    - Which wall do we push the robot against at the start of each run?
+    - Was the robot always a box, or did an earlier version have bits sticking
+      out? Do we have a photo?
 
 ## 2. Attachments
 
@@ -125,6 +164,27 @@ Starting from someone else's design is allowed. The CREATE row says "original
 designs **or improved on existing ones**". So don't say "we made it all up
 ourselves". Say "we started with this design, and this is what we changed, and
 why".
+
+**Gravity mounting.** Our attachments are not clipped or pinned on. They sit on
+the robot and are held by their own weight.
+
+![Two side views. The attachment is lowered onto two pegs on the robot, which fit into holes. It sits on the pegs, held by its own weight, and lifts straight off.](diagrams/gravity-mount.svg){ loading=lazy }
+
+- **Pegs line it up.** Small pegs on the robot fit into holes in the
+  attachment, so it can only go on one way: the right way.
+- **Gravity holds it.** Its weight keeps it down. Nothing clamps it.
+- **On or off in one move.** You lower it on, or lift it off. There are no
+  pins to push in, and none to forget when you're in a hurry at the table.
+
+This matters because the match clock keeps running while we swap attachments
+in base. Every second spent swapping is a second the robot is not scoring.
+
+!!! tip "Say it to a judge: How do you change attachments?"
+    **Weak:** "We just put them on."
+
+    **Strong:** "We use gravity mounting. Pegs line the attachment up so it
+    can only go on the right way, and its own weight holds it. It goes on or
+    off in one move, so we waste less match time in base."
 
 **Where it goes.** In the final code, the attachment is on the **back** of the
 robot. That is why the robot drives backwards into most models, and why so many
@@ -155,6 +215,8 @@ Five of them are on this page. Open the box below to see more.
       answer.
     - How many different arms do we have? Which mission uses each one?
     - How long does it take to swap an attachment? Time it with a stopwatch.
+    - How many pegs hold each attachment, and where are they?
+    - Has an attachment ever fallen off during a run? What did we change?
     - Why did we put the attachment on the back of the robot?
 
 ## 3. The code
@@ -314,6 +376,8 @@ match, like `set_calibration_scale(179/180)`.
 
 **Encoder.** The part inside a motor that counts how far it has turned.
 
+**Gravity mounting.** Holding an attachment on with its own weight, lined up by pegs, instead of clips or pins.
+
 **Gyro.** The sensor inside the hub that knows which way the robot points.
 
 **Iterate.** Test it, find a problem, change something, and test again.
@@ -323,6 +387,8 @@ match, like `set_calibration_scale(179/180)`.
 **Rubric.** The judges' score sheet.
 
 **Run.** One trip from base onto the field and back.
+
+**Squaring up.** Pushing the robot's flat side against a wall, so it points exactly straight.
 
 **Yaw.** The direction the robot points, as a number of degrees.
 

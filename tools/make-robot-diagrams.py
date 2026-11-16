@@ -28,18 +28,19 @@ b.append(text(400,66,'A map of what is plugged in where. Not to scale.',16,MUTE)
 # arrow showing driving direction (backwards, down the page)
 b.append(text(400,96,'FRONT',16,MUTE,weight='bold'))
 # chassis
-b.append(f'<rect x="250" y="110" width="300" height="300" rx="18" fill="{PALE}" stroke="{LEAF}" stroke-width="3"/>')
+b.append(f'<rect x="200" y="110" width="400" height="300" rx="6" fill="{PALE}" stroke="{LEAF}" stroke-width="7"/>')
+b.append(text(400, 140, 'straight, flat walls all round', 14, LEAF, weight='bold'))
 # hub
 b.append(f'<rect x="320" y="170" width="160" height="150" rx="14" fill="#ffffff" stroke="{INK}" stroke-width="3"/>')
 b.append(text(400,235,'Hub',22,INK,weight='bold'))
 b.append(text(400,260,'gyro inside',15,MUTE))
 b.append(text(400,282,'face up, button on top',15,MUTE))
 # wheels
-for x,lab,sock in ((215,'Left wheel','F'),(585,'Right wheel','A')):
+for x,lab,sock in ((250,'Left wheel','F'),(550,'Right wheel','A')):
     b.append(f'<rect x="{x-25}" y="200" width="50" height="110" rx="12" fill="{INK}"/>')
     b.append(f'<circle cx="{x}" cy="255" r="20" fill="{LEAF}" stroke="#ffffff" stroke-width="3"/>')
     b.append(text(x,262,sock,20,'#ffffff',weight='bold'))
-    tx = 110 if x<400 else 690
+    tx = 105 if x<400 else 695
     b.append(text(tx,248,lab,17,INK,weight='bold'))
     b.append(text(tx,270,f'motor on {sock}',16,MUTE))
 # attachment at back
@@ -55,9 +56,9 @@ b.append(f'<line x1="680" y1="380" x2="680" y2="490" stroke="{LEAF}" stroke-widt
 b.append(f'<polygon points="666,485 694,485 680,510" fill="{LEAF}"/>')
 b.append(text(690,540,'drives backwards',16,LEAF,weight='bold'))
 b.append(text(690,560,'into the models',16,LEAF,weight='bold'))
-b.append(text(400,585,'Socket letters F, A, C and E come from our final code.',15,MUTE))
+b.append(text(400,585,'The wheels sit inside the frame. Socket letters F, A, C and E come from our final code.',15,MUTE))
 open(os.path.join(out,'robot-wiring.svg'),'w').write(svg(800,610,'Our robot from above: what is plugged in where',
- 'Schematic top view. The left wheel motor is on socket F and the right wheel motor on socket A. The hub sits in the middle, face up. The attachment is on the back, with motors on sockets C and E. The robot drives backwards into the models.',''.join(b)))
+ 'Schematic top view. The frame has straight, flat walls, and the wheels sit inside it. The left wheel motor is on socket F and the right wheel motor on socket A. The hub sits in the middle, face up. The attachment is on the back, with motors on sockets C and E. The robot drives backwards into the models.',''.join(b)))
 
 # 2. Square test: turn-by vs face
 def path(errs, side=150, ox=0, oy=0):
@@ -393,4 +394,69 @@ save('test-pipeline.svg', 900, 450, 'How we test our code: pretend robot, automa
      'Four steps from left to right. 1, pretend robot: run the code on a pretend mat in the browser. 2, automatic '
      'checks: check-library.py runs 34 checks on the pretend hub in seconds. 3, real mat: run it, measure it, change '
      'a number. 4, save in git with a note; 33 saves to our code so far. If a problem is found, go round again.', p)
+
+# H. Squaring against a wall --------------------------------------------------
+WALL = '#8a949c'
+def robot_box(cx, cy, w, h, angle, label=None):
+    g = (f'<g transform="rotate({angle} {cx} {cy})">'
+         f'<rect x="{cx-w/2}" y="{cy-h/2}" width="{w}" height="{h}" rx="5" fill="{PALE}" stroke="{LEAF}" stroke-width="6"/>'
+         f'<rect x="{cx-w/2+14}" y="{cy-30}" width="22" height="60" rx="6" fill="{INK}"/>'
+         f'<rect x="{cx+w/2-36}" y="{cy-30}" width="22" height="60" rx="6" fill="{INK}"/>'
+         f'<rect x="{cx-38}" y="{cy-34}" width="76" height="68" rx="8" fill="#ffffff" stroke="{INK}" stroke-width="2.5"/>'
+         '</g>')
+    return g
+p = [text(450, 40, 'Why straight walls matter', 24, INK, weight='bold'),
+     text(450, 66, 'Seen from above. A flat wall can only sit one way against another flat wall.', 16, MUTE)]
+for x0 in (60, 500):
+    p.append(f'<rect x="{x0}" y="372" width="340" height="18" fill="{WALL}"/>')
+    p.append(text(x0 + 170, 412, 'the wall of the field', 14, MUTE))
+p.append(robot_box(230, 255, 200, 160, -14))
+p.append(text(230, 120, '1. Put down a bit crooked', 18, INK, weight='bold'))
+p.append(text(230, 444, 'One corner touches first.', 15, MUTE))
+p.append(arrow([(410, 255), (480, 255)]))
+p.append(text(445, 230, 'then push', 14, LEAF, 'middle', 'bold'))
+p.append(text(445, 246, 'it flat', 14, LEAF, 'middle', 'bold'))
+p.append(robot_box(670, 290, 200, 160, 0))
+p.append(text(670, 120, '2. Pushed flat against it', 18, INK, weight='bold'))
+p.append(text(670, 444, 'The whole wall touches. It is square.', 15, LEAF, weight='bold'))
+p.append(text(450, 490, 'Every run starts square, and the robot can square up again during a run, with no extra code.', 15, MUTE))
+save('wall-squaring.svg', 900, 520, 'Why straight walls matter: squaring against a wall',
+     'Two pictures from above. 1: the robot is put down a bit crooked, and one corner touches the wall first. '
+     '2: it is pushed back flat against the wall, the whole wall touches, and it sits square. So every run starts '
+     'square, and the robot can square up again during a run, with no extra code.', p)
+
+# I. Gravity mounting ----------------------------------------------------------
+def chassis_side(cx, top):
+    g = [f'<rect x="{cx-170}" y="{top}" width="340" height="70" rx="6" fill="{PALE}" stroke="{LEAF}" stroke-width="4"/>',
+         text(cx, top + 44, 'robot', 16, LEAF, weight='bold')]
+    for dx in (-110, 110):
+        g.append(f'<rect x="{cx+dx-9}" y="{top-34}" width="18" height="36" rx="4" fill="{GOLD}"/>')
+    return ''.join(g)
+def attachment_side(cx, bottom, holes=True):
+    g = [f'<rect x="{cx-150}" y="{bottom-60}" width="300" height="60" rx="6" fill="{GOLDP}" stroke="{GOLD}" stroke-width="4"/>',
+         text(cx, bottom - 24, 'attachment', 16, GOLD, weight='bold')]
+    if holes:
+        for dx in (-110, 110):
+            g.append(f'<rect x="{cx+dx-12}" y="{bottom-38}" width="24" height="38" fill="#ffffff" stroke="{GOLD}" stroke-width="2"/>')
+    return ''.join(g)
+p = [text(450, 40, 'Gravity mounting', 24, INK, weight='bold'),
+     text(450, 66, 'Seen from the side. Pegs line it up. Its own weight holds it on. Nothing clips.', 16, MUTE)]
+p.append(text(225, 108, '1. Lower it onto the pegs', 18, INK, weight='bold'))
+p.append(attachment_side(225, 210))
+p.append(arrow([(225, 222), (225, 270)], None, None, None, LEAF))
+p.append(chassis_side(225, 330))
+p.append(text(225, 438, 'The pegs fit into holes, so it', 15, MUTE))
+p.append(text(225, 458, 'can only go on one way.', 15, MUTE))
+p.append(text(675, 108, '2. On, and held by its weight', 18, INK, weight='bold'))
+p.append(chassis_side(675, 330))
+p.append(attachment_side(675, 332))
+p.append(arrow([(675, 210), (675, 140)], None, None, None, LEAF))
+p.append(text(700, 175, 'lift straight', 14, LEAF, 'start', 'bold'))
+p.append(text(700, 193, 'up to take off', 14, LEAF, 'start', 'bold'))
+p.append(text(675, 438, 'No pins to push in or forget.', 15, MUTE))
+p.append(text(675, 458, 'On or off in one move.', 15, MUTE))
+save('gravity-mount.svg', 900, 490, 'Gravity mounting: pegs line the attachment up and its weight holds it',
+     'Two side views. 1: the attachment is lowered onto two pegs on the robot, which fit into holes so it can only '
+     'go on one way. 2: it sits on the pegs, held by its own weight, with nothing clipping it. To take it off, '
+     'lift it straight up. No pins to push in or forget; on or off in one move.', p)
 print('ok2')
