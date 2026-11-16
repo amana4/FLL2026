@@ -459,4 +459,27 @@ save('gravity-mount.svg', 900, 490, 'Gravity mounting: pegs line the attachment 
      'Two side views. 1: the attachment is lowered onto two pegs on the robot, which fit into holes so it can only '
      'go on one way. 2: it sits on the pegs, held by its own weight, with nothing clipping it. To take it off, '
      'lift it straight up. No pins to push in or forget; on or off in one move.', p)
+
+# J. Wheel pattern across the six designs ------------------------------------
+p = [text(450, 40, 'Six designs: three slip, three do not', 24, INK, weight='bold'),
+     text(450, 66, 'Sort them by their wheels, and the slipping stops exactly where the wheels change.', 16, MUTE)]
+groups = [
+    ('Blue SPIKE wheels', RED, REDP, ['HummerOne Pro', 'Xbot', 'YellowBot v1'], 'wheels slip'),
+    ('62.4 mm LEGO wheels', LEAF, PALE, ['YellowBot v2', 'Track-X', 'Boxor'], 'no slipping listed'),
+]
+for gi, (head, col, fill, names, verdict) in enumerate(groups):
+    x0 = 60 + gi * 420
+    p.append(f'<rect x="{x0}" y="100" width="360" height="300" rx="16" fill="{fill}" stroke="{col}" stroke-width="3"/>')
+    p.append(text(x0 + 180, 135, head, 18, col, weight='bold'))
+    for i, n in enumerate(names):
+        y = 175 + i * 62
+        p.append(f'<rect x="{x0+40}" y="{y}" width="280" height="46" rx="10" fill="#ffffff" stroke="{col}" stroke-width="2"/>')
+        p.append(f'<circle cx="{x0+72}" cy="{y+23}" r="14" fill="{INK}"/><circle cx="{x0+72}" cy="{y+23}" r="6" fill="{col}"/>')
+        p.append(text(x0 + 200, y + 29, n, 17, INK, weight='bold'))
+    p.append(text(x0 + 180, 380, verdict, 18, col, weight='bold'))
+p.append(text(450, 440, 'A coach who switched to 62.4 mm wheels says the robot stopped slipping on turns.', 15, MUTE))
+save('wheel-pattern.svg', 900, 470, 'Six designs sorted by their wheels: three slip, three do not',
+     'Left group, blue SPIKE wheels: HummerOne Pro, Xbot and YellowBot v1, which all list wheel slipping. Right group, '
+     '62.4 mm LEGO wheels: YellowBot v2, Track-X and Boxor, which list no slipping. A coach who switched to 62.4 mm '
+     'wheels says the robot stopped slipping on turns.', p)
 print('ok2')

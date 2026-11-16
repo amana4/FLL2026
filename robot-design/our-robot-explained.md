@@ -8,6 +8,7 @@ any part of the robot, not just the part we worked on.
 **On this page:**
 
 - [How judges score Robot Design](#how-judges-score-robot-design)
+- [How we chose our design](#how-we-chose-our-design)
 - [1. The driving base](#1-the-driving-base)
 - [2. Attachments](#2-attachments)
 - [3. The code](#3-the-code)
@@ -51,6 +52,60 @@ COMMUNICATE lines.
 Look at the word **"all"** in the DESIGN row. The judges pick who answers each
 question. So it is better for all five of us to know our robot than for one
 person to know everything.
+
+## How we chose our design
+
+We did not invent a robot from nothing. Before we built ours, we studied **six
+designs** that other teams had already built and tested, and we looked at what
+went wrong for them. This is what the IDENTIFY row means by "explored building
+and coding resources".
+
+The full comparison is in our
+[six chassis designs slides](chassis-designs-slides.html). Here is the short
+version, in the slides' own words:
+
+| Design | What it does well | What it costs you |
+| --- | --- | --- |
+| HummerOne Pro | Easiest to build. Simple clip-on attachments. | Wheels slip once an attachment gets heavy. |
+| Xbot | Frame right around the outside, so it balances well. Attachments on top and front. | The frame uses a lot of LEGO. Wheels can still slip. |
+| YellowBot v1 | Box frame lines up against walls. Attachments drop in using gravity. | Wheels can still slip. |
+| YellowBot v2 | Better box frame. Hub sunk down low. Side walls can push things. | Raised frame needs extra LEGO. Needs 62.4 mm wheels. |
+| Track-X | Sits very low, so it grips. Very accurate and repeatable. Fast swaps. | Needs 62.4 mm wheels. Open sides, so no walls to line up with. |
+| Boxor | Newest. Low, accurate, fast to swap, box frame for lining up. Best attachment system. | Needs 62.4 mm wheels. |
+
+Boxor is not better because it is newer. It is better because it collected the
+good ideas from the five designs before it. That is iterating too.
+
+**The pattern we spotted.** Sort the six by their wheels, and look what
+happens:
+
+![Six designs sorted by their wheels. The three on blue SPIKE wheels all list wheel slipping. The three on 62.4 mm LEGO wheels list no slipping.](diagrams/wheel-pattern.svg){ loading=lazy }
+
+**The design rules we took from them, and our robot.**
+
+| Design rule | Why it matters | Our robot |
+| --- | --- | --- |
+| **One base, many attachments** | Get one base reliable, then only build attachments. Every change to the base breaks everything built on it. | One driving base, and the BOXOR frame with arms we swap. See section 2. |
+| **A box frame lines you up** | Pushed flat against a wall, a box can only sit square. | Yes: a box with straight walls. See section 1. |
+| **Weight low and even** | Weight up high makes the robot rock. Weight all at one end makes turns change from run to run. | The hub lies flat. Team to answer: is the weight low and even? |
+| **Hold the wheels straight** | A wheel held on one side only bends inwards under a heavy attachment, and the robot curves. | Yes: the wheels sit inside the frame. See section 1. |
+| **Attachments drop on** | A match is two and a half minutes. Every second spent swapping is a second not scoring. | Yes: gravity mounting. See section 2. |
+| **The gyro does the driving** | Hold the heading with the gyro, count distance with the encoders. Timing is never repeatable. | Yes: `drive_cm` and `face`. See section 3. |
+| **Grippy wheels** | The three designs that list no slipping all use 62.4 mm wheels. | Our code expects 62.4 mm wheels. Team to answer: check the real wheels. |
+
+!!! question "Team to answer"
+    - Which of the six designs is our driving base closest to?
+    - Which idea did we take from which design?
+    - Which rule did we decide **not** to follow, and why? For example, the
+      slides say "attachments on top and front", but ours is on the back.
+
+!!! tip "Say it to a judge: What resources did you use?"
+    **Weak:** "We looked online."
+
+    **Strong:** "Before we built anything, we compared six robot designs other
+    teams had made, and what went wrong for each one. We noticed the three that
+    slipped all used the blue SPIKE wheels. So we took the best ideas, like a
+    box frame and gravity mounting, and built our robot from those."
 
 ## 1. The driving base
 
@@ -135,8 +190,8 @@ one hand at the table.
 measured them yet to check.
 
 !!! question "Team to answer"
-    - Why did we pick this driving base? What did we like from the
-      [six chassis designs](chassis-designs-slides.html) we looked at?
+    - Why did we pick this driving base? (See
+      [How we chose our design](#how-we-chose-our-design) above.)
     - Which wheels are on the robot, and why those?
     - Why did we stop using the colour sensors?
     - Where is the heaviest part of the robot? Does it wobble when it stops?
