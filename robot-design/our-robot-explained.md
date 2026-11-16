@@ -220,6 +220,9 @@ distance to match our real robot.
 centimetres. So `.Forward 300` in blocks is the same as `drive_cm(30)` in
 Python.
 
+**Want to go deeper?** [How Our Code Is Designed](how-our-code-works.md) has
+flowcharts of `drive_cm` and `face`, the safety stops, and how we test.
+
 !!! question "Team to answer"
     - Who wrote which program? Add it to [who did what](../docs/who-did-what.md).
     - Which bug was the hardest to find? How did you find it?

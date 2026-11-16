@@ -8,7 +8,9 @@ to explain it to the judges.
 1. Read [Our Robot, Explained](our-robot-explained.md). It covers the driving
    base, the attachments, the code, the missions, and what we tested and
    changed.
-2. Then take the [Robot Design test](robot-design-test.md).
+2. Read [How Our Code Is Designed](how-our-code-works.md). It has the
+   flowcharts and diagrams of how our code works.
+3. Then take the [Robot Design test](robot-design-test.md).
 
 ## Team workspace
 

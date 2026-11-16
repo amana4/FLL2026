@@ -255,6 +255,7 @@ nav:
       - Robot Design:
           - robot-design/README.md
           - Our Robot, Explained: robot-design/our-robot-explained.md
+          - How our code is designed: robot-design/how-our-code-works.md
           - Take the test: robot-design/robot-design-test.md
           # The kid path is the two pages above. The working pages below are
           # grouped in the menu only; the files stay where they are, because

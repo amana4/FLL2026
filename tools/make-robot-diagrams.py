@@ -1,8 +1,9 @@
-"""Draws the three diagrams on robot-design/our-robot-explained.md.
+"""Draws the diagrams on robot-design/our-robot-explained.md and
+robot-design/how-our-code-works.md.
 
 Run: python3 tools/make-robot-diagrams.py robot-design/diagrams
 
-Writes robot-wiring.svg, face-square.svg and iterate-loop.svg. Edit the text
+Writes every .svg in robot-design/diagrams/. Edit the text
 or numbers here and re-run, rather than editing the SVG files by hand.
 """
 import math, sys, os
@@ -118,3 +119,278 @@ b.append(text(cx,cy+6,'repeat',20,MUTE,weight='bold'))
 open(os.path.join(out,'iterate-loop.svg'),'w').write(svg(900,560,'How we make the robot better: test, find a problem, change something, test again',
  'A loop of four steps. 1, test it: run M03 on the mat. 2, find a problem: the bump knocks the robot crooked. 3, change something: add await face(0) right after the bump. 4, test again and write it in the log. Then repeat.',''.join(b)))
 print('ok')
+
+# ---------------------------------------------------------------------------
+# Diagrams for robot-design/how-our-code-works.md
+# ---------------------------------------------------------------------------
+GOLD='#b7791f'; GOLDP='#fff4d6'; REDP='#fdecea'; BLUE='#2b6cb0'; BLUEP='#e6f0fa'
+
+def wrap_lines(cx, cy, lines, size=16, fill=INK, weight='normal', gap=None):
+    gap = gap or size + 5
+    y0 = cy - (len(lines) - 1) * gap / 2 + size * 0.35
+    return ''.join(text(cx, y0 + i * gap, l, size, fill, weight=weight if i == 0 else 'normal')
+                   for i, l in enumerate(lines))
+
+def node(kind, cx, cy, w, h, lines, size=16):
+    if kind == 'start':
+        shape = f'<rect x="{cx-w/2}" y="{cy-h/2}" width="{w}" height="{h}" rx="{h/2}" fill="{LEAF}"/>'
+        return shape + wrap_lines(cx, cy, lines, size, '#ffffff', 'bold')
+    if kind == 'end':
+        shape = f'<rect x="{cx-w/2}" y="{cy-h/2}" width="{w}" height="{h}" rx="{h/2}" fill="{INK}"/>'
+        return shape + wrap_lines(cx, cy, lines, size, '#ffffff', 'bold')
+    if kind == 'stop':
+        shape = f'<rect x="{cx-w/2}" y="{cy-h/2}" width="{w}" height="{h}" rx="12" fill="{REDP}" stroke="{RED}" stroke-width="2.5"/>'
+        return shape + wrap_lines(cx, cy, lines, size, RED, 'bold')
+    if kind == 'ask':
+        pts = f'{cx},{cy-h/2} {cx+w/2},{cy} {cx},{cy+h/2} {cx-w/2},{cy}'
+        shape = f'<polygon points="{pts}" fill="{GOLDP}" stroke="{GOLD}" stroke-width="2.5"/>'
+        return shape + wrap_lines(cx, cy, lines, size, INK, 'bold')
+    # step
+    shape = f'<rect x="{cx-w/2}" y="{cy-h/2}" width="{w}" height="{h}" rx="10" fill="{PALE}" stroke="{LEAF}" stroke-width="2.5"/>'
+    return shape + wrap_lines(cx, cy, lines, size, INK, 'bold')
+
+ARROW_DEFS = (f'<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" '
+              f'markerWidth="12" markerHeight="12" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{MUTE}"/></marker></defs>')
+
+def arrow(pts, label=None, lx=None, ly=None, color=MUTE):
+    p = ' '.join(f'{x},{y}' for x, y in pts)
+    s = f'<polyline points="{p}" fill="none" stroke="{color}" stroke-width="2.5" marker-end="url(#ar)"/>'
+    if label:
+        s += text(lx, ly, label, 15, color, 'middle', 'bold')
+    return s
+
+def save(name, w, h, title, desc, parts):
+    open(os.path.join(out, name), 'w').write(svg(w, h, title, desc, ARROW_DEFS + ''.join(parts)))
+
+# A. Layers ------------------------------------------------------------------
+p = [text(450, 40, 'Our code is built in layers', 24, INK, weight='bold'),
+     text(450, 66, 'Each layer only uses the layer under it.', 16, MUTE)]
+layers = [
+    (GOLDP, GOLD, 'Run programs', 'phase0-alt.py, phase3.py, Phase 5.py, Phase 6.py',
+     'Says WHAT to do: "back 44 cm, then face 90"'),
+    (PALE, LEAF, 'Our library: advanced.py', 'drive_cm, face, turn_deg, arc_turn, attachments, safety stops',
+     'Says HOW to do it: speed up, steer with the gyro, stop exactly'),
+    (BLUEP, BLUE, 'The SPIKE hub', 'motors on F, A, C, E, the gyro, the wheel encoders',
+     'Does it: turns the motors, measures the turn'),
+]
+for i, (fill, stroke, t1, t2, t3) in enumerate(layers):
+    y = 100 + i * 140
+    p.append(f'<rect x="90" y="{y}" width="720" height="110" rx="14" fill="{fill}" stroke="{stroke}" stroke-width="3"/>')
+    p.append(text(450, y + 36, t1, 21, INK, weight='bold'))
+    p.append(text(450, y + 63, t2, 16, INK))
+    p.append(text(450, y + 89, t3, 16, stroke, weight='bold'))
+    if i < 2:
+        p.append(arrow([(450, y + 112), (450, y + 136)]))
+p.append(text(450, 540, 'Like My Blocks: we write drive_cm once, and every run uses it.', 16, MUTE))
+save('code-layers.svg', 900, 570, 'Our code is built in layers',
+     'Three layers. At the top, the run programs say what to do, such as back 44 cm then face 90. In the middle, '
+     'our library advanced.py says how: drive_cm, face, turn_deg, arc_turn, attachments and safety stops. At the '
+     'bottom, the SPIKE hub turns the motors and measures with the gyro and encoders.', p)
+
+# B. Build flow --------------------------------------------------------------
+p = [text(450, 40, 'One library, copied into every run by a tool', 24, INK, weight='bold'),
+     text(450, 66, 'The SPIKE app cannot load one file from another, so each run carries its own copy.', 16, MUTE)]
+p.append(node('step', 160, 170, 220, 90, ['advanced.py', 'our one library']))
+p.append(node('ask', 160, 330, 230, 120, ['34 checks pass', 'on the pretend', 'hub?'], 15))
+p.append(arrow([(160, 215), (160, 268)]))
+p.append(node('stop', 160, 470, 200, 64, ['Fix the library', 'first']))
+p.append(arrow([(160, 390), (160, 436)], 'no', 182, 416, RED))
+p.append(node('step', 450, 330, 220, 90, ['build-mission.py', 'copies it in']))
+p.append(arrow([(275, 330), (338, 330)], 'yes', 306, 318, LEAF))
+# run file
+p.append(f'<rect x="630" y="200" width="220" height="260" rx="12" fill="#ffffff" stroke="{INK}" stroke-width="2.5"/>')
+p.append(text(740, 190, 'phase0-alt.py', 17, INK, weight='bold'))
+p.append(f'<rect x="642" y="212" width="196" height="120" rx="8" fill="{PALE}"/>')
+p.append(wrap_lines(740, 272, ['Top part:', 'the library,', 'replaced every time'], 15))
+p.append(f'<line x1="642" y1="345" x2="838" y2="345" stroke="{RED}" stroke-width="2.5" stroke-dasharray="8 5"/>')
+p.append(text(740, 366, 'the marker line', 14, RED, weight='bold'))
+p.append(f'<rect x="642" y="378" width="196" height="70" rx="8" fill="{GOLDP}"/>')
+p.append(wrap_lines(740, 413, ['Bottom part: our mission,', 'never touched'], 15))
+p.append(arrow([(562, 330), (628, 330)]))
+p.append(node('end', 740, 530, 220, 56, ['Load onto the hub']))
+p.append(arrow([(740, 462), (740, 500)]))
+p.append(text(450, 600, 'Copying by hand once left a wrong note about the motor sockets in M03. The tool cannot make that mistake.', 15, MUTE))
+save('build-flow.svg', 900, 630, 'One library, copied into every run by a tool',
+     'advanced.py is checked by 34 checks on the pretend hub. If they pass, build-mission.py copies the library into '
+     'the top part of each run file, above a marker line. The mission code below the marker line is never touched. '
+     'Then the file is loaded onto the hub.', p)
+
+# C. drive_cm flowchart ------------------------------------------------------
+p = [text(450, 40, 'How drive_cm drives straight', 24, INK, weight='bold'),
+     text(450, 66, 'This loop runs about 66 times every second.', 16, MUTE)]
+X = 330
+p.append(node('start', X, 110, 240, 50, ['drive_cm(-44)']))
+p.append(node('ask', X, 210, 270, 110, ['Longer than', 'the mat (200 cm)?'], 15))
+p.append(arrow([(X, 135), (X, 154)]))
+p.append(node('stop', 700, 210, 250, 64, ['Stop: "longer than', 'the mat"'], 15))
+p.append(arrow([(X + 136, 210), (574, 210)], 'yes', 520, 198, RED))
+p.append(node('step', X, 335, 330, 76, ['Work out the speed and ramp.', 'Aim a little short: it rolls.'], 15))
+p.append(arrow([(X, 266), (X, 296)], 'no', X + 20, 286, LEAF))
+p.append(node('step', X, 435, 330, 56, ['Zero the wheel counters and gyro'], 15))
+p.append(arrow([(X, 374), (X, 406)]))
+p.append(node('ask', X, 545, 270, 110, ['Gone far', 'enough?'], 16))
+p.append(arrow([(X, 464), (X, 489)]))
+p.append(node('end', 700, 545, 200, 56, ['Brake. Done.']))
+p.append(arrow([(X + 136, 545), (598, 545)], 'yes', 520, 533, LEAF))
+p.append(node('step', X, 665, 330, 76, ['Pick the speed:', 'speed up, hold, or slow down'], 15))
+p.append(arrow([(X, 601), (X, 626)], 'no', X + 20, 618, RED))
+p.append(node('step', X, 765, 330, 56, ['Read the gyro: how far off straight?'], 15))
+p.append(arrow([(X, 704), (X, 736)]))
+p.append(node('ask', X, 875, 270, 110, ['More than', '45 degrees off?'], 15))
+p.append(arrow([(X, 794), (X, 819)]))
+p.append(node('stop', 700, 875, 250, 64, ['Brake. Stop with', 'an error.'], 15))
+p.append(arrow([(X + 136, 875), (574, 875)], 'yes', 520, 863, RED))
+p.append(node('step', X, 995, 330, 76, ['Steer the other way,', 'harder if it is further off'], 15))
+p.append(arrow([(X, 931), (X, 956)], 'no', X + 20, 948, LEAF))
+p.append(node('step', X, 1090, 330, 50, ['Wait 15 milliseconds'], 15))
+p.append(arrow([(X, 1034), (X, 1064)]))
+p.append(arrow([(X - 165, 1090), (90, 1090), (90, 545), (X - 138, 545)], 'loop', 70, 820, LEAF))
+save('drive-flowchart.svg', 900, 1140, 'Flowchart: how drive_cm drives straight',
+     'drive_cm first refuses any distance longer than the 200 cm mat. It works out the speed and ramp, aims a little '
+     'short because the robot rolls after braking, and zeroes the wheel counters and gyro. Then it loops: if it has '
+     'gone far enough it brakes and is done. If not, it picks the speed, reads how far off straight it is, stops with '
+     'an error if that is more than 45 degrees, otherwise steers the other way, waits 15 milliseconds and loops.', p)
+
+# D. face flowchart ----------------------------------------------------------
+p = [text(450, 40, 'How face turns to exactly the right direction', 24, INK, weight='bold'),
+     text(450, 66, 'The gyro is checked about 66 times every second.', 16, MUTE)]
+X = 300
+p.append(node('start', X, 110, 240, 50, ['face(90)']))
+p.append(node('step', X, 200, 340, 76, ['How far is 90 from where we', 'point now? That is the error.'], 15))
+p.append(arrow([(X, 135), (X, 161)]))
+p.append(node('ask', X, 330, 270, 110, ['Error less than', '1 degree?'], 15))
+p.append(arrow([(X, 239), (X, 274)]))
+p.append(node('step', 700, 330, 230, 70, ['Brake. Wait', '0.15 seconds.'], 15))
+p.append(arrow([(X + 136, 330), (584, 330)], 'yes', 510, 318, LEAF))
+p.append(node('ask', 700, 470, 250, 120, ['Still less than', '1 degree off?'], 15))
+p.append(arrow([(700, 366), (700, 409)]))
+p.append(node('end', 700, 610, 160, 52, ['Done']))
+p.append(arrow([(700, 531), (700, 583)], 'yes', 720, 562, LEAF))
+p.append(arrow([(826, 470), (870, 470), (870, 200), (X + 172, 200)]))
+p.append(text(686, 190, 'no: it rolled past, so go again', 15, GOLD, weight='bold'))
+p.append(node('step', X, 500, 380, 116, ['Work out the turning speed:', 'far off: turn fast', 'close: turn slowly', 'stuck a bit short: push a bit more'], 15))
+p.append(arrow([(X, 386), (X, 440)], 'no', X + 20, 418, RED))
+p.append(node('step', X, 630, 340, 56, ['Spin the wheels opposite ways'], 15))
+p.append(arrow([(X, 559), (X, 600)]))
+p.append(node('step', X, 730, 340, 50, ['Wait 15 milliseconds'], 15))
+p.append(arrow([(X, 659), (X, 703)]))
+p.append(arrow([(X - 171, 730), (70, 730), (70, 200), (X - 171, 200)], 'loop', 50, 470, LEAF))
+save('face-flowchart.svg', 900, 790, 'Flowchart: how face turns to exactly the right direction',
+     'face works out the error: how far the target is from where the robot points now. If the error is under 1 '
+     'degree, it brakes, waits 0.15 seconds and checks again. If it is still under 1 degree it is done; if it rolled '
+     'past, it goes again. If the error is not under 1 degree, it works out the turning speed, fast when far off, '
+     'slow when close, a little extra push when stuck just short, spins the wheels opposite ways, waits 15 '
+     'milliseconds and loops.', p)
+
+# E. Speed ramp graph --------------------------------------------------------
+top, start, ramp = 500.0, 262.0, 10.0
+comp = 1.5 * top / 630.0
+target = 44 - comp
+gx, gy, gw, gh = 110, 110, 700, 300
+def px(d): return gx + d / 45.0 * gw
+def py(v): return gy + gh - v / 600.0 * gh
+p = [text(450, 40, 'How fast drive_cm(-44) goes, all the way along', 24, INK, weight='bold'),
+     text(450, 66, 'This is the M03 drive into the rock. Speed is in degrees per second of wheel turn.', 16, MUTE)]
+for v in (0, 100, 200, 300, 400, 500, 600):
+    p.append(f'<line x1="{gx}" y1="{py(v):.1f}" x2="{gx+gw}" y2="{py(v):.1f}" stroke="#e3e8ec" stroke-width="1"/>')
+    p.append(text(gx - 10, py(v) + 5, str(v), 14, MUTE, 'end'))
+for d in range(0, 46, 5):
+    p.append(text(px(d), gy + gh + 24, str(d), 14, MUTE))
+p.append(f'<line x1="{gx}" y1="{gy+gh}" x2="{gx+gw}" y2="{gy+gh}" stroke="{INK}" stroke-width="2"/>')
+p.append(f'<line x1="{gx}" y1="{gy}" x2="{gx}" y2="{gy+gh}" stroke="{INK}" stroke-width="2"/>')
+p.append(text(gx + gw / 2, gy + gh + 52, 'distance driven (cm)', 16, INK, weight='bold'))
+p.append(f'<text x="{gx-62}" y="{gy+gh/2}" font-size="16" fill="{INK}" font-weight="bold" text-anchor="middle" transform="rotate(-90 {gx-62} {gy+gh/2})">speed</text>')
+pts = [(0, start), (ramp, top), (target - ramp, top), (target, start)]
+poly = ' '.join(f'{px(d):.1f},{py(v):.1f}' for d, v in pts)
+area = f'{px(0):.1f},{py(0):.1f} ' + poly + f' {px(target):.1f},{py(0):.1f}'
+p.append(f'<polygon points="{area}" fill="{PALE}"/>')
+p.append(f'<polyline points="{poly}" fill="none" stroke="{LEAF}" stroke-width="5" stroke-linejoin="round"/>')
+p.append(f'<line x1="{px(target):.1f}" y1="{py(0)}" x2="{px(target):.1f}" y2="{py(0)-8}" stroke="{RED}" stroke-width="3"/>')
+p.append(f'<line x1="{px(target):.1f}" y1="{py(start)+4:.1f}" x2="{px(target):.1f}" y2="{py(0):.1f}" stroke="{RED}" stroke-width="2" stroke-dasharray="5 4"/>')
+p.append(f'<line x1="{px(44):.1f}" y1="{py(0)}" x2="{px(44):.1f}" y2="{py(0)-70}" stroke="{INK}" stroke-width="2" stroke-dasharray="5 4"/>')
+p.append(text(px(44) + 6, py(0) - 56, '44 cm', 14, INK, 'start', 'bold'))
+p.append(text(px(5), py(130), 'speed up', 16, LEAF, weight='bold'))
+p.append(text(px(5), py(130) + 20, 'so the wheels', 14, MUTE))
+p.append(text(px(5), py(130) + 37, 'do not slip', 14, MUTE))
+p.append(text(px(target / 2), py(top) - 14, 'hold the speed', 16, LEAF, weight='bold'))
+p.append(text(px(target - 5), py(130), 'slow down', 16, LEAF, weight='bold'))
+p.append(text(px(target - 5), py(130) + 20, 'so it does not', 14, MUTE))
+p.append(text(px(target - 5), py(130) + 37, 'overshoot', 14, MUTE))
+p.append(text(450, 520, f'It brakes about {comp:.1f} cm early, because the robot rolls a little after braking.', 15, RED))
+save('speed-ramp.svg', 900, 550, 'Graph: how fast drive_cm(-44) goes along the drive',
+     f'Speed starts at 262, rises to 500 over the first 10 cm so the wheels do not slip, holds at 500, and falls back '
+     f'to 262 over the last 10 cm so the robot does not overshoot. It brakes about {comp:.1f} cm before 44 cm, '
+     f'because the robot rolls a little after braking.', p)
+
+# F. Whole run: phase0-alt ---------------------------------------------------
+p = [text(450, 40, 'One whole run: phase0-alt.py', 24, INK, weight='bold'),
+     text(450, 66, 'M03 Flip the Rock, then M02 Exploding Seeds, then home.', 16, MUTE)]
+X = 450
+steps = [
+    ('start', ['Start in base']),
+    ('step', ['init_robot: this way is now "base"']),
+    ('step', ['Set calibration: 179/180']),
+    ('mission', ['M03 Flip the Rock']),
+    ('step', ['Back 44 cm into the rock']),
+    ('step', ['face(0): straighten after the bump']),
+    ('step', ['Forward 22 cm']),
+    ('mission', ['M02 Exploding Seeds']),
+    ('step', ['face(90), back 24 cm, face(46)']),
+    ('step', ['Arm down: 380 degrees']),
+    ('step', ['Back 22 cm']),
+    ('step', ['Arm up 200 degrees']),
+    ('both', ['Arm up 180 more AND drive 35 cm fast', 'at the same time']),
+    ('end', ['Home']),
+]
+y = 110
+prev = None
+for kind, lines in steps:
+    h = 46 if len(lines) == 1 else 64
+    if kind == 'mission':
+        p.append(f'<rect x="{X-230}" y="{y-16}" width="460" height="32" rx="6" fill="{GOLDP}"/>')
+        p.append(text(X, y + 6, lines[0], 17, GOLD, weight='bold'))
+        if prev is not None:
+            p.append(f'<line x1="{X}" y1="{prev}" x2="{X}" y2="{y-17}" stroke="{MUTE}" stroke-width="2.5"/>')
+        prev = y + 16
+        y += 46
+        continue
+    if kind == 'both':
+        p.append(f'<rect x="{X-210}" y="{y-h/2}" width="420" height="{h}" rx="10" fill="{BLUEP}" stroke="{BLUE}" stroke-width="2.5"/>')
+        p.append(wrap_lines(X, y, lines, 15, INK, 'bold'))
+    else:
+        p.append(node(kind, X, y, 420 if kind == 'step' else 220, h, lines, 15))
+    if prev is not None:
+        p.append(arrow([(X, prev), (X, y - h / 2 - 2)]))
+    prev = y + h / 2
+    y += h + 26
+H = y + 10
+save('run-phase0-alt.svg', 900, int(H), 'Flowchart of one whole run: phase0-alt.py',
+     'Start in base. init_robot makes this direction base. Set calibration 179/180. M03 Flip the Rock: back 44 cm into '
+     'the rock, face(0) to straighten after the bump, forward 22 cm. M02 Exploding Seeds: face(90), back 24 cm, '
+     'face(46), arm down 380 degrees, back 22 cm, arm up 200 degrees, then arm up 180 more and drive 35 cm fast at '
+     'the same time, and home.', p)
+
+# G. How we test code --------------------------------------------------------
+p = [text(450, 40, 'How we test our code', 24, INK, weight='bold'),
+     text(450, 66, 'Cheap, fast tests first. The real mat last.', 16, MUTE)]
+stages = [
+    (BLUEP, BLUE, '1. Pretend robot', ['Run the code on a', 'pretend mat in the', 'browser. No robot', 'needed.']),
+    (PALE, LEAF, '2. Automatic checks', ['check-library.py', 'runs 34 checks on', 'the pretend hub in', 'seconds.']),
+    (GOLDP, GOLD, '3. Real mat', ['Run it, measure it,', 'change a number.', 'The #was notes', 'show this.']),
+    ('#f1f3f5', INK, '4. Save in git', ['Every change is', 'saved with a note.', '33 saves to our', 'code so far.']),
+]
+for i, (fill, stroke, t, lines) in enumerate(stages):
+    x = 40 + i * 215
+    p.append(f'<rect x="{x}" y="110" width="190" height="210" rx="14" fill="{fill}" stroke="{stroke}" stroke-width="3"/>')
+    p.append(text(x + 95, 145, t, 17, stroke, weight='bold'))
+    for j, l in enumerate(lines):
+        p.append(text(x + 95, 190 + j * 26, l, 15, INK))
+    if i < 3:
+        p.append(arrow([(x + 192, 215), (x + 213, 215)]))
+p.append(f'<path d="M800,330 Q800,390 450,390 Q100,390 100,334" fill="none" stroke="{LEAFL}" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#ar)"/>')
+p.append(text(450, 420, 'Found a problem? Go round again.', 16, LEAF, weight='bold'))
+save('test-pipeline.svg', 900, 450, 'How we test our code: pretend robot, automatic checks, real mat, save in git',
+     'Four steps from left to right. 1, pretend robot: run the code on a pretend mat in the browser. 2, automatic '
+     'checks: check-library.py runs 34 checks on the pretend hub in seconds. 3, real mat: run it, measure it, change '
+     'a number. 4, save in git with a note; 33 saves to our code so far. If a problem is found, go round again.', p)
+print('ok2')
