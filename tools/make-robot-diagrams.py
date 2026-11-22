@@ -482,4 +482,215 @@ save('wheel-pattern.svg', 900, 470, 'Six designs sorted by their wheels: three s
      'Left group, blue SPIKE wheels: HummerOne Pro, Xbot and YellowBot v1, which all list wheel slipping. Right group, '
      '62.4 mm LEGO wheels: YellowBot v2, Track-X and Boxor, which list no slipping. A coach who switched to 62.4 mm '
      'wheels says the robot stopped slipping on turns.', p)
+
+# K. Mission map and our route -------------------------------------------------
+# Positions are FIRST's wireframe coordinates from robot-game/field-positions.md,
+# in cm from the bottom-left corner of the mat. The routes are a sketch of our
+# runs, not measured paths.
+MS = 4.4                      # px per cm
+MX, MY = 60, 96               # top-left of the mat in the picture
+def mx(x): return MX + x * MS
+def my(y): return MY + (114.3 - y) * MS
+ORANGE = '#dd6b20'; PURPLE = '#6b46c1'
+def colour_arrow_defs():
+    d = ['<defs>']
+    for name, col in (('arG', LEAF), ('arO', ORANGE), ('arB', BLUE), ('arY', GOLD), ('arP', PURPLE)):
+        d.append(f'<marker id="{name}" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" '
+                 f'markerWidth="16" markerHeight="16" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{col}"/></marker>')
+    d.append('</defs>')
+    return ''.join(d)
+def route(pts, col, marker, width=5, dash=None):
+    p_ = ' '.join(f'{mx(x):.1f},{my(y):.1f}' for x, y in pts)
+    da = f' stroke-dasharray="{dash}"' if dash else ''
+    return (f'<polyline points="{p_}" fill="none" stroke="{col}" stroke-width="{width}" stroke-linecap="round" '
+            f'stroke-linejoin="round"{da} marker-end="url(#{marker})"/>')
+W_, H_ = 1000, 760
+p = [colour_arrow_defs(),
+     text(W_/2, 40, 'Our missions and our route', 24, INK, weight='bold'),
+     text(W_/2, 66, 'Start on the left, finish what is close, then carry one attachment and the keystone species to the right.', 16, MUTE)]
+# the mat and its 20 cm wireframe
+p.append(f'<rect x="{mx(0)}" y="{my(114.3)}" width="{200*MS}" height="{114.3*MS}" rx="8" fill="#f7faf6" stroke="{LINE}" stroke-width="2"/>')
+for gx_ in range(20, 200, 20):
+    p.append(f'<line x1="{mx(gx_)}" y1="{my(114.3)}" x2="{mx(gx_)}" y2="{my(0)}" stroke="#e3e9e5" stroke-width="1"/>')
+for gy_ in range(20, 114, 20):
+    p.append(f'<line x1="{mx(0)}" y1="{my(gy_)}" x2="{mx(200)}" y2="{my(gy_)}" stroke="#e3e9e5" stroke-width="1"/>')
+# the three printed black lines (bounding boxes from field-positions.md)
+for cx_, cy_, w_, h_ in ((59.9, 87.7, 30.4, 9.6), (149.8, 89.1, 36.1, 11.1), (97.5, 36.2, 8.3, 12.9)):
+    p.append(f'<line x1="{mx(cx_-w_/2)}" y1="{my(cy_-h_/2)}" x2="{mx(cx_+w_/2)}" y2="{my(cy_+h_/2)}" stroke="{INK}" stroke-width="4" stroke-linecap="round"/>')
+# home areas: quarter circles of radius 48 cm in the bottom corners
+r_ = 48 * MS
+p.append(f'<path d="M{mx(0)},{my(48)} A{r_},{r_} 0 0 1 {mx(48)},{my(0)} L{mx(0)},{my(0)} Z" fill="{REDP}" stroke="{RED}" stroke-width="3"/>')
+p.append(f'<path d="M{mx(200)},{my(48)} A{r_},{r_} 0 0 0 {mx(152)},{my(0)} L{mx(200)},{my(0)} Z" fill="{BLUEP}" stroke="{BLUE}" stroke-width="3"/>')
+p.append(text(mx(15), my(22), 'LEFT', 15, RED, weight='bold'))
+p.append(text(mx(15), my(16), 'HOME', 15, RED, weight='bold'))
+p.append(text(mx(185), my(22), 'RIGHT', 15, BLUE, weight='bold'))
+p.append(text(mx(185), my(16), 'HOME', 15, BLUE, weight='bold'))
+# the three docks
+for nm, x_, y_ in (('Mine dock', 189.1, 102.7), ('Farm dock', 101.2, 64.9), ('City dock', 128.6, 10.2)):
+    p.append(f'<rect x="{mx(x_)-17}" y="{my(y_)-17}" width="34" height="34" rx="5" fill="#ffffff" stroke="{MUTE}" stroke-width="2" stroke-dasharray="4 3"/>')
+    p.append(text(mx(x_), my(y_) + 32, nm, 12, MUTE, weight='bold'))
+# routes, drawn under the mission dots
+p.append(route([(30, 30), (14, 62)], LEAF, 'arG'))                          # phase0-alt: back into the rock
+p.append(route([(16, 66), (58, 55)], LEAF, 'arG'))                          # then the seeds
+p.append(route([(46, 13), (122, 13)], PURPLE, 'arP', 6))                   # phase2: one straight push, drone and City dock
+p.append(route([(118, 5), (46, 5)], PURPLE, 'arP', 3, '8 6'))              # and straight back
+p.append(route([(36, 40), (40, 98)], ORANGE, 'arO', 7))                     # phase3: up to the roots
+p.append(route([(44, 96), (90, 90), (125, 83), (160, 70), (182, 46)], ORANGE, 'arO', 7, '14 8'))  # robo taxi to the right
+p.append(route([(166, 24), (146, 54)], BLUE, 'arB'))                        # Phase 5: window
+p.append(route([(150, 64), (152, 100)], BLUE, 'arB'))                       # leafcutters, fungus
+p.append(route([(168, 100), (188, 82)], BLUE, 'arB'))                       # forest elder
+p.append(route([(178, 40), (184, 92)], GOLD, 'arY', 6))                    # Phase 6: keystone to the Mine dock
+# missions: (label, x, y, status). done / part / skip / not
+# (label, x, y, status, colour of the run that does it)
+missions = [('M01', 88.0, 9.2, 'done', PURPLE), ('M15', 128.6, 10.2, 'done', PURPLE),
+            ('M02', 63.8, 55.1, 'done', LEAF), ('M03', 9.7, 68.0, 'done', LEAF),
+            ('M04', 15.7, 99.0, 'skip', None), ('M05', 40.1, 106.1, 'done', ORANGE),
+            ('M06', 151.3, 106.2, 'done', BLUE), ('M07', 163.7, 106.2, 'done', BLUE),
+            ('M08', 54.3, 106.1, 'not', None), ('M09', 65.9, 106.1, 'not', None),
+            ('M10', 78.3, 102.3, 'not', None), ('M10', 109.2, 77.3, 'not', None),
+            ('M11', 140.2, 60.5, 'done', BLUE), ('M12', 192.0, 76.5, 'part', BLUE),
+            ('M13', 189.1, 102.7, 'done', GOLD)]
+for lab, x_, y_, st, rc in missions:
+    cx_, cy_ = mx(x_), my(y_)
+    if st == 'done':
+        p.append(f'<circle cx="{cx_}" cy="{cy_}" r="17" fill="{rc}" stroke="#ffffff" stroke-width="3"/>')
+        p.append(text(cx_, cy_ + 5, lab[1:], 13, '#ffffff', weight='bold'))
+    elif st == 'part':
+        p.append(f'<circle cx="{cx_}" cy="{cy_}" r="17" fill="#ffffff" stroke="{rc}" stroke-width="4" stroke-dasharray="5 3"/>')
+        p.append(text(cx_, cy_ + 5, lab[1:], 13, rc, weight='bold'))
+    elif st == 'skip':
+        p.append(f'<circle cx="{cx_}" cy="{cy_}" r="17" fill="#ffffff" stroke="{RED}" stroke-width="3"/>')
+        p.append(f'<line x1="{cx_-10}" y1="{cy_-10}" x2="{cx_+10}" y2="{cy_+10}" stroke="{RED}" stroke-width="3"/>')
+        p.append(f'<line x1="{cx_+10}" y1="{cy_-10}" x2="{cx_-10}" y2="{cy_+10}" stroke="{RED}" stroke-width="3"/>')
+    else:
+        p.append(f'<circle cx="{cx_}" cy="{cy_}" r="15" fill="#ffffff" stroke="{LINE}" stroke-width="2.5"/>')
+        p.append(text(cx_, cy_ + 5, lab[1:], 12, MUTE, weight='bold'))
+# keystone species riding the taxi
+p.append(f'<rect x="{mx(112)-34}" y="{my(86)-15}" width="68" height="30" rx="15" fill="{GOLDP}" stroke="{GOLD}" stroke-width="2.5"/>')
+p.append(text(mx(112), my(86) + 5, 'keystone', 13, GOLD, weight='bold'))
+p.append(text(mx(112), my(86) - 24, 'ROBO TAXI', 14, ORANGE, weight='bold'))
+# legend
+ly0 = my(0) + 38
+items = [(INK, 'done', 'Done: coloured by its run'), (BLUE, 'part', 'Part of it (M12)'),
+         (RED, 'skip', 'Skipped on purpose (M04)'), (LINE, 'not', 'Not in our runs')]
+for i, (col, st, lab) in enumerate(items):
+    lx_ = 80 + i * 225
+    if st == 'skip':
+        p.append(f'<circle cx="{lx_}" cy="{ly0}" r="10" fill="#ffffff" stroke="{RED}" stroke-width="2.5"/>')
+    elif st == 'not':
+        p.append(f'<circle cx="{lx_}" cy="{ly0}" r="10" fill="#ffffff" stroke="{LINE}" stroke-width="2.5"/>')
+    elif st == 'part':
+        p.append(f'<circle cx="{lx_}" cy="{ly0}" r="10" fill="#ffffff" stroke="{col}" stroke-width="3" stroke-dasharray="4 2"/>')
+    else:
+        for k, c_ in enumerate((LEAF, PURPLE, ORANGE)):
+            p.append(f'<circle cx="{lx_-22+k*11}" cy="{ly0}" r="7" fill="{c_}" stroke="#ffffff" stroke-width="1.5"/>')
+    p.append(text(lx_ + 18, ly0 + 5, lab, 14, INK, 'start'))
+ly1 = ly0 + 34
+for i, (col, lab) in enumerate(((LEAF, 'phase0-alt: rock, seeds'), (PURPLE, 'phase2: drone, M15'),
+                                (ORANGE, 'phase3: roots, robo taxi'), (BLUE, 'Phase 5: right side'),
+                                (GOLD, 'Phase 6: keystone'))):
+    lx_ = 40 + i * 190
+    p.append(f'<line x1="{lx_}" y1="{ly1}" x2="{lx_+30}" y2="{ly1}" stroke="{col}" stroke-width="6" stroke-linecap="round"/>')
+    p.append(text(lx_ + 40, ly1 + 5, lab, 14, INK, 'start'))
+p.append(text(W_/2, ly1 + 36, 'Routes are a sketch of our runs, not measured paths. Mission spots are from FIRST\'s wireframe.', 13, MUTE))
+open(os.path.join(out, 'mission-route.svg'), 'w').write(svg(W_, H_,
+    'Our missions and our route across the mat',
+    'A map of the mat from above. The left home is bottom left and the right home is bottom right. '
+    'From the left home, phase0-alt does M03 Flip the Rock and M02 Exploding Seeds. phase2 does M01 Drone Survey and '
+    'M15 Biocentric Architecture on the City dock with one straight push, and comes straight back. phase3 does M05 Reaching Roots, '
+    'then drives to the right side as a robo taxi, carrying one attachment and the keystone species. From the right, '
+    'Phase 5 does M11, M06, M07 and part of M12, and Phase 6 takes the keystone species to the Mine dock for M13. '
+    'M04 Lucky Leaves is skipped on purpose. M08, M09, M10 and M14 are not in our runs. '
+    'Routes are a sketch, not measured paths.', ''.join(p)))
+
+# L. HummerOne Pro against our robot -------------------------------------------
+# Facts for HummerOne Pro come from robot-design/chassis-designs-slides.html.
+# The design rules are the ones in robot-design/our-robot-explained.md.
+p = [text(500, 40, 'Why we chose our robot', 24, INK, weight='bold'),
+     text(500, 66, 'HummerOne Pro was the easiest design we looked at. Here is what we did differently, and why.', 16, MUTE)]
+def side_robot(cx, base, flat):
+    g = []
+    if flat:
+        g.append(f'<rect x="{cx-150}" y="{base-70}" width="300" height="62" rx="6" fill="{PALE}" stroke="{LEAF}" stroke-width="5"/>')
+        g.append(text(cx, base - 32, 'flat box, wheels inside', 14, LEAF, weight='bold'))
+        for dx in (-95, 95):
+            g.append(f'<circle cx="{cx+dx}" cy="{base-12}" r="12" fill="{INK}"/>')
+        g.append(f'<rect x="{cx-120}" y="{base-108}" width="240" height="38" rx="6" fill="{GOLDP}" stroke="{GOLD}" stroke-width="3"/>')
+        g.append(text(cx, base - 83, 'attachment sits on pegs', 13, GOLD, weight='bold'))
+    else:
+        g.append(f'<rect x="{cx-110}" y="{base-150}" width="220" height="110" rx="6" fill="#f2f2f2" stroke="{MUTE}" stroke-width="4"/>')
+        g.append(text(cx, base - 92, 'robot body', 14, MUTE, weight='bold'))
+        for dx in (-70, 70):
+            g.append(f'<circle cx="{cx+dx}" cy="{base-28}" r="28" fill="{BLUE}" stroke="{INK}" stroke-width="3"/>')
+        g.append(f'<rect x="{cx+110}" y="{base-120}" width="60" height="50" rx="5" fill="{GOLDP}" stroke="{GOLD}" stroke-width="3"/>')
+        g.append(f'<circle cx="{cx+120}" cy="{base-108}" r="5" fill="{RED}"/><circle cx="{cx+120}" cy="{base-82}" r="5" fill="{RED}"/>')
+        g.append(text(cx + 140, base - 130, 'clip-on', 13, GOLD, weight='bold'))
+    g.append(f'<line x1="{cx-200}" y1="{base}" x2="{cx+200}" y2="{base}" stroke="{LINE}" stroke-width="3"/>')
+    return ''.join(g)
+p.append(text(250, 110, 'HummerOne Pro', 20, MUTE, weight='bold'))
+p.append(text(250, 132, 'one of the six designs we studied', 14, MUTE))
+p.append(side_robot(240, 300, False))
+p.append(text(750, 110, 'Our robot', 20, LEAF, weight='bold'))
+p.append(text(750, 132, 'took the good ideas from all six designs', 14, LEAF))
+p.append(side_robot(750, 300, True))
+p.append(text(500, 330, 'sketches, not to scale', 12, MUTE))
+rows = [('Building it', 'Easiest to build: one kit plus the expansion set', 'good',
+         'More work to build, but it fixes the problems below', 'none'),
+        ('Wheels', 'Blue SPIKE wheels: they slip once an attachment gets heavy', 'bad',
+         'Black grippy wheels, held on both sides by the frame', 'good'),
+        ('Lining up', 'Not one of the box-frame designs', 'bad',
+         'Flat walls: it squares up on the wall and on the lines on the mat', 'good'),
+        ('Changing attachments', 'Simple clip-on attachments', 'none',
+         'Gravity: drop it on the pegs, one move. Last season swaps were slow', 'good')]
+def mark(cx, cy, kind):
+    if kind == 'good':
+        return (f'<circle cx="{cx}" cy="{cy}" r="12" fill="{PALE}" stroke="{LEAF}" stroke-width="2"/>'
+                f'<polyline points="{cx-6},{cy} {cx-1},{cy+5} {cx+7},{cy-5}" fill="none" stroke="{LEAF}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>')
+    if kind == 'bad':
+        return (f'<circle cx="{cx}" cy="{cy}" r="12" fill="{REDP}" stroke="{RED}" stroke-width="2"/>'
+                f'<line x1="{cx-5}" y1="{cy-5}" x2="{cx+5}" y2="{cy+5}" stroke="{RED}" stroke-width="3" stroke-linecap="round"/>'
+                f'<line x1="{cx+5}" y1="{cy-5}" x2="{cx-5}" y2="{cy+5}" stroke="{RED}" stroke-width="3" stroke-linecap="round"/>')
+    return f'<circle cx="{cx}" cy="{cy}" r="12" fill="#ffffff" stroke="{LINE}" stroke-width="2"/>'
+y = 350
+for head, theirs, tk, ours, ok in rows:
+    p.append(f'<rect x="40" y="{y}" width="920" height="84" rx="10" fill="#ffffff" stroke="#e3e9e5" stroke-width="2"/>')
+    p.append(text(60, y + 30, head, 16, INK, 'start', 'bold'))
+    p.append(f'<line x1="{60}" y1="{y+46}" x2="{240}" y2="{y+46}" stroke="#e3e9e5"/>')
+    p.append(mark(92, y + 64, tk))
+    p.append(text(112, y + 69, theirs, 14, MUTE, 'start'))
+    p.append(mark(532, y + 64, ok))
+    p.append(text(552, y + 69, ours, 14, INK, 'start'))
+    y += 96
+open(os.path.join(out, 'robot-compare.svg'), 'w').write(svg(1000, y + 20,
+    'Why we chose our robot: HummerOne Pro against our robot',
+    'Sketched side views of HummerOne Pro and our robot, not to scale, and four rows comparing them. Building it: '
+    'HummerOne Pro is the easiest to build, from one kit plus the expansion set; ours is more work but fixes the '
+    'problems below. Wheels: HummerOne Pro uses blue SPIKE wheels that slip once an attachment gets heavy; ours uses '
+    'black grippy wheels held on both sides by the frame. Lining up: HummerOne Pro is not one of the box-frame designs; '
+    'ours has flat walls that square up on the wall and on the lines on the mat. Changing attachments: HummerOne Pro '
+    'uses simple clip-on attachments; ours drops them onto pegs in one move, because last season swaps were slow.',
+    ARROW_DEFS + ''.join(p)))
+
+
+# M. The gyro correction loop, simple version ---------------------------------
+# For the workshop deck. The full drive_cm flowchart is drive-flowchart.svg.
+p = [text(350, 40, 'How the gyro keeps us straight', 24, INK, weight='bold'),
+     text(350, 66, 'This loop runs about 66 times every second.', 16, MUTE)]
+p.append(node('start', 350, 110, 260, 46, ['drive_cm(30)'], 18))
+p.append(arrow([(350, 133), (350, 163)]))
+p.append(node('step', 350, 195, 420, 60, ['1. Read the gyro', 'How far off straight are we?'], 17))
+p.append(arrow([(350, 225), (350, 255)]))
+p.append(node('step', 350, 287, 420, 60, ['2. Steer back', 'The further off, the harder it steers'], 17))
+p.append(arrow([(350, 317), (350, 347)]))
+p.append(node('ask', 350, 400, 300, 100, ['Gone', 'far enough?'], 17))
+p.append(arrow([(500, 400), (548, 400)], 'yes', 524, 388))
+p.append(node('end', 640, 400, 180, 50, ['Brake. Done.'], 17))
+p.append(arrow([(350, 450), (350, 485)], 'no', 372, 472))
+p.append(node('step', 350, 515, 260, 50, ['3. Wait 15 ms'], 17))
+p.append(arrow([(220, 515), (90, 515), (90, 195), (140, 195)], 'repeat', 60, 360))
+save('gyro-loop.svg', 750, 570, 'How the gyro keeps us straight: the correction loop',
+     'A simple loop. drive_cm(30) starts. 1: read the gyro to see how far off straight we are. 2: steer back, '
+     'harder the further off we are. Then ask: gone far enough? If yes, brake and stop. If no, 3: wait 15 '
+     'milliseconds and repeat from step 1. The loop runs about 66 times every second.', p)
+
 print('ok2')

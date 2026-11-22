@@ -8,6 +8,9 @@ with answers taken from [Our Robot, Explained](our-robot-explained.md) and
 The short slides for the judges are here: [Robot Design slides](presentation-slides.html). Open them
 on a laptop, or print them. Each slide is one page when printed.
 
+To build the slides together, use the [Exceeds workshop deck](exceeds-workshop.pptx).
+It has a template for each slide below, with an Exceeds checklist and speaker notes.
+
 To learn the robot first, use the [class lesson slides](robot-lesson-slides.html).
 They teach both knowledge base pages, one idea per slide. Then do the
 [Robot Design test](robot-design-test.md). Every fact on the judging slides

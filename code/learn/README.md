@@ -27,6 +27,7 @@ toolkit, these pages change with it.
 | 12 | [Write a real mission](12-a-mission.md) | Turn a plan into a mission program |
 | 13 | [Flowcharts, and explaining your code](13-flowcharts-judges.md) | Draw a mission, and answer a judge with a number in it |
 | 14 | [Simulated missions](14-simulated-missions.md) | Score real missions on the mat, and plan a route that avoids wrecking one |
+| 15 | [Test our code: simulator quiz](15-code-quiz.md) | Predict, run and check: drive_cm, face, the yaw, the safety stops, and two simulated missions |
 
 Roughly one lesson per meeting, alongside everything else.
 

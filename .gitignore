@@ -65,3 +65,7 @@ site/
 .venv/
 venv/
 __pycache__/
+
+# Private copies with students' names, made by
+# `python3 tools/make-exceeds-pptx.py --named`. Share by hand, never commit.
+robot-design/private/
