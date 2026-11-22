@@ -26,6 +26,11 @@ Also here: [**Reading the toolkit**](library/toolkit-slides.html), a 20-slide wa
 through `library/toolkit.py` that assumes you have never written a line of code.
 Arrow keys to move between slides.
 
+Looking up a SPIKE command? `code/spike-python-api.txt` in the repo is LEGO's
+own reference for every module (`motor`, `motor_pair`, `runloop` and the rest),
+copied from the SPIKE App so you can search it without the app. It is kept off
+this website because it is LEGO's text.
+
 ## Workflow
 
 1. Design the approach on the mission's page in `robot-game/missions/`.

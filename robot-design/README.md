@@ -10,7 +10,11 @@ to explain it to the judges.
    changed.
 2. Read [How Our Code Is Designed](how-our-code-works.md). It has the
    flowcharts and diagrams of how our code works.
+   In class, the coach teaches both pages with the
+   [class lesson slides](robot-lesson-slides.html).
 3. Then take the [Robot Design test](robot-design-test.md).
+4. Then practise with [Presentation and Q&A](presentation.md): the 5-minute
+   explanation, the [slides](presentation-slides.html), and the questions judges ask.
 
 ## Team workspace
 
@@ -24,6 +28,7 @@ fill in, so read Our Robot, Explained first.
 | [Attachments list](attachments/README.md) | One page per attachment |
 | [BOXOR frame](attachments/boxor-frame.md) | The attachment frame, its gears, and the wiring |
 | [When something breaks](troubleshooting.md) | Fixes for common problems |
+| [Class lesson slides](robot-lesson-slides.html) | 68 slides that teach the whole robot, with check questions after each part |
 | [Six chassis designs](chassis-designs-slides.html) | Ten slides comparing other teams' driving bases. Also in `robot-design/chassis-designs.pptx`; `python3 tools/make-design-pptx.py` rebuilds it |
 
 ## Design principles

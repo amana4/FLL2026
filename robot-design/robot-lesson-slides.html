@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our robot, from the inside: Robot Design class lesson, BIOGLOW</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Same skin as chassis-designs-slides.html and presentation-slides.html.
+     This is the long class deck; presentation-slides.html is the 5-minute
+     version the team shows the judges. */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper:        #f5f5f5;
+    --paper-2:      #ececec;
+    --ink:          #16362b;
+    --muted:        #4a6357;
+    --soft:         #7d9488;
+    --rule:         rgba(22, 54, 43, 0.12);
+    --rule-solid:   rgba(22, 54, 43, 0.28);
+    --accent:       #eb6c36;
+    --accent-tint:  rgba(235, 108, 54, 0.08);
+
+    --font-sans:  'Geist', system-ui, sans-serif;
+    --font-serif: 'Instrument Serif', serif;
+    --font-mono:  'Geist Mono', ui-monospace, monospace;
+  }
+
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Each slide is one screen. Arrow keys / space / PageDown move between them,
+     so the deck presents with no JavaScript. */
+  .slide {
+    min-height: 100vh;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3.5rem 3.5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+
+  h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+
+  .lede {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 62ch;
+    margin-bottom: 1.5rem;
+  }
+
+  .lede strong { color: var(--ink); font-weight: 600; }
+
+  .aside {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: var(--ink);
+    border-left: 2px solid var(--accent);
+    padding-left: 1rem;
+    margin-top: 1.5rem;
+    max-width: 60ch;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--paper-2);
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+  }
+
+  pre {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1rem 1.25rem;
+    border-radius: 6px;
+    overflow-x: auto;
+  }
+  pre .c { color: #9fc3b3; }
+
+  /* Diagrams are the same SVG files the knowledge base pages use, so a fix to
+     a diagram shows up in both places. */
+  img.diagram {
+    width: 100%;
+    height: auto;
+    max-height: 58vh;
+    object-fit: contain;
+    display: block;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: #fff;
+  }
+
+  img.photo {
+    width: 100%;
+    height: auto;
+    max-height: 58vh;
+    object-fit: cover;
+    display: block;
+    border-radius: 6px;
+  }
+
+  .caption { font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; }
+
+  .two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    border: 1px solid var(--rule-solid);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  th {
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+  }
+
+  td { padding: 0.6rem 0.75rem; border-top: 1px solid var(--rule); vertical-align: top; line-height: 1.45; }
+  tbody tr:nth-child(even) td { background: rgba(22, 54, 43, 0.03); }
+  td:first-child { font-weight: 600; white-space: nowrap; }
+  tr.best td { background: var(--accent-tint) !important; }
+  tr.best td:first-child { color: var(--accent); }
+
+  ul.checks { list-style: none; font-size: 1.0625rem; line-height: 1.5; }
+  ul.checks li { padding: 0.55rem 0 0.55rem 2.25rem; position: relative; border-bottom: 1px solid var(--rule); }
+  ul.checks li::before {
+    content: "";
+    position: absolute; left: 0; top: 0.8rem;
+    width: 1rem; height: 1rem;
+    border: 1.5px solid var(--accent);
+    border-radius: 4px;
+  }
+  ul.checks li b { font-weight: 600; }
+  ul.checks li span { color: var(--muted); }
+
+  /* A fact only the team knows. Replace the text inside before judging day,
+     then the dashed box can stay: it just reads as a highlighted number. */
+  .fill {
+    border: 1.5px dashed var(--accent);
+    background: var(--accent-tint);
+    border-radius: 6px;
+    padding: 0.6rem 0.9rem;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .fill .tag {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .big {
+    font-family: var(--font-serif);
+    font-size: clamp(2.5rem, 5vw, 3.75rem);
+    line-height: 1;
+    color: var(--accent);
+  }
+
+  footer {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--soft);
+    letter-spacing: 0.06em;
+    padding: 2rem 3.5rem 3rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    border-top: 1px solid var(--rule);
+  }
+
+  @media (max-width: 800px) {
+    .two { grid-template-columns: 1fr; }
+    .slide { padding: 2.5rem 1.5rem; }
+  }
+
+  @media print {
+    html { scroll-snap-type: none; }
+    .slide { min-height: auto; page-break-after: always; border-bottom: 0; padding: 1.5cm; }
+    body { background: #fff; }
+    img.diagram, img.photo { max-height: 11cm; }
+  }
+
+  /* ---- Teaching deck additions -------------------------------------------
+     This deck is for class, not for the judges. It is long on purpose: one
+     idea per slide, and a "Check yourself" slide at the end of each part. */
+  body { counter-reset: slide; }
+  .slide { counter-increment: slide; position: relative; }
+  .slide::after {
+    content: counter(slide);
+    position: absolute;
+    right: 2rem;
+    bottom: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--soft);
+  }
+
+  .divider { background: var(--ink); color: var(--paper); max-width: none; }
+  .divider .eyebrow { color: #9fc3b3; }
+  .divider h1 { color: var(--paper); max-width: 1180px; }
+  .divider .lede { color: #c9dbd2; }
+  .divider .lede strong { color: var(--paper); }
+  .divider code { background: rgba(255, 255, 255, 0.14); color: var(--paper); }
+  .divider > * { max-width: 1180px; width: 100%; margin-left: auto; margin-right: auto; }
+  .divider .partnum {
+    font-family: var(--font-serif);
+    font-size: clamp(4rem, 9vw, 7rem);
+    line-height: 1;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .three {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--rule-solid);
+    border-radius: 6px;
+    padding: 1rem 1.1rem;
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+  .card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.4rem; }
+  .card p { color: var(--muted); }
+
+  /* Weak answer against strong answer, for the "say it to a judge" slides. */
+  .weak, .strong {
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+  .weak { background: var(--paper-2); color: var(--muted); }
+  .strong { background: #fff; border-left: 3px solid var(--accent); }
+  .weak b, .strong b {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+  .strong b { color: var(--accent); }
+
+  /* Team to answer: questions only our team can answer. Bring the answer to
+     the brainstorm, never make one up. */
+  .team {
+    border: 1.5px solid var(--ink);
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    margin-top: 1rem;
+    background: #fff;
+  }
+  .team .tag {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+  .team ul { margin-left: 1.2rem; line-height: 1.6; }
+
+  /* Check yourself: the answer stays hidden until someone clicks it, so the
+     class can guess first. Works with no JavaScript. */
+  ol.quiz { list-style: none; counter-reset: q; }
+  ol.quiz > li {
+    counter-increment: q;
+    border-bottom: 1px solid var(--rule);
+    padding: 0.6rem 0 0.6rem 2.25rem;
+    position: relative;
+    font-size: 1.05rem;
+    line-height: 1.45;
+  }
+  ol.quiz > li::before {
+    content: counter(q);
+    position: absolute;
+    left: 0;
+    top: 0.6rem;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--accent);
+  }
+  details.answer { margin-top: 0.3rem; }
+  details.answer summary {
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  details.answer p { color: var(--ink); background: var(--accent-tint); padding: 0.5rem 0.75rem; border-radius: 4px; margin-top: 0.3rem; font-size: 0.98rem; }
+
+  ol.steps { margin-left: 1.4rem; font-size: 1.05rem; line-height: 1.7; }
+
+  .agenda { columns: 2; column-gap: 3rem; list-style: none; }
+  .agenda li { break-inside: avoid; padding: 0.45rem 0; border-bottom: 1px solid var(--rule); font-size: 1.05rem; }
+  .agenda a { color: var(--ink); text-decoration: none; }
+  .agenda a:hover { color: var(--accent); }
+  .agenda span { font-family: var(--font-mono); color: var(--accent); margin-right: 0.6rem; }
+
+  .gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .gallery img { width: 100%; height: 220px; object-fit: cover; border-radius: 6px; display: block; }
+
+  @media (max-width: 800px) {
+    .three, .gallery { grid-template-columns: 1fr; }
+    .agenda { columns: 1; }
+  }
+
+  @media print {
+    .divider { background: #fff; color: var(--ink); }
+    .divider h1, .divider .lede, .divider .lede strong { color: var(--ink); }
+    details.answer p { display: block; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ======================================================== TITLE -->
+<section class="slide">
+  <p class="eyebrow">BIOGLOW &middot; Robot Design &middot; Class lesson</p>
+  <h1>Our robot,<br>from the inside</h1>
+  <p class="lede">
+    Everything a judge can ask about our robot: why it is shaped like that, how
+    the attachments work, how the code drives straight and turns exactly, and
+    what we changed after testing. <strong>The judges choose who answers, so all
+    five of us need to know all of it.</strong>
+  </p>
+  <p class="aside">This lesson follows Our Robot, Explained and How Our Code Is Designed. When it is done, take the Robot Design test.</p>
+</section>
+
+<!-- ======================================================== AGENDA -->
+<section class="slide">
+  <p class="eyebrow">How this lesson works</p>
+  <h2>Nine parts. Each one ends with Check yourself.</h2>
+  <p class="lede">On a <strong>Check yourself</strong> slide, everyone guesses first. Then click <strong>Show answer</strong>. Boxes marked <strong>Team to answer</strong> are questions only we can answer. Bring those to the brainstorm.</p>
+  <ul class="agenda">
+    <li><a href="#p1"><span>1</span>How judges score Robot Design</a></li>
+    <li><a href="#p2"><span>2</span>How we chose our design</a></li>
+    <li><a href="#p3"><span>3</span>The driving base</a></li>
+    <li><a href="#p4"><span>4</span>Attachments</a></li>
+    <li><a href="#p5"><span>5</span>The code: the basics</a></li>
+    <li><a href="#p6"><span>6</span>How our code is designed</a></li>
+    <li><a href="#p7"><span>7</span>Missions and runs</a></li>
+    <li><a href="#p8"><span>8</span>Testing and changing things</a></li>
+    <li><a href="#p9"><span>9</span>Talking to the judges</a></li>
+  </ul>
+  <p class="aside">If you don't know an answer, don't make one up. "I don't know, my teammate built that part" is fine. A made-up answer falls apart at the next question.</p>
+</section>
+
+<!-- =================================================================== PART 1 -->
+<section class="slide divider" id="p1">
+  <p class="partnum">1</p>
+  <p class="eyebrow">Part 1</p>
+  <h1>How judges score Robot Design</h1>
+  <p class="lede">The judges use a score sheet called a <strong>rubric</strong>. If we know what is on it, we know what to show them.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 1 &middot; The rubric</p>
+  <h2>Five rows. Each row scores 1 to 4.</h2>
+  <p class="lede">To get <strong>3 points (Accomplished)</strong> on a row, we need to show the things in the right-hand column. Those words are copied exactly from the official rubric.</p>
+  <table>
+    <thead><tr><th>Row</th><th>In plain words</th><th>Official words for 3 points</th></tr></thead>
+    <tbody>
+      <tr><td>IDENTIFY</td><td>We chose our missions on purpose, and we looked for help and ideas.</td><td>Clear evidence of mission strategy. Clear use of building or coding resources to support their mission strategy.</td></tr>
+      <tr><td>DESIGN</td><td>Everyone had ideas, and everyone can build and code.</td><td>Clear evidence that all team members contributed ideas. Clear evidence of building and coding skills in all team members.</td></tr>
+      <tr><td>CREATE</td><td>We can explain what is clever about our attachments and our code.</td><td>Clear explanation of innovative attachments and their purpose. Clear explanation of innovative code and/or sensor use.</td></tr>
+      <tr><td>ITERATE</td><td>We tested again and again, and made the robot better each time.</td><td>Clear evidence of repeated testing of their robot and code. Clear evidence of improvements based on testing.</td></tr>
+      <tr><td>COMMUNICATE</td><td>We can tell the story of what we learned, and we are proud of it.</td><td>Detailed explanation of process and lessons learned. Team clearly shows pride or enthusiasm for their work.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 1 &middot; Two things to notice</p>
+  <h2>The word "all", and the little gear</h2>
+  <div class="two">
+    <div class="card">
+      <h3>Look at the word "all"</h3>
+      <p>The DESIGN row says <strong>all team members</strong>. The judges pick who answers each question. So it is better for all five of us to know our robot than for one person to know everything.</p>
+    </div>
+    <div class="card">
+      <h3>Lines with a gear count twice</h3>
+      <p>Some rubric lines have a gear picture next to them. Those lines count for the <strong>Core Values</strong> award too. Core Values are 25% of the Champion's score. They are about using help and ideas, everyone having ideas, getting better from testing, and both COMMUNICATE lines.</p>
+    </div>
+  </div>
+  <p class="aside">How we work together is being scored here too, not only what we built.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 1 &middot; The judging room</p>
+  <h2>5 minutes to explain, 5 minutes of questions</h2>
+  <p class="lede">From the official Judging Session Flowchart. Robot Design comes straight after the Innovation Project, with the same judges.</p>
+  <table>
+    <thead><tr><th>Part</th><th>Time</th><th>What happens</th></tr></thead>
+    <tbody>
+      <tr><td>Robot Design Team Explanation</td><td>5 minutes</td><td>We explain the robot, the code and our strategy.</td></tr>
+      <tr><td>Robot Design Question &amp; Answer</td><td>5 minutes</td><td>The judges ask questions, and they choose who answers.</td></tr>
+    </tbody>
+  </table>
+  <p class="aside">There is no robot game field in the judging room. We cannot show a mission, so we bring the robot, the attachments, photos and our design log.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 1 &middot; Check yourself</p>
+  <h2>Guess first, then open the answer</h2>
+  <ol class="quiz">
+    <li>Which rubric row asks for "clear evidence of repeated testing of their robot and code"?
+      <details class="answer"><summary>Show answer</summary><p>ITERATE: test, find a problem, change something, test again.</p></details></li>
+    <li>Some Robot Design rubric lines also count toward which other award?
+      <details class="answer"><summary>Show answer</summary><p>Core Values. Those lines have a gear-shaped box. Core Values make up 25% of the Champion's score.</p></details></li>
+    <li>Why is it better for all five of us to know the whole robot?
+      <details class="answer"><summary>Show answer</summary><p>The judges choose who answers. And the DESIGN row asks for evidence about all team members.</p></details></li>
+    <li>Can we show the robot doing a mission in the judging room?
+      <details class="answer"><summary>Show answer</summary><p>No. There is no field in the room. We explain with the robot, photos and the design log.</p></details></li>
+  </ol>
+</section>
+
+<!-- =================================================================== PART 2 -->
+<section class="slide divider" id="p2">
+  <p class="partnum">2</p>
+  <p class="eyebrow">Part 2 &middot; IDENTIFY</p>
+  <h1>How we chose our design</h1>
+  <p class="lede">We did not invent a robot from nothing. We studied <strong>six designs</strong> that other teams had built and tested, and we looked at what went wrong for them.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 2 &middot; Six designs</p>
+  <h2>What each one does well, and what it costs you</h2>
+  <table>
+    <thead><tr><th>Design</th><th>What it does well</th><th>What it costs you</th></tr></thead>
+    <tbody>
+      <tr><td>HummerOne Pro</td><td>Easiest to build. Simple clip-on attachments.</td><td>Wheels slip once an attachment gets heavy.</td></tr>
+      <tr><td>Xbot</td><td>Frame right around the outside, so it balances well. Attachments on top and front.</td><td>The frame uses a lot of LEGO. Wheels can still slip.</td></tr>
+      <tr><td>YellowBot v1</td><td>Box frame lines up against walls. Attachments drop in using gravity.</td><td>Wheels can still slip.</td></tr>
+      <tr><td>YellowBot v2</td><td>Better box frame. Hub sunk down low. Side walls can push things.</td><td>Raised frame needs extra LEGO. Needs 62.4 mm wheels.</td></tr>
+      <tr><td>Track-X</td><td>Sits very low, so it grips. Very accurate and repeatable. Fast swaps.</td><td>Needs 62.4 mm wheels. Open sides, so no walls to line up with.</td></tr>
+      <tr class="best"><td>Boxor</td><td>Newest. Low, accurate, fast to swap, box frame for lining up. Best attachment system.</td><td>Needs 62.4 mm wheels.</td></tr>
+    </tbody>
+  </table>
+  <p class="aside">Boxor is not better because it is newer. It is better because it collected the good ideas from the five designs before it. That is iterating too.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 2 &middot; The pattern we spotted</p>
+  <h2>Sort them by their wheels</h2>
+  <img class="diagram" style="max-height:52vh" src="diagrams/wheel-pattern.svg" alt="Six designs sorted by their wheels. The three on blue SPIKE wheels all list wheel slipping. The three on 62.4 mm LEGO wheels list no slipping.">
+  <p class="aside">The three designs that list slipping all use the blue SPIKE wheels. The three that don't all use 62.4 mm wheels.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 2 &middot; Design rules</p>
+  <h2>Seven rules we took from them</h2>
+  <table>
+    <thead><tr><th>Design rule</th><th>Why it matters</th><th>Our robot</th></tr></thead>
+    <tbody>
+      <tr><td>One base, many attachments</td><td>Every change to the base breaks everything built on it.</td><td>One base, and the BOXOR frame with arms we swap.</td></tr>
+      <tr><td>A box frame lines you up</td><td>Pushed flat against a wall, a box can only sit square.</td><td>Yes: a box with straight walls.</td></tr>
+      <tr><td>Weight low and even</td><td>Weight up high makes it rock. Weight at one end changes the turns.</td><td>The hub lies flat. Team to answer: is the weight even?</td></tr>
+      <tr><td>Hold the wheels straight</td><td>A wheel held on one side bends in under a heavy attachment.</td><td>Yes: the wheels sit inside the frame.</td></tr>
+      <tr><td>Attachments drop on</td><td>A match is 2 minutes 30 seconds. Swapping time is not scoring time.</td><td>Yes: gravity mounting.</td></tr>
+      <tr><td>The gyro does the driving</td><td>Gyro for direction, encoders for distance. Timing is never repeatable.</td><td>Yes: <code>drive_cm</code> and <code>face</code>.</td></tr>
+      <tr><td>Grippy wheels</td><td>The designs with no slipping all use 62.4 mm wheels.</td><td>Our code expects 62.4 mm. Team to answer: check the real wheels.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 2 &middot; Say it to a judge</p>
+  <h2>"What resources did you use?"</h2>
+  <div class="weak"><b>Weak</b>"We looked online."</div>
+  <div class="strong"><b>Strong</b>"Before we built anything, we compared six robot designs other teams had made, and what went wrong for each one. We noticed the three that slipped all used the blue SPIKE wheels. So we took the best ideas, like a box frame and gravity mounting, and built our robot from those."</div>
+  <div class="team">
+    <span class="tag">Team to answer</span>
+    <ul>
+      <li>Which of the six designs is our driving base closest to?</li>
+      <li>Which idea did we take from which design?</li>
+      <li>Which rule did we decide <strong>not</strong> to follow, and why? The slides say "attachments on top and front", but ours is on the back.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 2 &middot; Check yourself</p>
+  <h2>Guess first, then open the answer</h2>
+  <ol class="quiz">
+    <li>The three designs that slipped all had one thing in common. What was it?
+      <details class="answer"><summary>Show answer</summary><p>They all used the blue SPIKE wheels. The three with no slipping use 62.4 mm wheels.</p></details></li>
+    <li>What does "one base, many attachments" mean, and why is it a good rule?
+      <details class="answer"><summary>Show answer</summary><p>Get one driving base reliable, then only build attachments. Every change to the base breaks everything built on it.</p></details></li>
+    <li>Which rubric row does "we studied six designs" help with?
+      <details class="answer"><summary>Show answer</summary><p>IDENTIFY: "clear use of building or coding resources".</p></details></li>
+    <li>Why is Boxor the best of the six?
+      <details class="answer"><summary>Show answer</summary><p>Not because it is newest. It collected the good ideas from the five designs before it.</p></details></li>
+  </ol>
+</section>
+
+<!-- =================================================================== PART 3 -->
+<section class="slide divider" id="p3">
+  <p class="partnum">3</p>
+  <p class="eyebrow">Part 3 &middot; CREATE</p>
+  <h1>The driving base</h1>
+  <p class="lede">The <strong>driving base</strong> is the main part of the robot: the hub, the two wheels and their motors. The attachments go on top of it.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 3 &middot; The shape</p>
+  <h2>A box with straight walls</h2>
+  <div class="two">
+    <img class="diagram" src="diagrams/wall-squaring.svg" alt="Two pictures from above. A robot put down crooked touches the wall with one corner. Pushed flat, the whole side touches the wall and the robot sits square.">
+    <div>
+      <p class="lede">Push a flat wall against another flat wall, and it can only sit one way: <strong>square</strong>.</p>
+      <ul class="checks">
+        <li><b>Every run starts square.</b> <span>Push the robot back against the field wall, and it points the same way every time. No measuring, no code.</span></li>
+        <li><b>It can square up again during a run.</b> <span>It backs gently into a wall or a model, and that pushes it straight.</span></li>
+      </ul>
+      <p class="aside">A robot with round corners or bits sticking out would sit a little differently every time.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 3 &middot; The wheels</p>
+  <h2>The wheels are inside the frame</h2>
+  <p class="lede">You can't see the wheels from the side, because the frame goes around them. That helps in three ways.</p>
+  <div class="three">
+    <div class="card"><h3>The frame touches things</h3><p>When the robot pushes against a wall or a model, the frame touches it, not a wheel. A wheel rubbing on something would steer the robot off course.</p></div>
+    <div class="card"><h3>Nothing gets knocked over</h3><p>The wheels can't catch on a model and knock it over.</p></div>
+    <div class="card"><h3>Held on both sides</h3><p>The motor holds one side and the frame holds the other. A wheel held on one side only can bend inwards under a heavy attachment, and then the robot stops driving straight.</p></div>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 3 &middot; What is plugged in where</p>
+  <h2>Six sockets, A to F</h2>
+  <div class="two">
+    <img class="diagram" src="diagrams/robot-wiring.svg" alt="A map of our robot seen from above. The left wheel motor is on socket F and the right wheel motor is on socket A. The hub is in the middle. The attachment is on the back, with motors on sockets C and E.">
+    <table>
+      <thead><tr><th>Socket</th><th>What is plugged in</th></tr></thead>
+      <tbody>
+        <tr><td>F</td><td>Left wheel motor</td></tr>
+        <tr><td>A</td><td>Right wheel motor</td></tr>
+        <tr><td>C</td><td>Attachment motor (<code>attachment1</code>)</td></tr>
+        <tr><td>E</td><td>Attachment motor (<code>attachment2</code>)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 3 &middot; A good ITERATE story</p>
+  <h2>It took us three tries to get the sockets right</h2>
+  <ol class="steps">
+    <li><b>13 September.</b> We read the sockets off the hub and wrote them into the code.</li>
+    <li><b>20 September.</b> The robot stopped with an error that means "there is no motor in that socket". We tried again, and the wheel motors worked on F and A.</li>
+    <li><b>Later.</b> Someone wrote <code>confirmed :D</code> next to socket E in <code>Phase 5.py</code>.</li>
+  </ol>
+  <p class="aside">A mistake, a test, and a fix. Judges want to hear stories like this one.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 3 &middot; How the robot finds its way</p>
+  <h2>The robot cannot see</h2>
+  <div class="two">
+    <div class="card"><h3>The gyro</h3><p>A sensor inside the hub. It knows which way the robot is <strong>pointing</strong>.</p></div>
+    <div class="card"><h3>The motor encoders</h3><p>They count how far each wheel has turned, so the robot knows how <strong>far</strong> it has driven.</p></div>
+  </div>
+  <p class="lede" style="margin-top:1.5rem">Our robot also had two <strong>colour sensors</strong>, which can follow the black lines on the mat. On 20 September the team decided not to use them, and that code was removed.</p>
+  <p class="aside">The downside: the gyro fixes which way the robot points, but nothing fixes how far it has gone. That is why the robot sometimes backs gently into a wall to square up.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 3 &middot; Say it to a judge</p>
+  <h2>"Why is your robot shaped like that?"</h2>
+  <div class="weak"><b>Weak</b>"It's a box."</div>
+  <div class="strong"><b>Strong</b>"Our robot is a box with flat walls and the wheels inside. When we push it back against the wall, it can only sit square, so every run starts the same way. It can square up on a wall during a run too. And the wheels can't rub on anything and steer us off course."</div>
+  <div class="team">
+    <span class="tag">Team to answer</span>
+    <ul>
+      <li>Which wheels are on the robot? The code expects 62.4 mm. Nobody has measured them yet.</li>
+      <li>Why did we stop using the colour sensors?</li>
+      <li>Where is the heaviest part of the robot? Does it wobble when it stops?</li>
+      <li>Which wall do we push the robot against at the start of each run?</li>
+      <li>Was the robot always a box? Do we have a photo of an earlier version?</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 3 &middot; Check yourself</p>
+  <h2>Guess first, then open the answer</h2>
+  <ol class="quiz">
+    <li>Which sockets are the drive motors plugged into, in our final code?
+      <details class="answer"><summary>Show answer</summary><p>F (left) and A (right). On 20 September the robot stopped with an error until the code used F and A.</p></details></li>
+    <li>What does our robot use to find its way around the field?
+      <details class="answer"><summary>Show answer</summary><p>The gyro and the motor encoders. The team stopped using the colour sensors on 20 September.</p></details></li>
+    <li>Give two reasons why the wheels are inside the frame.
+      <details class="answer"><summary>Show answer</summary><p>Any two of these: the frame touches walls and models, not the wheels. The wheels can't knock a model over. Each wheel is held on both sides, so it can't bend in.</p></details></li>
+    <li>Why does the robot sometimes back into a wall during a run?
+      <details class="answer"><summary>Show answer</summary><p>To square up. The gyro fixes the direction, but nothing fixes how far the robot has gone.</p></details></li>
+  </ol>
+</section>
+
+<!-- =================================================================== PART 4 -->
+<section class="slide divider" id="p4">
+  <p class="partnum">4</p>
+  <p class="eyebrow">Part 4 &middot; CREATE</p>
+  <h1>Attachments</h1>
+  <p class="lede"><strong>Attachments</strong> are the parts we add to the driving base to do the missions, like arms that push, lift or pull.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 4 &middot; The BOXOR frame</p>
+  <h2>One frame, many arms</h2>
+  <div class="two">
+    <div>
+      <img class="photo" src="photos/attachment-1.jpg" alt="The BOXOR frame on the mat, with two black arms. The tan gears near the bottom are the bevel gears.">
+      <p class="caption">The tan gears near the bottom are the bevel gears.</p>
+    </div>
+    <div>
+      <p class="lede">Our attachment frame comes from a published design, the <strong>BOXOR Frame Attachment</strong>.</p>
+      <ul class="checks">
+        <li><b>Bevel gears.</b> <span>Two gears that meet at a corner.</span></li>
+        <li><b>Round the corner.</b> <span>When the motor turns, the gears turn the movement through 90 degrees, and that swings an arm.</span></li>
+        <li><b>Swap the arm.</b> <span>Put a different arm on, and the same frame does a different job.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 4 &middot; Using someone else's design</p>
+  <h2>Starting from a published design is allowed</h2>
+  <p class="lede">The CREATE row says <strong>"original designs or improved on existing ones"</strong>. So we never say "we made it all up ourselves".</p>
+  <div class="weak"><b>Don't say</b>"We invented it."</div>
+  <div class="strong"><b>Say</b>"We started with the BOXOR design, and this is what we changed, and why."</div>
+  <div class="team">
+    <span class="tag">Team to answer</span>
+    <ul><li>What did we change from the BOXOR instructions? Every change is a CREATE answer.</li></ul>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 4 &middot; Gravity mounting</p>
+  <h2>Not clipped, not pinned. Held by its own weight.</h2>
+  <div class="two">
+    <img class="diagram" src="diagrams/gravity-mount.svg" alt="Two side views. The attachment is lowered onto two pegs on the robot, which fit into holes. It sits on the pegs, held by its own weight, and lifts straight off.">
+    <div>
+      <ul class="checks">
+        <li><b>Pegs line it up.</b> <span>Small pegs on the robot fit into holes in the attachment, so it can only go on the right way.</span></li>
+        <li><b>Gravity holds it.</b> <span>Its weight keeps it down. Nothing clamps it.</span></li>
+        <li><b>On or off in one move.</b> <span>No pins to push in, and none to forget when you're in a hurry at the table.</span></li>
+      </ul>
+      <p class="aside">The match clock keeps running while we swap in base. Every second spent swapping is a second the robot is not scoring.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 4 &middot; Where it goes</p>
+  <h2>The attachment is on the back</h2>
+  <p class="lede">That is why the robot drives <strong>backwards</strong> into most models, and why so many distances in the code have a <strong>minus sign</strong>, like <code>drive_cm(-44)</code>.</p>
+  <div class="gallery">
+    <img src="photos/attachment-2.jpg" alt="The BOXOR frame from another side, with two black arms.">
+    <img src="photos/attachment-3.jpg" alt="A frame with a long yellow arm, a black ring and red tips.">
+    <img src="photos/attachment-4.jpg" alt="A long L-shaped arm made of black and yellow beams.">
+    <img src="photos/attachment-5.jpg" alt="A small part built from yellow, blue, green and pink bricks.">
+  </div>
+  <p class="caption">Four of the 11 photos of our final attachments, taken on 8 November. Which mission is each one for?</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 4 &middot; Say it to a judge</p>
+  <h2>"How do you change attachments?"</h2>
+  <div class="weak"><b>Weak</b>"We just put them on."</div>
+  <div class="strong"><b>Strong</b>"We use gravity mounting. Pegs line the attachment up so it can only go on the right way, and its own weight holds it. It goes on or off in one move, so we waste less match time in base."</div>
+  <div class="team">
+    <span class="tag">Team to answer</span>
+    <ul>
+      <li>How many different arms do we have? Which mission uses each one?</li>
+      <li>How long does a swap take? Time it with a stopwatch.</li>
+      <li>How many pegs hold each attachment, and where are they?</li>
+      <li>Has an attachment ever fallen off during a run? What did we change?</li>
+      <li>Why did we put the attachment on the back?</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 4 &middot; Check yourself</p>
+  <h2>Guess first, then open the answer</h2>
+  <ol class="quiz">
+    <li>What does the bevel gear pair in the BOXOR frame do?
+      <details class="answer"><summary>Show answer</summary><p>Turns the movement through 90 degrees, so the motor can swing an arm.</p></details></li>
+    <li>What holds an attachment on our robot?
+      <details class="answer"><summary>Show answer</summary><p>Its own weight. Pegs line it up. Nothing clips or pins it.</p></details></li>
+    <li>Why do so many distances in our code have a minus sign?
+      <details class="answer"><summary>Show answer</summary><p>The attachment is on the back, so the robot drives backwards into most models.</p></details></li>
+    <li>A judge asks "did you design that frame yourselves?" What do you say?
+      <details class="answer"><summary>Show answer</summary><p>"We started from a published design, the BOXOR frame, and this is what we changed." The rubric says "improved on existing ones" is fine.</p></details></li>
+  </ol>
+</section>
+
+<!-- =================================================================== PART 5 -->
+<section class="slide divider" id="p5">
+  <p class="partnum">5</p>
+  <p class="eyebrow">Part 5 &middot; CREATE</p>
+  <h1>The code: the basics</h1>
+  <p class="lede">Why we use Python, what our library is, and the four commands every run uses.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 5 &middot; Why Python</p>
+  <h2>From Word Blocks to Python</h2>
+  <p class="lede">At the start of the season we used <strong>Word Blocks</strong>, the drag-and-drop blocks in the SPIKE app. Then we moved to <strong>Python</strong>, which is typed code.</p>
+  <div class="two">
+    <div class="card"><h3>A head start</h3><p>Last year's team left us good Python code to start from.</p></div>
+    <div class="card"><h3>We can see every change</h3><p>With Python, git shows exactly which line changed, and when.</p></div>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 5 &middot; Our library</p>
+  <h2>advanced.py: commands we wrote once</h2>
+  <p class="lede">A <strong>library</strong> is a set of commands we wrote once and use in every program. Ours started as a copy of a Word Blocks library called "Advanced Coding 26".</p>
+  <div class="two">
+    <div>
+      <p class="big">11 bugs</p>
+      <p class="lede">When the team turned the blocks into Python, they found <strong>eight</strong> just by reading the blocks, and <strong>three more</strong> by testing on the robot. They fixed all eleven.</p>
+    </div>
+    <ul class="checks">
+      <li><b>Pi was wrong.</b> <span>The blocks used 3.146 for pi. The real value starts 3.14159.</span></li>
+      <li><b>Waiting forever.</b> <span>In the line-following blocks, if the robot missed the line once, it would wait for it forever and sit still for the rest of the match.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 5 &middot; The main commands</p>
+  <h2>Four commands do almost everything</h2>
+  <table>
+    <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>init_robot(default_speed=500)</code></td><td>Starts the program. It resets the gyro to zero, so the way the robot points at the start becomes "base".</td></tr>
+      <tr><td><code>drive_cm(30)</code></td><td>Drives 30 cm forwards. It speeds up gently, slows down gently, and uses the gyro to stay straight. <code>drive_cm(-30)</code> drives backwards.</td></tr>
+      <tr><td><code>face(90)</code></td><td>Turns until the robot points 90 degrees away from base.</td></tr>
+      <tr><td><code>motor.run_for_degrees(attachment2, -380, 1000)</code></td><td>Turns an attachment motor 380 degrees backwards, at speed 1000.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 5 &middot; Measuring the real robot</p>
+  <h2>Centimetres, and the calibration line</h2>
+  <div class="two">
+    <div class="card">
+      <h3>Centimetres, not millimetres</h3>
+      <p>Word Blocks used millimetres. Our Python uses centimetres. So <code>.Forward 300</code> in blocks is the same as <code>drive_cm(30)</code> in Python.</p>
+    </div>
+    <div class="card">
+      <h3><code>set_calibration_scale(179/180)</code></h3>
+      <p>We asked the robot to drive 180 cm, and it drove 179 cm. This line fixes every distance to match our real robot. That is what <strong>calibration</strong> means: measure the real robot, then change the code to match.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 5 &middot; Check yourself</p>
+  <h2>Guess first, then open the answer</h2>
+  <ol class="quiz">
+    <li>How far does <code>drive_cm(30)</code> drive?
+      <details class="answer"><summary>Show answer</summary><p>30 cm. Word Blocks used millimetres, so <code>.Forward 300</code> in blocks is <code>drive_cm(30)</code>.</p></details></li>
+    <li>Why do most programs have <code>set_calibration_scale(179/180)</code>?
+      <details class="answer"><summary>Show answer</summary><p>On our mat the robot drove 179 cm when asked for 180, so every distance is adjusted to match.</p></details></li>
+    <li>What does <code>init_robot</code> do to the gyro, and why does that matter?
+      <details class="answer"><summary>Show answer</summary><p>It resets the gyro to zero. The way the robot points at the start becomes "base", and every <code>face</code> turn is measured from base.</p></details></li>
+    <li>Name one bug we found in the Word Blocks library.
+      <details class="answer"><summary>Show answer</summary><p>Pi was 3.146 instead of 3.14159. Or: the line-following blocks could wait for a line forever.</p></details></li>
+  </ol>
+</section>
+
+<!-- =================================================================== PART 6 -->
+<section class="slide divider" id="p6">
+  <p class="partnum">6</p>
+  <p class="eyebrow">Part 6 &middot; CREATE</p>
+  <h1>How our code is designed</h1>
+  <p class="lede">Most teams can say "we used the gyro". Fewer can show <strong>how</strong> their code uses it, and why it is built that way. This part is how we do that.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 6 &middot; Layers</p>
+  <h2>Our code is built in layers, like floors in a building</h2>
+  <div class="two">
+    <img class="diagram" src="diagrams/code-layers.svg" alt="Three layers. The run programs say what to do. Our library, advanced.py, says how to do it. The SPIKE hub turns the motors and measures with the gyro and encoders.">
+    <div>
+      <ul class="checks">
+        <li><b>Run programs say what.</b> <span>For example <code>await drive_cm(-44)</code>, then <code>await face(90)</code>.</span></li>
+        <li><b>The library says how.</b> <span>How to speed up, steer with the gyro, and stop in the right place.</span></li>
+        <li><b>The hub does it.</b> <span>It turns the motors and reads the gyro.</span></li>
+      </ul>
+      <p class="aside">We write the hard part once. We fixed the turns so they check again after braking, and every turn in every run got more accurate at once.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 6 &middot; Getting the library onto the robot</p>
+  <h2>One library, copied in by a tool</h2>
+  <div class="two">
+    <img class="diagram" src="diagrams/build-flow.svg" alt="advanced.py is checked by 34 checks. If they pass, build-mission.py copies the library into the top part of each run file, above a marker line. The mission code below the line is never touched. Then the file goes onto the hub.">
+    <div>
+      <p class="lede" style="margin-bottom:0.75rem"><strong>The problem.</strong> The SPIKE app runs one file at a time, and one file cannot load another. So every run needs its own copy of the library.</p>
+      <p class="lede" style="margin-bottom:0.75rem"><strong>Copying by hand goes wrong.</strong> One file once said the drive motors were on "A (left), E (right)". The code below it used F and A.</p>
+      <p class="lede" style="margin-bottom:0.75rem"><strong>Our fix.</strong> <code>tools/build-mission.py</code> copies the library in, above a marker line. It never touches the mission below:</p>
+<pre># ===== MISSION CODE BELOW. THE GENERATOR DOES NOT TOUCH THIS =====</pre>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 6 &middot; Driving straight</p>
+  <h2>What <code>drive_cm</code> does, step by step</h2>
+  <img class="diagram" style="max-height:62vh" src="diagrams/drive-flowchart.svg" alt="Flowchart of drive_cm. It refuses distances longer than the mat, works out the speed, then loops: gone far enough, then brake; otherwise pick the speed, read the gyro, stop if more than 45 degrees off, steer the other way, wait 15 milliseconds.">
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 6 &middot; Driving straight</p>
+  <h2>Steering like riding a bike</h2>
+  <p class="lede">Drift a little left, steer a little right. Drift a lot, steer more. <code>drive_cm</code> does this about <strong>66 times every second</strong>. These two lines do it:</p>
+<pre>error = _wrap180(_yaw_cw())
+trim = -(kp * error + kd * (error - last_error))</pre>
+  <div class="three" style="margin-top:1.25rem">
+    <div class="card"><h3><code>error</code></h3><p>How far the robot is off straight, in degrees.</p></div>
+    <div class="card"><h3><code>kp * error</code></h3><p>Steers back. The further off it is, the harder it steers.</p></div>
+    <div class="card"><h3><code>kd * (error - last_error)</code></h3><p>Looks at how fast the error is changing, and calms the steering, so the robot doesn't wiggle.</p></div>
+  </div>
+  <p class="aside">The minus sign at the front makes it steer against the mistake. A comment in our code says that without it, "the robot spirals instead of driving".</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 6 &middot; Driving straight</p>
+  <h2>Speeding up and slowing down gently</h2>
+  <div class="two">
+    <img class="diagram" src="diagrams/speed-ramp.svg" alt="Graph of speed along drive_cm(-44). Speed rises from 262 to 500 over the first 10 cm, holds at 500, then falls back to 262 over the last 10 cm. It brakes about 1.2 cm early.">
+    <div>
+      <ul class="checks">
+        <li><b>Start at full speed, and the wheels slip.</b> <span>So it speeds up over the first 10 cm.</span></li>
+        <li><b>Stop from full speed, and it skids past.</b> <span>So it slows down over the last 10 cm.</span></li>
+        <li><b>It brakes a little early.</b> <span>About 1.2 cm early on this drive. The roll after braking carries it onto the mark.</span></li>
+      </ul>
+      <p class="aside">This is called a ramp.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 6 &middot; Turning exactly</p>
+  <h2>Why we use <code>face</code></h2>
+  <div class="two">
+    <img class="diagram" src="diagrams/face-square.svg" alt="Two paths round a square. Turning 90 degrees each time ends 17 degrees off, because the small mistakes add up. Using face ends about 1 degree off.">
+    <div>
+      <p class="lede">Imagine you turn, and you are one degree off. If the next turn starts from there, you are still one degree off, and the mistakes <strong>add up</strong>.</p>
+      <p class="lede"><code>face</code> always measures from <strong>base</strong>, the way the robot pointed at the start. A small mistake in one turn is not passed on to the next.</p>
+      <p class="aside">Round a square with face: about 1 degree off. Without it: 17 degrees off.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 6 &middot; Turning exactly</p>
+  <h2>Inside <code>face</code>: P, I and D</h2>
+  <div class="two">
+    <img class="diagram" src="diagrams/face-flowchart.svg" alt="Flowchart of face. It works out the error. If under 1 degree, it brakes, waits, and checks again; if it rolled past it goes again, otherwise done. If not under 1 degree, it works out the turning speed, spins the wheels opposite ways, waits 15 milliseconds and loops.">
+    <div>
+      <p class="lede" style="margin-bottom:1rem"><code>face</code> works out the turning speed in three parts. Grown-ups call this <strong>PID</strong>.</p>
+      <table>
+        <thead><tr><th>Part</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td>P: Proportional</td><td>Far from the target: turn fast. Close: turn slowly.</td></tr>
+          <tr><td>I: Integral</td><td>Stuck a little short for a while? Push a little more.</td></tr>
+          <tr><td>D: Derivative</td><td>Closing in fast? Ease off, so it doesn't swing past.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 6 &middot; Turning exactly</p>
+  <h2>Two more details make the turn accurate</h2>
+  <div class="two">
+    <div class="card">
+      <h3>A minimum speed: 126</h3>
+      <p>Below 126, the wheels just buzz and don't move. So the turn always pushes at least that hard. In the library it is <code>TURN_MIN = 126</code>.</p>
+    </div>
+    <div class="card">
+      <h3>Check again after braking</h3>
+      <p>Our robot rolls about <strong>2.4 degrees</strong> after the brakes go on. So <code>face</code> waits 0.15 seconds, looks at the gyro again, and fixes the roll. It can do this up to two more times.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 6 &middot; Measure, then decide</p>
+  <h2>Why we turn with the gyro</h2>
+  <p class="lede">The old turn just counted how far the wheels turned. The team timed and measured both:</p>
+  <table>
+    <thead><tr><th></th><th>Time</th><th>How far off</th></tr></thead>
+    <tbody>
+      <tr><td>Old turn (counting wheels)</td><td>1.54 seconds</td><td>4.26 degrees</td></tr>
+      <tr class="best"><td>Gyro turn</td><td>1.18 seconds</td><td>0.58 degrees</td></tr>
+    </tbody>
+  </table>
+  <p class="aside">The gyro turn was faster and more accurate, so we deleted the old one. We decided with numbers, not opinions.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 6 &middot; Two gyro bugs we found</p>
+  <h2>The gyro surprised us twice</h2>
+  <div class="two">
+    <div class="card">
+      <h3><code>YAW_SIGN = -1</code> (20 September)</h3>
+      <p>This line tells the code which way the gyro counts. Ours counts up when the robot turns anticlockwise. We found out when <code>drive_cm(-44)</code> should have driven backwards, but the robot spun round on the spot. The Word Blocks had it the wrong way round.</p>
+    </div>
+    <div class="card">
+      <h3>Past 180 (26 September)</h3>
+      <p>When the gyro goes past 180, it jumps to -179. Some turns spun for 30 seconds. The fix squashes every angle into -180 to 180:</p>
+<pre>def _wrap180(a):
+    """Squash any angle into -180 to 180,
+    so 350 becomes -10."""
+    return (a + 180.0) % 360.0 - 180.0</pre>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 6 &middot; Doing two things at once</p>
+  <h2>What happens if you leave out <code>await</code></h2>
+  <p class="lede"><code>await</code> means "wait until this is finished before going on". Leave it out, and the robot starts that action and goes straight on to the next line. This is the end of <code>phase0-alt.py</code>:</p>
+<pre>await motor.run_for_degrees(attachment2, 200, 1000)   <span class="c"># lift the arm, and wait</span>
+motor.run_for_degrees(attachment2, 180, 1100)         <span class="c"># start lifting more, don't wait</span>
+await drive_cm(35, velocity=1100)                     <span class="c"># drive home while the arm moves</span></pre>
+  <p class="aside">The arm finishes lifting while the robot drives home. phase3.py does the same. A match is only 2 minutes 30 seconds, so every second counts.</p>
+  <div class="team">
+    <span class="tag">Team to answer</span>
+    <ul><li>How much time does this save? Time the run with and without <code>await</code>.</li><li>Who came up with this idea?</li></ul>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 6 &middot; A whole run as a flowchart</p>
+  <h2><code>phase0-alt.py</code> without reading any code</h2>
+  <img class="diagram" style="max-height:60vh" src="diagrams/run-phase0-alt.svg" alt="Flowchart of phase0-alt.py: start in base, set up, M03 Flip the Rock, M02 Exploding Seeds, then the arm lifts while the robot drives home.">
+  <p class="aside">A flowchart lets a judge see a whole run without reading code. Draw it before you write the code, and the code is easier to write.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 6 &middot; Your turn</p>
+  <h2>Draw the flowchart for <code>Phase 6.py</code></h2>
+  <p class="lede">This is the Keystone Species run, the shortest one. Write one step on each line, in words. Then open the answer.</p>
+<pre>await drive_cm (-75, 1100)
+await face (44)
+await motor.run_for_degrees(port.E,-220,1100)
+await face (0)
+await drive_cm (75,1100)</pre>
+  <details class="answer" style="margin-top:1rem"><summary>Show answer</summary>
+    <p>Start in base. Drive 75 cm backwards. Turn to face 44 degrees from base. Turn the arm on socket E 220 degrees backwards: that does M13 Keystone Species. Turn back to face 0, the way we started. Drive 75 cm forwards, back to base. End.</p>
+  </details>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 6 &middot; Safety stops</p>
+  <h2>Our library watches for trouble</h2>
+  <p class="lede">A robot that goes wrong in a match can knock over models and lose points. So our code stops early.</p>
+  <table>
+    <thead><tr><th>What goes wrong</th><th>What the code does</th><th>Why we added it</th></tr></thead>
+    <tbody>
+      <tr><td>A distance longer than the mat (200 cm)</td><td>Refuses, and says ".Forward 300 is drive_cm(30)"</td><td>Word Blocks use millimetres. Copying 300 across would ask for 3 metres.</td></tr>
+      <tr><td>A straight drive gets more than 45 degrees off</td><td>Brakes, and stops with an error</td><td>On 20 September a wrong setting made the robot spin on the spot, right off the table.</td></tr>
+      <tr><td>A turn gets further from its target</td><td>Brakes, and stops with an error</td><td>It is turning the wrong way.</td></tr>
+      <tr><td>A drive or turn takes more than 8 seconds</td><td>Gives up and goes on</td><td>The robot is stuck. Waiting wastes match time.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 6 &middot; How we test our code</p>
+  <h2>The cheap, fast way first. The real robot last.</h2>
+  <img class="diagram" style="max-height:44vh" src="diagrams/test-pipeline.svg" alt="Four steps: pretend robot in the browser, 34 automatic checks, the real mat, save in git. If a problem is found, go round again.">
+  <ol class="steps" style="margin-top:1rem">
+    <li><b>Pretend robot.</b> The lessons run our code on a pretend mat in the browser.</li>
+    <li><b>Automatic checks.</b> <code>tools/check-library.py</code> runs 34 checks in a few seconds. One checks that "a wrong YAW_SIGN stops instead of spinning".</li>
+    <li><b>The real mat.</b> Run it, measure it, change a number.</li>
+    <li><b>Save in git.</b> Every change is saved with a note saying what changed and why. 33 saves so far.</li>
+  </ol>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 6 &middot; Check yourself</p>
+  <h2>Guess first, then open the answer</h2>
+  <ol class="quiz">
+    <li>Our code is built in layers. What does the library, <code>advanced.py</code>, do?
+      <details class="answer"><summary>Show answer</summary><p>Says how to do each move: speed up, steer with the gyro, stop on the mark. The run programs say what to do.</p></details></li>
+    <li>Why does every run program carry its own copy of the library?
+      <details class="answer"><summary>Show answer</summary><p>The SPIKE app cannot load one file from another. <code>build-mission.py</code> copies it in above the marker line.</p></details></li>
+    <li>During <code>drive_cm</code>, the robot drifts 5 degrees to the left. What does the code do?
+      <details class="answer"><summary>Show answer</summary><p>Steers back to the right. The further off it is, the harder it steers. It only stops if it gets more than 45 degrees off.</p></details></li>
+    <li>Why does <code>face</code> check the gyro again after braking?
+      <details class="answer"><summary>Show answer</summary><p>The robot rolls about 2.4 degrees after braking. <code>face</code> waits 0.15 seconds, looks again, and fixes it.</p></details></li>
+    <li>What happens if you leave out <code>await</code> before an arm command?
+      <details class="answer"><summary>Show answer</summary><p>The arm starts moving and the next line starts at once, so both happen together.</p></details></li>
+    <li>What does <code>YAW_SIGN = -1</code> tell the code?
+      <details class="answer"><summary>Show answer</summary><p>Which way the gyro counts when the robot turns. Ours counts up when it turns anticlockwise.</p></details></li>
+  </ol>
+</section>
+
+<!-- =================================================================== PART 7 -->
+<section class="slide divider" id="p7">
+  <p class="partnum">7</p>
+  <p class="eyebrow">Part 7 &middot; IDENTIFY</p>
+  <h1>Missions and runs</h1>
+  <p class="lede">A <strong>run</strong> is one trip from base onto the field and back. Our final programs are in <code>code/Phases/Final/</code>.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 7 &middot; Our runs</p>
+  <h2>What each program does</h2>
+  <table>
+    <thead><tr><th>Program</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>phase0.py</code> and <code>phase0-alt.py</code></td><td><b>M03 Flip the Rock</b>: backs 44 cm into the rock. Then <b>M02 Exploding Seeds</b>: turns, backs up, and uses the attachment. <code>phase0-alt.py</code> also straightens up after hitting the rock.</td></tr>
+      <tr><td><code>phase1.py</code> and <code>phase2.py</code></td><td>Right now these are copies of <code>phase0-alt.py</code>. Ask the coach.</td></tr>
+      <tr><td><code>phase3.py</code></td><td>Turns to face "the root", lowers the attachment, and drives back while lifting it: <b>M05 Reaching Roots</b>. Then it drives across to the right side.</td></tr>
+      <tr><td><code>Phase 5.py</code></td><td>Four jobs in one run: "Pull", "open door", "ant" and "Tree support". Then back to base.</td></tr>
+      <tr><td><code>Phase 6.py</code></td><td><b>M13 Keystone Species</b>, then back to base.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 7 &middot; Choosing missions</p>
+  <h2>FIRST's advice, and a strong reason to skip</h2>
+  <div class="two">
+    <div>
+      <p class="lede" style="margin-bottom:0.75rem">FIRST says pick missions that:</p>
+      <ul class="checks">
+        <li><b>Need simple moves</b> <span>like push, pull or lift.</span></li>
+        <li><b>Are close to base</b> <span>where the robot starts.</span></li>
+        <li><b>Are easy to get home from.</b></li>
+      </ul>
+    </div>
+    <div>
+      <div class="weak"><b>Weak</b>"It was too hard."</div>
+      <div class="strong"><b>Strong</b>"It was only 10 points and took 40 seconds."</div>
+    </div>
+  </div>
+  <div class="team">
+    <span class="tag">Team to answer</span>
+    <ul>
+      <li>The <code>phase0.py</code> notes say "Missions 3, 2 and 1", but the code only does 3 and 2. Does the robot also do M01 Drone Survey?</li>
+      <li>Which mission numbers are "Pull", "open door", "ant" and "Tree support"?</li>
+      <li>Which missions did we skip, and why? Why did we group them into runs this way? What is our best score?</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 7 &middot; Check yourself</p>
+  <h2>Guess first, then open the answer</h2>
+  <ol class="quiz">
+    <li>Which two missions does <code>phase0-alt.py</code> do, in which order?
+      <details class="answer"><summary>Show answer</summary><p>M03 Flip the Rock first, then M02 Exploding Seeds.</p></details></li>
+    <li>Which mission does <code>Phase 6.py</code> do?
+      <details class="answer"><summary>Show answer</summary><p>M13 Keystone Species.</p></details></li>
+    <li>Which mission does <code>phase3.py</code> do?
+      <details class="answer"><summary>Show answer</summary><p>M05 Reaching Roots.</p></details></li>
+    <li>A judge asks why we skipped a mission. What makes an answer strong?
+      <details class="answer"><summary>Show answer</summary><p>Numbers: points, time, or risk. "It was only 10 points and took 40 seconds" beats "it was too hard".</p></details></li>
+  </ol>
+</section>
+
+<!-- =================================================================== PART 8 -->
+<section class="slide divider" id="p8">
+  <p class="partnum">8</p>
+  <p class="eyebrow">Part 8 &middot; ITERATE</p>
+  <h1>Testing and changing things</h1>
+  <p class="lede">The ITERATE row wants to see that we tested, found problems, and fixed them. Git keeps a record of every change, so we can see our story.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 8 &middot; Our season</p>
+  <h2>What happened, and when</h2>
+  <table>
+    <thead><tr><th>When</th><th>What happened</th></tr></thead>
+    <tbody>
+      <tr><td>13 Sep</td><td>Fixed the wrong sockets in the code. Found our pretend mat on the computer was 236 cm wide, but the real mat is 200 cm.</td></tr>
+      <tr><td>20 Sep</td><td>Found the gyro counted the other way (<code>YAW_SIGN</code>). Found the wheel motors were on F and A. Stopped using the colour sensors.</td></tr>
+      <tr><td>26 Sep</td><td>Fixed a bug when the gyro goes past 180. It jumps to -179, and some turns spun for 30 seconds.</td></tr>
+      <tr><td>10 to 11 Oct</td><td>Wrote the first run programs. Fixed the curved turn, then tuned the paths.</td></tr>
+      <tr><td>25 to 31 Oct</td><td>Wrote programs for the right side of the field, including Keystone Species.</td></tr>
+      <tr><td>1 Nov</td><td>Wrote the first versions of the final programs.</td></tr>
+      <tr><td>7 to 13 Nov</td><td>Tuned the final programs.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 8 &middot; Tuning you can see</p>
+  <h2>Every <code>#was</code> is a test that changed a number</h2>
+  <p class="lede">Lots of lines in our code have a note like <code>#was 60</code>. Each one is a number someone changed after a test run. Some from <code>Phase 5.py</code>:</p>
+<pre>await drive_cm(14) #was 12
+await face(-62) #was 60
+await drive_cm(-28) #was 30
+motor.run_for_degrees(port.C,360,1000) #was 350</pre>
+  <div class="team">
+    <span class="tag">Team to answer</span>
+    <ul><li>Pick one <code>#was</code> line. Who changed it, and what went wrong before?</li></ul>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 8 &middot; A fix from testing</p>
+  <h2>The rock knocked us crooked</h2>
+  <div class="two">
+    <img class="diagram" src="diagrams/iterate-loop.svg" alt="A loop of four steps: test it, find a problem, change something, test again. The example is M03: the bump knocks the robot crooked, so we added await face(0).">
+    <div>
+      <p class="lede">In M03, the robot backs into the rock. The bump knocks it a little crooked. So <code>phase0-alt.py</code> adds <code>await face(0)</code> right after the bump, to straighten up.</p>
+      <p class="lede">The note in the code says <strong>"Straighten post collision before backing off for accuracy"</strong>.</p>
+      <p class="aside">We tested, found a problem, and fixed it. That is exactly what ITERATE means.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 8 &middot; What we still need</p>
+  <h2>Numbers turn "it works" into proof</h2>
+  <p class="lede">Our <b>design log</b> only has two entries, both from September. Everything since then is in git and in our memories. We will write it up at the brainstorm.</p>
+  <div class="team">
+    <span class="tag">Team to answer</span>
+    <ul>
+      <li>How often does each run work? For example, "8 out of 10 times".</li>
+      <li>What is the biggest change we made to the robot itself, not the code? Do we have a photo of how it looked before?</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 8 &middot; Check yourself</p>
+  <h2>Guess first, then open the answer</h2>
+  <ol class="quiz">
+    <li>In <code>phase0-alt.py</code>, why does the robot run <code>face(0)</code> straight after backing into the rock?
+      <details class="answer"><summary>Show answer</summary><p>Hitting the rock knocks the robot crooked, so it straightens up before it drives on.</p></details></li>
+    <li>What does a <code>#was 60</code> note in our code tell a judge?
+      <details class="answer"><summary>Show answer</summary><p>That someone tested the run, and changed that number from 60 after the test. It is evidence of repeated testing.</p></details></li>
+    <li>What did we find on 26 September?
+      <details class="answer"><summary>Show answer</summary><p>When the gyro goes past 180 it jumps to -179, and some turns spun for 30 seconds. We fixed it.</p></details></li>
+    <li>"It mostly works" or "it worked 8 out of 10 times". Which is better, and why?
+      <details class="answer"><summary>Show answer</summary><p>"8 out of 10". A number shows we measured.</p></details></li>
+  </ol>
+</section>
+
+<!-- =================================================================== PART 9 -->
+<section class="slide divider" id="p9">
+  <p class="partnum">9</p>
+  <p class="eyebrow">Part 9 &middot; COMMUNICATE</p>
+  <h1>Talking to the judges</h1>
+  <p class="lede">Knowing the robot is half of it. The other half is saying it clearly, in your own words.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 9 &middot; Rules for the room</p>
+  <h2>Four rules</h2>
+  <div class="two">
+    <div class="card"><h3>Two or three sentences, then stop</h3><p>The judge will ask more if they want more.</p></div>
+    <div class="card"><h3>"I don't know" is fine</h3><p>"I don't know, but Kid 2 built that, and can tell you." A made-up answer falls apart at the next question.</p></div>
+    <div class="card"><h3>Talk about what went wrong</h3><p>Judges score iterating. A problem we fixed is worth more than a story with no problems.</p></div>
+    <div class="card"><h3>Everyone talks</h3><p>The rubric asks about all team members. One person answering everything costs points, however good the answers are.</p></div>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 9 &middot; Weak or strong?</p>
+  <h2>The strong answer says how, and gives a number</h2>
+  <p class="lede" style="margin-bottom:0.75rem"><b>"How do you make it drive straight?"</b></p>
+  <div class="weak"><b>Weak</b>"We use the gyro."</div>
+  <div class="strong"><b>Strong</b>"About 66 times a second, our drive command reads the gyro to see how far off straight it is, and steers the other way. The further off, the harder it steers. It also speeds up and slows down gently, so the wheels don't slip and it doesn't overshoot."</div>
+  <p class="lede" style="margin:1rem 0 0.75rem"><b>"How do you get consistent turns?"</b></p>
+  <div class="weak"><b>Weak</b>"We turn 90 degrees."</div>
+  <div class="strong"><b>Strong</b>"Our turns use the gyro and measure every direction from where the robot started, so mistakes don't add up. The turn slows down as it gets close, and after braking it checks the gyro again, because our robot rolls about 2 degrees past."</div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 9 &middot; Weak or strong?</p>
+  <h2>The strong answer tells a true story</h2>
+  <p class="lede" style="margin-bottom:0.75rem"><b>"What happens if something goes wrong?"</b></p>
+  <div class="weak"><b>Weak</b>"We try again."</div>
+  <div class="strong"><b>Strong</b>"Our code watches for trouble. If the robot gets more than 45 degrees off course, it stops, instead of spinning off the table. We added that after it really spun off the table in testing, on 20 September."</div>
+  <p class="lede" style="margin:1rem 0 0.75rem"><b>"How do you know your code works?"</b></p>
+  <div class="weak"><b>Weak</b>"We tried it."</div>
+  <div class="strong"><b>Strong</b>"We test in steps. First on a pretend robot in the browser, then with 34 automatic checks, then on the real mat. Every change is saved in git with a note, so we can see what we changed and go back if it gets worse."</div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Part 9 &middot; Your turn</p>
+  <h2>Explain our robot in three sentences</h2>
+  <p class="lede">Everyone writes their own. Read them out. Which one would a judge remember?</p>
+  <details class="answer"><summary>Show one example</summary>
+    <p>"It's a box-shaped base that squares up on walls, with attachments that drop on by gravity. It steers with the gyro and measures every turn from where it started, so mistakes don't add up. We tested every run again and again, and every #was in our code is a fix from a test."</p>
+  </details>
+  <p class="aside">Don't learn the example by heart. Learn why it is strong: it says what is clever, how it works, and how we tested it.</p>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">For the brainstorm</p>
+  <h2>What we don't know yet</h2>
+  <p class="lede">The knowledge base cannot answer these. Only we can. Write your answer down, and say "I don't know" if that is true.</p>
+  <div class="two">
+    <div class="team" style="margin-top:0">
+      <span class="tag">Team to answer: the robot</span>
+      <ul>
+        <li>Which design is ours closest to?</li>
+        <li>Which wheels, and why?</li>
+        <li>Why did we stop using the colour sensors?</li>
+        <li>What did we change from BOXOR?</li>
+        <li>How long does a swap take?</li>
+        <li>Why is the attachment on the back?</li>
+      </ul>
+    </div>
+    <div class="team" style="margin-top:0">
+      <span class="tag">Team to answer: the season</span>
+      <ul>
+        <li>Mission numbers for the four <code>Phase 5.py</code> jobs.</li>
+        <li>Which missions we skipped, and why.</li>
+        <li>How often each run works.</li>
+        <li>Who built what, and who coded what.</li>
+        <li>The hardest bug, and how we found it.</li>
+        <li>What we are most proud of.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <p class="eyebrow">Next</p>
+  <h2>Take the test, then practise</h2>
+  <ol class="steps">
+    <li>Take the <b>Robot Design test</b>. Keep Our Robot, Explained open in another tab.</li>
+    <li>Bring your Team to answer answers to the brainstorm.</li>
+    <li>Practise the 5-minute explanation and the judge questions on <b>Presentation and Q&amp;A</b>.</li>
+  </ol>
+  <p class="aside">The robot that scores is not the cleverest one. It is the one that does the same thing every time, and a team where all five can explain why.</p>
+</section>
+
+<footer>
+  BIOGLOW 2026&ndash;27 &middot; Robot Design class lesson &middot; From Our Robot, Explained and How Our Code Is Designed. Arrow keys or space to move between slides.
+</footer>
+
+</body>
+</html>

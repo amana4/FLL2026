@@ -50,6 +50,10 @@ somebody cannot answer in the room.
 
 ## Questions to be ready for
 
+The 5-minute talking points, the slides, and a full question bank with answers
+from our knowledge base are in
+[Presentation and Q&A](../../robot-design/presentation.md).
+
 Worked answers for the code questions, weak version beside strong version, are in
 [`code/learn/13-flowcharts-judges.md`](../../code/learn/13-flowcharts-judges.md).
 

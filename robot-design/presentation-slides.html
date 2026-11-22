@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our robot: Robot Design explanation — BIOGLOW</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Same skin as chassis-designs-slides.html, so the two decks look like one
+     team made them. Talking points and who says what are in presentation.md,
+     not here: these slides are what the judges see. */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper:        #f5f5f5;
+    --paper-2:      #ececec;
+    --ink:          #16362b;
+    --muted:        #4a6357;
+    --soft:         #7d9488;
+    --rule:         rgba(22, 54, 43, 0.12);
+    --rule-solid:   rgba(22, 54, 43, 0.28);
+    --accent:       #eb6c36;
+    --accent-tint:  rgba(235, 108, 54, 0.08);
+
+    --font-sans:  'Geist', system-ui, sans-serif;
+    --font-serif: 'Instrument Serif', serif;
+    --font-mono:  'Geist Mono', ui-monospace, monospace;
+  }
+
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Each slide is one screen. Arrow keys / space / PageDown move between them,
+     so the deck presents with no JavaScript. */
+  .slide {
+    min-height: 100vh;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3.5rem 3.5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+
+  h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+
+  .lede {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 62ch;
+    margin-bottom: 1.5rem;
+  }
+
+  .lede strong { color: var(--ink); font-weight: 600; }
+
+  .aside {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: var(--ink);
+    border-left: 2px solid var(--accent);
+    padding-left: 1rem;
+    margin-top: 1.5rem;
+    max-width: 60ch;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--paper-2);
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+  }
+
+  pre {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1rem 1.25rem;
+    border-radius: 6px;
+    overflow-x: auto;
+  }
+  pre .c { color: #9fc3b3; }
+
+  /* Diagrams are the same SVG files the knowledge base pages use, so a fix to
+     a diagram shows up in both places. */
+  img.diagram {
+    width: 100%;
+    height: auto;
+    max-height: 58vh;
+    object-fit: contain;
+    display: block;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: #fff;
+  }
+
+  img.photo {
+    width: 100%;
+    height: auto;
+    max-height: 58vh;
+    object-fit: cover;
+    display: block;
+    border-radius: 6px;
+  }
+
+  .caption { font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; }
+
+  .two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    border: 1px solid var(--rule-solid);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  th {
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+  }
+
+  td { padding: 0.6rem 0.75rem; border-top: 1px solid var(--rule); vertical-align: top; line-height: 1.45; }
+  tbody tr:nth-child(even) td { background: rgba(22, 54, 43, 0.03); }
+  td:first-child { font-weight: 600; white-space: nowrap; }
+  tr.best td { background: var(--accent-tint) !important; }
+  tr.best td:first-child { color: var(--accent); }
+
+  ul.checks { list-style: none; font-size: 1.0625rem; line-height: 1.5; }
+  ul.checks li { padding: 0.55rem 0 0.55rem 2.25rem; position: relative; border-bottom: 1px solid var(--rule); }
+  ul.checks li::before {
+    content: "";
+    position: absolute; left: 0; top: 0.8rem;
+    width: 1rem; height: 1rem;
+    border: 1.5px solid var(--accent);
+    border-radius: 4px;
+  }
+  ul.checks li b { font-weight: 600; }
+  ul.checks li span { color: var(--muted); }
+
+  /* A fact only the team knows. Replace the text inside before judging day,
+     then the dashed box can stay: it just reads as a highlighted number. */
+  .fill {
+    border: 1.5px dashed var(--accent);
+    background: var(--accent-tint);
+    border-radius: 6px;
+    padding: 0.6rem 0.9rem;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .fill .tag {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .big {
+    font-family: var(--font-serif);
+    font-size: clamp(2.5rem, 5vw, 3.75rem);
+    line-height: 1;
+    color: var(--accent);
+  }
+
+  footer {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--soft);
+    letter-spacing: 0.06em;
+    padding: 2rem 3.5rem 3rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    border-top: 1px solid var(--rule);
+  }
+
+  @media (max-width: 800px) {
+    .two { grid-template-columns: 1fr; }
+    .slide { padding: 2.5rem 1.5rem; }
+  }
+
+  @media print {
+    html { scroll-snap-type: none; }
+    .slide { min-height: auto; page-break-after: always; border-bottom: 0; padding: 1.5cm; }
+    body { background: #fff; }
+    img.diagram, img.photo { max-height: 11cm; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ 1. TITLE -->
+<section class="slide">
+  <p class="eyebrow">BIOGLOW &middot; Robot Design</p>
+  <h1>One base.<br>Attachments that drop on.<br>A gyro that keeps it straight.</h1>
+  <p class="lede">
+    This is our robot, how we chose its design, how the code works, and what we
+    changed after testing. <strong>Each of us explains one part, and you can ask
+    any of us about any part.</strong>
+  </p>
+  <p class="aside">The robot that scores is not the cleverest one. It is the one that does the same thing every time.</p>
+</section>
+
+<!-- ============================================== 2. HOW WE CHOSE (IDENTIFY) -->
+<section class="slide">
+  <p class="eyebrow">IDENTIFY &middot; Building resources</p>
+  <h2>We studied six designs before we built ours</h2>
+  <p class="lede">
+    We compared six driving bases other teams had built and tested, and what went
+    wrong for each. Sorted by their wheels, a pattern showed up:
+    <strong>the three that slipped all used the blue SPIKE wheels.</strong>
+  </p>
+  <img class="diagram" style="max-height:50vh" src="diagrams/wheel-pattern.svg" alt="Six designs sorted by their wheels. The three on blue SPIKE wheels all list wheel slipping. The three on 62.4 mm LEGO wheels list no slipping.">
+  <p class="aside">We took the good ideas from all six: a box frame, wheels held on both sides, gravity mounting, and the gyro doing the driving.</p>
+</section>
+
+<!-- =========================================== 3. MISSION STRATEGY (IDENTIFY) -->
+<section class="slide">
+  <p class="eyebrow">IDENTIFY &middot; Mission strategy</p>
+  <h2>Our runs, and why these missions</h2>
+  <p class="lede">
+    FIRST's advice: pick missions that need <strong>simple moves</strong> like
+    push, pull or lift, that are <strong>close to base</strong>, and that are
+    <strong>easy to get home from</strong>.
+  </p>
+  <table>
+    <thead><tr><th>Program</th><th>Missions</th></tr></thead>
+    <tbody>
+      <tr><td>phase0-alt.py</td><td>M03 Flip the Rock, then M02 Exploding Seeds</td></tr>
+      <tr><td>phase3.py</td><td>M05 Reaching Roots, then across to the right side</td></tr>
+      <!-- TEAM: replace the bracket with the four mission numbers -->
+      <tr><td>Phase 5.py</td><td>Four jobs in one run: "Pull", "open door", "ant" and "Tree support" [Team to fill in: mission numbers]</td></tr>
+      <tr><td>Phase 6.py</td><td>M13 Keystone Species</td></tr>
+    </tbody>
+  </table>
+  <!-- TEAM: replace the text below with one skipped mission, its points and its time -->
+  <div class="fill">
+    <span class="tag">Team to fill in</span>
+    A mission we skipped, and why, with numbers. For example: "M__ was only __ points and took __ seconds."
+  </div>
+</section>
+
+<!-- ========================================== 4. DRIVING BASE (CREATE) -->
+<section class="slide">
+  <p class="eyebrow">CREATE &middot; The driving base</p>
+  <h2>A box with flat walls, and the wheels inside</h2>
+  <div class="two">
+    <div>
+      <img class="diagram" src="diagrams/wall-squaring.svg" alt="Two pictures from above. A robot put down crooked touches the wall with one corner. Pushed flat, the whole side touches the wall and the robot sits square.">
+    </div>
+    <div>
+      <ul class="checks">
+        <li><b>Every run starts square.</b> <span>Push a flat wall against the field wall and it can only sit one way. No measuring.</span></li>
+        <li><b>It squares up during a run too.</b> <span>The robot backs gently into a wall or a model to straighten up.</span></li>
+        <li><b>The frame touches things, not the wheels.</b> <span>A wheel rubbing on a model would steer the robot off course.</span></li>
+        <li><b>Each wheel is held on both sides.</b> <span>Motor on one side, frame on the other, so a heavy attachment cannot bend it inwards.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================== 5. ATTACHMENTS (CREATE) -->
+<section class="slide">
+  <p class="eyebrow">CREATE &middot; Attachments</p>
+  <h2>The BOXOR frame, mounted by gravity</h2>
+  <div class="two">
+    <div>
+      <img class="photo" src="photos/attachment-1.jpg" alt="The BOXOR frame on the mat, with two black arms. The tan gears near the bottom are the bevel gears.">
+      <p class="caption">The BOXOR frame. The tan bevel gears turn the motor's movement through 90 degrees to swing an arm.</p>
+    </div>
+    <div>
+      <img class="diagram" src="diagrams/gravity-mount.svg" alt="Two side views. The attachment is lowered onto two pegs on the robot, which fit into holes. It sits on the pegs, held by its own weight, and lifts straight off.">
+      <ul class="checks" style="margin-top:1rem">
+        <li><b>Pegs line it up.</b> <span>It can only go on the right way.</span></li>
+        <li><b>Its own weight holds it.</b> <span>No pins to forget at the table.</span></li>
+      </ul>
+      <!-- TEAM: replace with what we changed from the BOXOR instructions, and the measured swap time -->
+      <div class="fill">
+        <span class="tag">Team to fill in</span>
+        What we changed from the BOXOR design: ____. A swap takes __ seconds.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================== 6. TURNS (CREATE, code) -->
+<section class="slide">
+  <p class="eyebrow">CREATE &middot; Code and sensors</p>
+  <h2>Every turn is measured from where we started</h2>
+  <div class="two">
+    <div>
+      <img class="diagram" src="diagrams/face-square.svg" alt="Two paths round a square. Turning 90 degrees each time ends 17 degrees off, because the small mistakes add up. Using face ends about 1 degree off.">
+    </div>
+    <div>
+      <p class="lede" style="margin-bottom:1rem">
+        <code>face(90)</code> turns until the robot points 90 degrees from base.
+        A small mistake in one turn is <strong>not passed on</strong> to the next.
+      </p>
+      <table>
+        <thead><tr><th></th><th>Time</th><th>How far off</th></tr></thead>
+        <tbody>
+          <tr><td>Old turn (counting wheels)</td><td>1.54 s</td><td>4.26&deg;</td></tr>
+          <tr class="best"><td>Gyro turn</td><td>1.18 s</td><td>0.58&deg;</td></tr>
+        </tbody>
+      </table>
+      <p class="aside">Faster and more accurate, so we deleted the old turn.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================== 7. CODE DESIGN (CREATE, code) -->
+<section class="slide">
+  <p class="eyebrow">CREATE &middot; Code and sensors</p>
+  <h2>Code in layers, and two things at once</h2>
+  <div class="two">
+    <div>
+      <img class="diagram" src="diagrams/code-layers.svg" alt="Three layers. The run programs say what to do. Our library, advanced.py, says how to do it. The SPIKE hub turns the motors and measures with the gyro and encoders.">
+      <p class="caption">Run programs say <b>what</b>. Our library says <b>how</b>. Improve the library once and every run gets better.</p>
+    </div>
+    <div>
+      <p class="lede" style="margin-bottom:1rem">At the end of the M02 run, the arm finishes lifting <strong>while the robot drives home</strong>:</p>
+<pre>await motor.run_for_degrees(attachment2, 200, 1000)
+motor.run_for_degrees(attachment2, 180, 1100)  <span class="c"># no await</span>
+await drive_cm(35, velocity=1100)</pre>
+      <!-- TEAM: replace with the measured time saved -->
+      <div class="fill">
+        <span class="tag">Team to fill in</span>
+        This saves __ seconds in a 2 minute 30 second match.
+      </div>
+      <ul class="checks" style="margin-top:1rem">
+        <li><b>Safety stop.</b> <span>More than 45 degrees off course on a straight drive, and the robot brakes instead of spinning off the table.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================== 8. HOW WE TEST (ITERATE) -->
+<section class="slide">
+  <p class="eyebrow">ITERATE &middot; Repeated testing</p>
+  <h2>Cheap tests first, the real robot last</h2>
+  <img class="diagram" src="diagrams/test-pipeline.svg" alt="Four steps: pretend robot in the browser, 34 automatic checks, the real mat, save in git. If a problem is found, go round again.">
+  <p class="aside">34 automatic checks run in a few seconds. Every change is saved in git with a note saying what changed and why.</p>
+</section>
+
+<!-- ========================================== 9. WHAT WE CHANGED (ITERATE) -->
+<section class="slide">
+  <p class="eyebrow">ITERATE &middot; Improvements from testing</p>
+  <h2>Test it, find a problem, change something, test again</h2>
+  <div class="two">
+    <div>
+      <img class="diagram" src="diagrams/iterate-loop.svg" alt="A loop of four steps: test it, find a problem, change something, test again. The example is M03: the bump knocks the robot crooked, so we added await face(0).">
+    </div>
+    <div>
+      <p class="lede" style="margin-bottom:0.75rem">Every <code>#was</code> note in our code is a number we changed after a test run. From <code>Phase 5.py</code>:</p>
+<pre>await drive_cm(14)  <span class="c">#was 12</span>
+await face(-62)     <span class="c">#was 60</span>
+await drive_cm(-28) <span class="c">#was 30</span></pre>
+      <!-- TEAM: replace with real counts from run logs, for example "8 out of 10" -->
+      <div class="fill">
+        <span class="tag">Team to fill in</span>
+        How often each run works: phase0-alt __/10, phase3 __/10, Phase 5 __/10, Phase 6 __/10. Best practice score: __.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================== 10. TEAMWORK (DESIGN) -->
+<section class="slide">
+  <p class="eyebrow">DESIGN &middot; Everyone builds, everyone codes</p>
+  <h2>Who built what, and who coded what</h2>
+  <p class="lede">All five of us built something and coded something. Ask any of us about our part.</p>
+  <!-- TEAM: fill from docs/who-did-what.md. Keep the Kid 1 to Kid 5 labels: this file is on the public website, so no names. On the day, each person points to their row and says it. -->
+  <table>
+    <thead><tr><th></th><th>Built</th><th>Coded</th></tr></thead>
+    <tbody>
+      <tr><td>Kid 1</td><td>Team to fill in</td><td>Team to fill in</td></tr>
+      <tr><td>Kid 2</td><td>Team to fill in</td><td>Team to fill in</td></tr>
+      <tr><td>Kid 3</td><td>Team to fill in</td><td>Team to fill in</td></tr>
+      <tr><td>Kid 4</td><td>Team to fill in</td><td>Team to fill in</td></tr>
+      <tr><td>Kid 5</td><td>Team to fill in</td><td>Team to fill in</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ========================================== 11. LESSONS (COMMUNICATE) -->
+<section class="slide">
+  <p class="eyebrow">COMMUNICATE &middot; What we learned</p>
+  <h2>What we learned, and what we are proud of</h2>
+  <ul class="checks">
+    <li><b>Measure, don't guess.</b> <span>We told the robot to drive 180 cm and it drove 179 cm, so every program now has <code>set_calibration_scale(179/180)</code>.</span></li>
+    <li><b>Check it on the real robot.</b> <span>We read the motor ports off the hub, and still got them wrong. It took three tries and a test to get F and A.</span></li>
+    <li><b>Read the code, not just the result.</b> <span>Turning the blocks library into Python, we found eight bugs by reading and three more by testing.</span></li>
+  </ul>
+  <!-- TEAM: replace with one sentence each -->
+  <div class="fill">
+    <span class="tag">Team to fill in</span>
+    What each of us is most proud of, one sentence each.
+  </div>
+  <p class="aside">Thank you. Ask any of us anything.</p>
+</section>
+
+<footer>
+  BIOGLOW 2026&ndash;27 &middot; Robot Design explanation &middot; Talking points and judge questions are in presentation.md. Arrow keys or space to move between slides.
+</footer>
+
+</body>
+</html>

@@ -191,7 +191,12 @@ exclude_docs: |
   docs/official-materials/wDan0826cn0
   code/spike-projects/*.llsp3
   code/2025-reference/
+  code/spike-python-api.txt
 
+# code/spike-python-api.txt is LEGO's SPIKE Python reference, copied from the
+# SPIKE App on 21 November 2026. It stays in the repo for searching, but off the
+# public site, because it is LEGO's text, not ours.
+#
 # code/2025-reference/ above is last season's code, carried over for reuse. It is
 # not documentation, so it is kept off the site rather than published as pages.
 #
@@ -257,6 +262,7 @@ nav:
           - Our Robot, Explained: robot-design/our-robot-explained.md
           - How our code is designed: robot-design/how-our-code-works.md
           - Take the test: robot-design/robot-design-test.md
+          - Presentation and Q&A: robot-design/presentation.md
           # The kid path is the two pages above. The working pages below are
           # grouped in the menu only; the files stay where they are, because
           # many pages link to them. The slides are linked from README.md, not
