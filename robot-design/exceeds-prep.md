@@ -363,91 +363,166 @@ the table in our competition that had 32 teams."
 
 ## 2. Mechanical engineering
 
-Everything in this section is **our advice**, with our robot as the example.
+Eight ideas about how our robot is built. Each one has a picture, a few short
+lines, and what to say to a judge. All of this is **our advice**.
+
+<div class="grid cards" markdown>
+
+-   **1. A flat box**
+
+    Pushed against a wall, it can only sit square.
+
+-   **2. Weight low**
+
+    Heavy parts low and in the middle, so it doesn't rock.
+
+-   **3. Grippy wheels**
+
+    The designs that slipped all had blue wheels.
+
+-   **4. Gears**
+
+    Count the teeth. Slower and stronger, or faster and weaker.
+
+-   **5. One base**
+
+    Get the base right once. Then only attachments change.
+
+-   **6. Clever, not complicated**
+
+    The robo taxi, gravity mounting, and pushing instead of a motor.
+
+-   **7. Same every time**
+
+    Same start, same stopper, same pegs.
+
+-   **8. Say why**
+
+    "We chose ... because ... We tested ... and got ..."
+
+</div>
 
 ### Driving base
 
-**What judges like to hear:** why the base is shaped the way it is.
+![A robot pushed flat against the wall sits square.](diagrams/wall-squaring.svg){ loading=lazy }
 
-Our base is a flat box with straight walls and the wheels inside the frame.
+- Our robot is a **flat box** with straight walls.
+- Push it back against the wall, and it can only sit **square**.
+- The wheels sit **inside the frame**, held on both sides.
 
-- It squares up against the field wall: push it back and it can only sit square.
-- It also lines up on the black lines printed on the mat.
-- Each wheel is held on both sides, by the motor and by the frame, so a heavy
-  attachment can't bend it inwards.
-
-See [why straight walls matter](diagrams/wall-squaring.svg).
+!!! tip "Say it to a judge"
+    "Our robot is a flat box. Push it against the wall and it sits square, so
+    every run starts the same way. It lines up with the lines on the mat too."
 
 ### Stability and weight distribution
 
-Weight up high makes a robot rock when it stops. Weight at one end makes turns
-change from run to run. Our hub lies flat, face up.
+![A tall robot with weight up high rocks. A flat robot with weight low stops flat.](diagrams/weight-low.svg){ loading=lazy }
 
-**Test it:** stop hard from full speed and watch for a wobble. Put the robot on
-a ruler across its middle and see which end tips. Write down where the heaviest
-part is.
+- Heavy parts go **low** and in the **middle**.
+- Our hub lies flat, face up.
+- **Try it:** stop hard from full speed. Does it wobble? Write down where the
+  heaviest part is.
+
+!!! tip "Say it to a judge"
+    "We kept the heavy parts low, so the robot stops flat instead of rocking."
 
 ### Wheel configuration
 
-Two driven wheels and a sliding or rolling support is the usual SPIKE layout.
-Our code expects 62.4 mm wheels. The six designs showed that the three which
-slipped all used the blue SPIKE wheels. Measure our real wheel diameter and
-check `WHEEL_D_MM = 62.4` in `code/library/advanced.py`.
+![The three designs that slipped all used blue SPIKE wheels.](diagrams/wheel-pattern.svg){ loading=lazy }
+
+- The three designs that **slipped** all had blue SPIKE wheels.
+- So we use grippy wheels. Our code expects them to be **62.4 mm** across.
+- **Try it:** measure our wheels with a ruler. Check `WHEEL_D_MM = 62.4` in
+  `code/library/advanced.py`.
+
+!!! tip "Say it to a judge"
+    "We compared six designs. The ones that slipped all had blue wheels, so we
+    chose grippy ones."
 
 ### Gear ratios and mechanical advantage
 
-A gear ratio compares the teeth on two gears:
+![Three pairs of gears: same size, small turns big, and big turns small.](diagrams/gear-ratio.svg){ loading=lazy }
 
-```
-ratio = teeth on the driven gear / teeth on the driving gear
-```
+- **Count the teeth** on both gears.
+- **Gear ratio = teeth on the second gear / teeth on the first.**
+- Small gear turns a big one: **slower, but stronger**. Good for lifting.
+- Big gear turns a small one: **faster, but weaker**. Good for a quick flick.
 
-- Ratio above 1: the output turns slower but pushes harder. Good for lifting.
-- Ratio below 1: the output turns faster but weaker. Good for a quick flick.
-- Ratio 1: same speed and force, just a change of direction.
+**To do:** count the teeth on the BOXOR frame's bevel gears. If both have the
+same number, the ratio is 1, and the gears just turn the movement round a
+corner.
 
-The BOXOR frame's bevel gears turn the movement through 90 degrees. **To do:**
-count the teeth on both bevel gears and write the ratio in the notebook. If both
-have the same number of teeth, the ratio is 1, and the gears only change
-direction.
+**Gear play** is the little wobble between teeth.
 
-**Gear play** is the small gap between teeth. Our Phase 7 arm tests showed it: the
-motor stopped at the same angle every run, but the arm ended a little higher or
-lower. A rubber band that always pulls the arm one way takes up the play. A worm
-gear removes it, because a worm can't be turned backwards.
+![Close-up of the gaps between gear teeth, with two fixes: a rubber band and a worm gear.](diagrams/gear-play.svg){ loading=lazy }
+
+- Our Phase 7 arm showed it. The motor stopped in the same place every run, but
+  the arm ended a little higher or lower.
+- **Fix 1:** a rubber band pulls the arm one way, so the gap is always on the
+  same side.
+- **Fix 2:** a worm gear can't be pushed backwards, so it doesn't wobble.
+
+!!! tip "Say it to a judge"
+    "Our bevel gears have __ and __ teeth, so the ratio is __. We found a little
+    play in the arm by printing the motor's position, and we're fixing it with
+    a rubber band."
 
 ### Modular, quick and multi-purpose attachments
 
-- **Modular:** one base, many attachments. Every change to the base breaks the
-  attachments built on it, so freeze the base first.
-- **Quick:** gravity mounting. Pegs line it up and its weight holds it.
-- **Multi-purpose:** the BOXOR frame with arms we swap. One attachment for
-  missions 1 and 2. The robo taxi carries one attachment that does all the
-  right-side missions.
+![Four attachments all fitting one driving base.](diagrams/one-base.svg){ loading=lazy }
+
+![Gravity mounting: pegs line the attachment up, and its weight holds it.](diagrams/gravity-mount.svg){ loading=lazy }
+
+- **One base, many attachments.** Every change to the base breaks the
+  attachments, so freeze the base first.
+- **Gravity mounting:** drop the attachment on the pegs, one move. Last season,
+  swaps were slow.
+- **One attachment, several missions**, so we swap less.
+
+!!! tip "Say it to a judge"
+    "Our attachments drop onto pegs and their weight holds them, so a swap is
+    one move. It takes __ seconds."
 
 ### Innovative mechanisms
 
-Innovation in FLL usually means a smart answer to our own problem, not a
-complicated machine. Our examples: the robo taxi, gravity mounting, and using a
-plain push where a motor could fail.
+![Our mission map: the robo taxi carries the attachment and the keystone species to the right.](diagrams/mission-route.svg){ loading=lazy }
+
+- **Innovative** means a clever answer to *our* problem, not a complicated
+  machine.
+- Our three: the **robo taxi**, **gravity mounting**, and a **push instead of a
+  motor**.
+- A push can't go wrong the way a motor can.
+
+!!! tip "Say it to a judge"
+    "Our cleverest idea is the robo taxi. One trip carries the attachment and the
+    keystone species to the right, so the robot doesn't come back for them."
 
 ### Repeatability, reliability and alignment
 
-- Start every run square against the same wall, in the same spot. Mark it.
-- Square up during a run by backing gently into a wall or a model.
-- For attachments with a motor, start the arm on its stopper every time. Phase 7
-  now sets the arm's zero there.
-- Prefer a push to a motor when both work.
+Do this before every run:
+
+| | Check |
+| --- | --- |
+| ☐ | Robot square against the **same wall**, in the **same spot** |
+| ☐ | Motor arm resting on its **stopper** |
+| ☐ | Attachment pressed down on its **pegs** |
+| ☐ | A **push** instead of a motor wherever it works |
+
+!!! tip "Say it to a judge"
+    "Every run starts the same way: square on the wall, arm on the stopper. That's
+    why it does the same thing every time."
 
 ### How to justify a design choice
 
-Use one sentence pattern:
+Use this sentence for any choice:
 
-> "We chose **[choice]** because **[reason]**. We tested **[test]**, and the result
-> was **[number]**."
+!!! example "The sentence"
+    "We chose **___** because **___**. We tested **___**, and the result was
+    **___**."
 
-Example: "We chose gravity mounting because last season swaps took a long time.
-We timed a swap, and it takes __ seconds." (Fill in the real time.)
+**Example:** "We chose **gravity mounting** because **last season, swaps took a
+long time**. We **timed a swap**, and it takes **__ seconds**." Fill in the real
+time.
 
 ## 3. Programming
 

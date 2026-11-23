@@ -693,4 +693,124 @@ save('gyro-loop.svg', 750, 570, 'How the gyro keeps us straight: the correction 
      'harder the further off we are. Then ask: gone far enough? If yes, brake and stop. If no, 3: wait 15 '
      'milliseconds and repeat from step 1. The loop runs about 66 times every second.', p)
 
+
+# N. Gear ratios, for kids ----------------------------------------------------
+def gear(cx, cy, r, teeth, fill, stroke):
+    """A simple gear: a circle with square teeth round the edge."""
+    g = []
+    for i in range(teeth):
+        a = 2 * math.pi * i / teeth
+        tx, ty = cx + (r + 5) * math.cos(a), cy + (r + 5) * math.sin(a)
+        g.append(f'<rect x="{tx-5}" y="{ty-5}" width="10" height="10" fill="{stroke}" '
+                 f'transform="rotate({math.degrees(a):.1f} {tx:.1f} {ty:.1f})"/>')
+    g.append(f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{fill}" stroke="{stroke}" stroke-width="4"/>')
+    g.append(f'<circle cx="{cx}" cy="{cy}" r="7" fill="{stroke}"/>')
+    return ''.join(g)
+p = [text(500, 40, 'Gear ratios: what the second gear does', 24, INK, weight='bold'),
+     text(500, 66, 'The motor turns the first gear. Count the teeth on both gears.', 16, MUTE)]
+panels = [
+    (170, 'Same size', '12 teeth turn 12 teeth', 'Same speed, same push.', 'It just changes direction.', 28, 12, 28, 12, LEAF, PALE),
+    (500, 'Small turns big', '12 teeth turn 36 teeth', '3 times slower,', 'but 3 times stronger. Lifting!', 28, 12, 70, 36, GOLD, GOLDP),
+    (830, 'Big turns small', '36 teeth turn 12 teeth', '3 times faster,', 'but weaker. A quick flick!', 70, 36, 28, 12, BLUE, BLUEP),
+]
+for cx, head, sub, l1, l2, r1, t1, r2, t2, col, fill in panels:
+    p.append(f'<rect x="{cx-150}" y="90" width="300" height="400" rx="16" fill="#ffffff" stroke="{col}" stroke-width="3"/>')
+    p.append(text(cx, 125, head, 20, col, weight='bold'))
+    p.append(text(cx, 150, sub, 15, MUTE))
+    gy = 270
+    x1 = cx - (r1 + r2) / 2 - 4
+    x2 = x1 + r1 + r2 + 10
+    p.append(gear(x1, gy, r1, max(8, t1), '#ffffff', INK))
+    p.append(gear(x2, gy, r2, max(8, t2 // 2 if t2 > 20 else t2), fill, col))
+    p.append(text(x1, gy + r1 + 36, 'motor', 14, INK, weight='bold'))
+    p.append(text(x2, gy + r2 + 36, 'arm', 14, col, weight='bold'))
+    p.append(text(cx, 420, l1, 16, INK, weight='bold'))
+    p.append(text(cx, 444, l2, 16, INK, weight='bold'))
+p.append(text(500, 530, 'Gear ratio = teeth on the second gear / teeth on the first gear. 36 / 12 = 3.', 16, INK, weight='bold'))
+save('gear-ratio.svg', 1000, 560, 'Gear ratios: what the second gear does',
+     'Three pictures. Same size: 12 teeth turn 12 teeth, so the arm turns at the same speed with the same push; '
+     'it just changes direction. Small turns big: 12 teeth turn 36 teeth, so the arm is 3 times slower but 3 times '
+     'stronger, good for lifting. Big turns small: 36 teeth turn 12 teeth, so the arm is 3 times faster but weaker, '
+     'good for a quick flick. Gear ratio is teeth on the second gear divided by teeth on the first: 36 / 12 = 3.', p)
+
+# O. Gear play -------------------------------------------------------------------
+p = [text(500, 40, 'Gear play: the wobble between teeth', 24, INK, weight='bold'),
+     text(500, 66, 'Teeth never fit perfectly. The tiny gap lets the arm move a little when the motor does not.', 16, MUTE)]
+# close-up of two teeth with a gap
+p.append(f'<rect x="60" y="100" width="420" height="300" rx="16" fill="#ffffff" stroke="{LINE}" stroke-width="2"/>')
+p.append(text(270, 132, 'Close up: two teeth meshing', 17, INK, weight='bold'))
+p.append(f'<rect x="120" y="190" width="300" height="40" fill="#e2e8ec"/>')
+for x in (150, 250, 350):
+    p.append(f'<rect x="{x}" y="230" width="44" height="70" rx="4" fill="{INK}"/>')
+p.append(text(270, 214, 'motor gear', 14, INK, weight='bold'))
+p.append(f'<rect x="120" y="340" width="300" height="40" fill="{GOLDP}"/>')
+for x in (206, 306):
+    p.append(f'<rect x="{x}" y="270" width="36" height="70" rx="4" fill="{GOLD}"/>')
+p.append(text(270, 368, 'arm gear', 14, GOLD, weight='bold'))
+p.append(f'<rect x="194" y="262" width="12" height="30" fill="{REDP}" stroke="{RED}" stroke-width="2"/>')
+p.append(f'<rect x="242" y="262" width="8" height="30" fill="{REDP}" stroke="{RED}" stroke-width="2"/>')
+p.append(text(270, 172, 'red = the gaps = play', 15, RED, weight='bold'))
+# fixes
+p.append(f'<rect x="520" y="100" width="420" height="140" rx="16" fill="{PALE}" stroke="{LEAF}" stroke-width="3"/>')
+p.append(text(730, 135, 'Fix 1: a rubber band', 18, LEAF, weight='bold'))
+p.append(text(730, 165, 'It always pulls the arm the same way,', 15, INK))
+p.append(text(730, 187, 'so the gap is always on the same side.', 15, INK))
+p.append(text(730, 215, 'Quick to try.', 15, LEAF, weight='bold'))
+p.append(f'<rect x="520" y="260" width="420" height="140" rx="16" fill="{BLUEP}" stroke="{BLUE}" stroke-width="3"/>')
+p.append(text(730, 295, 'Fix 2: a worm gear', 18, BLUE, weight='bold'))
+p.append(text(730, 325, 'A worm can turn a gear, but the gear', 15, INK))
+p.append(text(730, 347, 'can not turn the worm back. No wobble.', 15, INK))
+p.append(text(730, 375, 'Very exact, but slower.', 15, BLUE, weight='bold'))
+p.append(text(500, 440, 'Our Phase 7 arm: the motor stopped in the same place every run, but the arm ended a little higher or lower.', 15, MUTE))
+p.append(text(500, 464, 'That is play.', 15, MUTE, weight='bold'))
+save('gear-play.svg', 1000, 490, 'Gear play: the wobble between teeth',
+     'A close-up of a motor gear and an arm gear meshing, with small gaps between the teeth marked as play. Fix 1: a '
+     'rubber band always pulls the arm the same way, so the gap is always on the same side; quick to try. Fix 2: a worm '
+     'gear can turn a gear, but the gear can not turn the worm back, so there is no wobble; very exact but slower. Our '
+     'Phase 7 arm motor stopped in the same place every run, but the arm ended a little higher or lower: that is play.', p)
+
+# P. Keep the weight low ------------------------------------------------------------
+p = [text(500, 40, 'Keep the weight low and in the middle', 24, INK, weight='bold'),
+     text(500, 66, 'Heavy parts up high make a robot rock when it stops. Heavy parts at one end change its turns.', 16, MUTE)]
+def bot(cx, base, w, h, wx, wy, ok):
+    col = LEAF if ok else RED
+    g = [f'<rect x="{cx-w/2}" y="{base-h-16}" width="{w}" height="{h}" rx="8" fill="#ffffff" stroke="{col}" stroke-width="4"/>']
+    for dx in (-w/2 + 30, w/2 - 30):
+        g.append(f'<circle cx="{cx+dx}" cy="{base-14}" r="16" fill="{INK}"/>')
+    g.append(f'<rect x="{wx-34}" y="{wy-22}" width="68" height="44" rx="8" fill="{GOLD}"/>')
+    g.append(text(wx, wy + 6, 'heavy', 15, '#ffffff', weight='bold'))
+    g.append(f'<line x1="{cx-150}" y1="{base}" x2="{cx+150}" y2="{base}" stroke="{LINE}" stroke-width="3"/>')
+    return ''.join(g)
+p.append(bot(250, 400, 180, 230, 250, 200, False))
+p.append(f'<path d="M150,150 q-30,40 0,80" fill="none" stroke="{RED}" stroke-width="3" marker-end="url(#ar)"/>')
+p.append(text(250, 450, 'Weight up high', 19, RED, weight='bold'))
+p.append(text(250, 476, 'It rocks and tips when it stops.', 15, MUTE))
+p.append(bot(750, 400, 280, 90, 750, 340, True))
+p.append(text(750, 450, 'Weight low and in the middle', 19, LEAF, weight='bold'))
+p.append(text(750, 476, 'It stops flat. Our hub lies flat.', 15, MUTE))
+p.append(text(500, 520, 'Try it: stop hard from full speed and watch for a wobble.', 16, INK, weight='bold'))
+save('weight-low.svg', 1000, 550, 'Keep the weight low and in the middle',
+     'Two robots side by side. On the left, a tall robot with the heavy part up high rocks and tips when it stops. On '
+     'the right, a flat robot with the heavy part low and in the middle stops flat. Our hub lies flat. Try it: stop '
+     'hard from full speed and watch for a wobble.', p)
+
+# Q. One base, many attachments ------------------------------------------------------
+p = [text(500, 40, 'One base, many attachments', 24, INK, weight='bold'),
+     text(500, 66, 'Get the base right once. After that, only the attachments change.', 16, MUTE)]
+p.append(f'<rect x="380" y="330" width="240" height="90" rx="10" fill="{PALE}" stroke="{LEAF}" stroke-width="5"/>')
+p.append(text(500, 370, 'one driving base', 18, LEAF, weight='bold'))
+p.append(text(500, 396, 'never changes', 14, LEAF))
+atts = [(150, 'push arm', 'no motor needed'), (380, 'BOXOR frame', 'arms we swap'),
+        (620, 'keystone holder', 'rides the robo taxi'), (850, 'next idea', 'same pegs')]
+for x, a, b in atts:
+    p.append(f'<rect x="{x-95}" y="110" width="190" height="80" rx="10" fill="{GOLDP}" stroke="{GOLD}" stroke-width="3"/>')
+    p.append(text(x, 146, a, 17, INK, weight='bold'))
+    p.append(text(x, 170, b, 14, MUTE))
+    p.append(arrow([(x, 192), (500 + (x - 500) * 0.35, 326)], None, None, None, LEAF))
+p.append(text(500, 470, 'Every change to the base breaks the attachments built for it. So freeze the base, then build attachments.', 15, MUTE))
+save('one-base.svg', 1000, 500, 'One base, many attachments',
+     'Four attachments, a push arm with no motor, the BOXOR frame with arms we swap, the keystone holder that rides '
+     'the robo taxi, and a next idea using the same pegs, all fit one driving base that never changes. Every change to '
+     'the base breaks the attachments built for it, so freeze the base, then build attachments.', p)
+
 print('ok2')

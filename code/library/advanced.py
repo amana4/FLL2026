@@ -27,7 +27,7 @@ LEFT_DRIVE = port.F
 RIGHT_DRIVE = port.A
 
 attachment1 = port.C
-attachment2 = port.D           # not confirmed
+attachment2 = port.E           # confirmed on the robot, see Phase 5.py
 
 WHEEL_D_MM = 62.4              # measure this. Everything depends on it
 TRACK_W_MM = 130.0             # only arc_turn uses this one
