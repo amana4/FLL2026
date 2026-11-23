@@ -56,7 +56,7 @@ NAMED = "--named" in sys.argv
 # Who leads each part, by roster slot. Slots are in docs/team-roster.md. Change
 # this table to change who does which homework.
 ROLE_SLOT = {"Strategy": "Kid 5", "Robot": "Kid 2", "Code": "Kid 1",
-             "Testing": "Kid 4", "Sensors and team": "Kid 3"}
+             "Sensors": "Kid 3", "Iteration and team": "Kid 4"}
 SLOTS = ["Kid 1", "Kid 2", "Kid 3", "Kid 4", "Kid 5"]
 
 
@@ -747,8 +747,8 @@ table(s, [["Who", "Slides", "Rubric row"],
           [lead("Strategy"), "T1 Intro, T2 Mission map, T3 Resources", "IDENTIFY"],
           [lead("Robot"), "T4 Why this robot, T5 Attachments", "CREATE"],
           [lead("Code"), "T6 Code", "CREATE"],
-          [lead("Testing"), "T8 Testing numbers, T9 Fix story", "ITERATE"],
-          [lead("Sensors and team"), "T7 Sensors, T10 Team, T11 Lessons and pride", "CREATE, DESIGN, COMMUNICATE"],
+          [lead("Sensors"), "T7 Sensors", "CREATE"],
+          [lead("Iteration and team"), "T8 Testing, T9 Fix story, T10 Team, T11 Lessons", "ITERATE, DESIGN, COMMUNICATE"],
           ["Everyone", "Your row on T10, your line on T11, your fix story", "All"]],
       0.7, 1.75, 11.9, [2.6, 6.0, 3.3], row_h=0.52, size=14)
 text(s, "Rules: replace every YOUR TURN box. Real numbers only: measure it or "
@@ -849,7 +849,7 @@ s = template("T6", lead("Code"), "CREATE", "The clever part of our code", 30,
              "Code in layers: the runs say what, the library says how. face "
              "measures from base: 1 degree off round a square, not 17. Then "
              "one thing you think is clever.",
-             "\"Now %s will tell you how we test.\"" % next_up("Testing"),
+             "\"Now %s will tell you about our sensors.\"" % next_up("Sensors"),
              ["Why Python, in your words", "drive_cm from last year, new wheel size",
               "Layers: what and how",
               "face: 1 degree, not 17", "One clever thing, in your words",
@@ -859,13 +859,13 @@ image(s, png("face-square"), 5.0, 1.85, w=4.1)
 your_turn(s, 0.7, 5.05, 8.4, 1.85,
           "The cleverest thing in our code is ... because ...")
 
-s = template("T7", lead("Sensors and team"), "CREATE", "How the robot finds its way", 25,
+s = template("T7", lead("Sensors"), "CREATE", "How the robot finds its way", 60,
              "The gyro correction in 4 steps: read the error, work out the "
              "steer, steer, repeat 66 times a second. Then the gyro for "
              "direction, the motor encoders for distance. We "
              "measured both turns, and the gyro turn won. Then why we don't "
              "use the colour sensors.",
-             "\"And now, our team.\" (Go to T10.)",
+             "\"Now %s will tell you how we test, and about our team.\"" % next_up("Iteration and team"),
              ["What yaw is", "Zero, turn, drive straight", "The correction in 4 steps",
               "The 5-degree example", "The measured turn numbers",
               "The agreed colour sensor answer"])
@@ -877,7 +877,7 @@ your_turn(s, 0.7, 4.0, 8.4, 2.9,
           "Yaw is: ...\n\nThe three gyroscope steps, in your words: ...\n\n"
           "Why only the gyroscope, not the colour sensors: ...")
 
-s = template("T8", lead("Testing"), "ITERATE", "How we know it works", 30,
+s = template("T8", lead("Iteration and team"), "ITERATE", "How we know it works", 30,
              "We tested each run 10 times. Read the numbers. Point at one "
              "change that made a number go up.",
              "\"Here is one fix in detail.\"",
@@ -890,10 +890,10 @@ table(s, [["Run", "Before change", "What we changed", "After change"],
 your_turn(s, 0.7, 5.15, 8.4, 1.75,
           "Our tests: pretend robot first, then 34 automatic checks, then the real mat.")
 
-s = template("T9", lead("Testing"), "ITERATE", "A fix, start to finish", 40,
+s = template("T9", lead("Iteration and team"), "ITERATE", "A fix, start to finish", 40,
              "Tell the arm story, or your own: problem, how we found out, what "
              "we changed, the result with a number. Say what failed on the way.",
-             "\"%s will tell you about our sensors and our team.\"" % next_up("Sensors and team"),
+             "\"And now, our team.\"",
              ["Problem", "How we found out", "What we changed",
               "Result with a number", "Something that failed first"])
 image(s, png("iterate-loop"), 0.7, 1.85, w=4.2)
@@ -901,7 +901,7 @@ your_turn(s, 5.1, 1.85, 4.0, 5.05,
           "Problem: ...\n\nHow we found out: ...\n\nWhat we changed: ...\n\n"
           "Result: __ out of 10", size=13)
 
-s = template("T10", lead("Sensors and team"), "DESIGN", "Everyone built. Everyone coded.", 30,
+s = template("T10", lead("Iteration and team"), "DESIGN", "Everyone built. Everyone coded.", 30,
              "Each person points at their row, or says it themselves in one "
              "breath. Then how we shared the work: roles, swapping, voting.",
              "\"And what we learned.\"",
@@ -914,7 +914,7 @@ table(s, [["", "I built", "I coded", "An idea I had"],
       0.7, 1.9, 8.4, [1.2, 2.4, 2.4, 2.4], row_h=0.55, size=14)
 your_turn(s, 0.7, 5.4, 8.4, 1.5, "How we shared the work and decided things: ...")
 
-s = template("T11", lead("Sensors and team"), "COMMUNICATE", "What we learned, and what we're proud of", 35,
+s = template("T11", lead("Iteration and team"), "COMMUNICATE", "What we learned, and what we're proud of", 35,
              "Each person says one lesson, one sentence each. Then what we are "
              "proudest of. Say it like you mean it: this row is about pride.",
              "\"Thank you. Ask any of us anything.\"",
@@ -939,8 +939,8 @@ table(s, [["Time", "Slides", "Who", "Row"],
           ["0:00 to 1:10", "T1, T2, T3", lead("Strategy"), "Intro, IDENTIFY"],
           ["1:10 to 2:15", "T4, T5 and a live swap", lead("Robot"), "CREATE: robot and attachments"],
           ["2:15 to 3:00", "T6", lead("Code"), "CREATE: code"],
-          ["3:00 to 4:00", "T8, T9", lead("Testing"), "ITERATE"],
-          ["4:00 to 5:00", "T7, T10, T11", lead("Sensors and team"), "CREATE: sensors. DESIGN, COMMUNICATE"]],
+          ["3:00 to 4:00", "T7", lead("Sensors"), "CREATE: sensors"],
+          ["4:00 to 5:00", "T8, T9, T10, T11", lead("Iteration and team"), "ITERATE. DESIGN, COMMUNICATE"]],
       0.7, 1.75, 11.9, [1.9, 3.0, 3.3, 3.7], row_h=0.6, size=14)
 text(s, "End every part with the handover line in the speaker notes. Practise "
         "the handovers more than the parts.", 0.7, 5.6, 11.9, 1.0, size=16,

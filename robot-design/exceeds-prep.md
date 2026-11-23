@@ -687,7 +687,7 @@ wrote it. The rules are on the [Engineering Notebook page](../engineering-notebo
 
 ## 6. The five-minute explanation
 
-![Our five minutes: Strategy, Robot, Code, Testing, then Sensors and team, about a minute each.](diagrams/speaking-order.svg){ loading=lazy }
+![Our five minutes: Strategy, Robot, Code, Sensors, then Iteration and team, about a minute each.](diagrams/speaking-order.svg){ loading=lazy }
 
 - **Official:** 5 minutes to explain, then 5 minutes of questions. Plan to talk
   "without the robot game field."
@@ -762,44 +762,46 @@ wrote it. The rules are on the [Engineering Notebook page](../engineering-notebo
     Our code is in layers. Each run says what to do, like drive 44 centimetres and
     face 90. Our library says how: speed up gently, steer, and stop on the mark. If
     the robot ever gets 45 degrees off course, it stops instead of spinning off the
-    table. Now [Testing lead] will tell you how we test."
+    table. Now [Sensors lead] will tell you about our sensors."
 
-### Testing lead: testing and a fix story (3:00 to 4:00)
-
-- We test each run 10 times. Say a real number.
-- The arm fix: measured, two fixes failed, the stopper works.
-- Lesson: measure first, then fix.
-
-**Show:** the printed run log table.
-
-??? quote "The full starter script"
-    "We test each run ten times and write down how many work." *(Say a real
-    number.)* "Here's one fix. The arm in one run was sometimes too high and
-    sometimes too low. We printed where the motor was after every move. That
-    showed the arm wasn't starting in the same place: two runs started 45 degrees
-    apart.
-
-    Our first idea worked until we took the attachment off and put it back. Our
-    second idea, pushing the arm into its stopper, lifted the attachment off. So we
-    used the simplest answer: the arm starts on its stopper every time, and the
-    code counts from there. Now it works even after we put the attachment back on.
-    We learned to measure first, then fix. Now [Sensors and team lead] will tell
-    you about our sensors and our team."
-
-### Sensors and team lead: sensors, then team and lessons (4:00 to 5:00)
+### Sensors lead: the gyroscope (3:00 to 4:00)
 
 - Only the gyroscope steers. The colour sensors are plugged in, not used.
-- Yaw, and the three steps: zero, turn, drive straight.
+- Yaw is the way the robot points, like a compass.
+- Three steps: zero, turn, drive straight. Drifts 5 left, steers back right.
+
+**Show:** the [gyro steps](diagrams/gyro-steps.svg) and the [gyro loop](diagrams/gyro-loop.svg).
+
+??? quote "The full starter script"
+    "We only use the gyroscope to steer. Our hub has two colour sensors plugged in,
+    but we don't use them. The gyroscope works anywhere on the mat, not just near a
+    line.
+
+    The gyroscope measures yaw. Yaw is the direction the robot is pointing, like a
+    compass. We use it in three steps. One: at the start of every mission we zero
+    the yaw, so the way the robot points becomes zero. Two: we turn with the
+    gyroscope. face 90 always means 90 degrees from the start, so small mistakes
+    don't add up. Three: while it drives, it checks the yaw every 15 milliseconds.
+    If the robot drifts 5 degrees left, it steers back right, harder the further off
+    it is. Now [Iteration and team lead] will tell you how we test, and about our
+    team."
+
+### Iteration and team lead: testing, then team and lessons (4:00 to 5:00)
+
+- We test each run 10 times. Say a real number.
+- The arm fix: measured, two ideas failed, the stopper works. Measure first.
 - Then the team: all five of us built and coded. Each says one line.
 - What we're proudest of. "Ask any of us anything."
 
-**Show:** the [gyro steps](diagrams/gyro-steps.svg), then the who-did-what page.
+**Show:** the printed run log table, then the who-did-what page.
 
 ??? quote "The full starter script"
-    "We only use the gyroscope to steer. Our two colour sensors are plugged in, but
-    we don't use them. The gyroscope measures yaw: the way the robot points, like
-    a compass. We use it in three steps. Zero the yaw at the start, turn with the
-    gyroscope, and check the yaw every 15 milliseconds to drive straight.
+    "We test each run ten times and write down how many work." *(Say a real
+    number.)* "Here's one fix. Our arm was sometimes too high and sometimes too
+    low. We printed where the motor was after every move, and found the arm wasn't
+    starting in the same place. Two ideas failed. The one that worked: the arm
+    starts on its stopper every time, and the code counts from there. We learned to
+    measure first, then fix.
 
     All five of us built something and coded something." *(Each member says one
     sentence: "I built ... and I coded ...")* "We're most proud of ... Thank you.

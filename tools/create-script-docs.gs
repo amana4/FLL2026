@@ -32,9 +32,9 @@ var NAMES = {'Kid 1': 'Kid 1', 'Kid 2': 'Kid 2', 'Kid 3': 'Kid 3',
 
 // Who leads which part, by roster slot. Testing is the ITERATE part. The same
 // as ROLE_SLOT in tools/make-exceeds-pptx.py. Changed 22 November 2026: the
-// gyroscope moved from Code to the last part, Sensors and team.
+// gyroscope has its own part, Sensors, and the last part is Iteration and team.
 var ROLE_SLOT = {'Strategy': 'Kid 5', 'Robot': 'Kid 2', 'Code': 'Kid 1',
-                 'Testing': 'Kid 4', 'Sensors and team': 'Kid 3'};
+                 'Sensors': 'Kid 3', 'Iteration and team': 'Kid 4'};
 
 var SITE = 'https://amana4.github.io/FLL2026/robot-design/';
 var LINKS = [
@@ -68,8 +68,7 @@ var PARTS = [
     ],
     check: ['Points and seconds for each run, from the scoresheet and a stopwatch',
             'How many times out of 10 phase2 works'],
-    questions: ['Why these missions?', 'Why that order?',
-                'What would you add with more time?']
+    cue: ['Time is our biggest limit', 'Close missions first', 'phase2: one straight push and back', 'Robo taxi: attachment and keystone to the right', 'Skipped Lucky Leaves: far, luck, 10 or 20 points']
   },
   {
     role: 'Robot', time: '1:10 to 2:15', rows: 'CREATE: attachments. IDENTIFY: resources',
@@ -91,8 +90,7 @@ var PARTS = [
     ],
     check: ['How many seconds a swap takes, timed 5 times',
             'What we changed from the BOXOR design'],
-    questions: ['Why gravity mounting?', 'Has an attachment ever fallen off?',
-                'Why push instead of a motor?']
+    cue: ['Six designs: blue wheels slip', 'Flat: lines up on walls and mat lines', '6 ports: 2 wheels, 2 attachments, 2 colour sensors', 'Gravity mounting: one move (do the swap)', 'Push before motors. Arm starts on the stopper']
   },
   {
     role: 'Code', time: '2:15 to 3:00', rows: 'CREATE: code',
@@ -104,65 +102,173 @@ var PARTS = [
       'Our code is in layers. Each run says what to do, like drive 44 centimetres ' +
       'and face 90. Our library says how: speed up gently, steer, and stop on the ' +
       'mark. If the robot ever gets 45 degrees off course, it stops instead of ' +
-      'spinning off the table. Now TESTING will tell you how we test.'
+      'spinning off the table. Now SENSORS will tell you about our sensors.'
     ],
     check: ['What changed in drive_cm from last year: the wheel size, 88 mm to 62.4 mm'],
-    questions: ['Why Python?', 'What does your library do?',
-                'What happens if something goes wrong?']
+    cue: ['Python: we reused last year\'s drive_cm', 'Changed the wheel size, 88 mm to 62.4 mm', 'Layers: the run says what, the library says how', '45 degrees off: it stops']
   },
   {
-    role: 'Testing', time: '3:00 to 4:00', rows: 'ITERATE: testing and improvements',
-    show: 'The printed run log table.',
+    role: 'Sensors', time: '3:00 to 4:00', rows: 'CREATE: code and sensors',
+    show: 'The gyro steps picture, and the gyro loop.',
+    script: [
+      'We only use the gyroscope to steer. Our hub has two colour sensors plugged ' +
+      'in, but we don\'t use them. The gyroscope works anywhere on the mat, not ' +
+      'just near a line.',
+      'The gyroscope measures yaw. Yaw is the direction the robot is pointing, like ' +
+      'a compass. We use it in three steps. One: at the start of every mission we ' +
+      'zero the yaw, so the way the robot points becomes zero. Two: we turn with ' +
+      'the gyroscope. face 90 always means 90 degrees from the start, so small ' +
+      'mistakes don\'t add up. Three: while it drives, it checks the yaw every 15 ' +
+      'milliseconds. If the robot drifts 5 degrees left, it steers back right, ' +
+      'harder the further off it is. Now ITERATION will tell you how we test, and ' +
+      'about our team.'
+    ],
+    check: ['The 5-degree example: drift 5 left, error -5, it steers back right',
+            'Why the gyroscope and not the colour sensors'],
+    cue: ['Only the gyroscope steers', 'Colour sensors: plugged in, not used', 'Yaw = the way the robot points', '1 zero, 2 turn, 3 drive straight', 'Drifts 5 left: steers back right']
+  },
+  {
+    role: 'Iteration and team', time: '4:00 to 5:00',
+    rows: 'ITERATE: testing and improvements. DESIGN and COMMUNICATE: team',
+    show: 'The printed run log table, then the who-did-what page.',
     script: [
       'We test each run ten times and write down how many work. (Say a real ' +
-      'number.)',
-      'Here\'s one fix. The arm in one run was sometimes too high and sometimes too ' +
-      'low. We printed where the motor was after every move. That showed the arm ' +
-      'wasn\'t starting in the same place: two runs started 45 degrees apart.',
-      'Our first idea worked until we took the attachment off and put it back. Our ' +
-      'second idea, pushing the arm into its stopper, lifted the attachment off. So ' +
-      'we used the simplest answer: the arm starts on its stopper every time, and ' +
-      'the code counts from there. Now it works even after we put the attachment ' +
-      'back on. We learned to measure first, then fix. Now SENSORS will tell you ' +
-      'about our sensors and our team.'
-    ],
-    check: ['The 10-run result for every run, with dates'],
-    questions: ['How do you know it is reliable?', 'What didn\'t work?',
-                'How did you find the cause?']
-  },
-  {
-    role: 'Sensors and team', time: '4:00 to 5:00',
-    rows: 'CREATE: sensors. DESIGN: everyone. COMMUNICATE: lessons and pride',
-    show: 'The gyro steps picture, then the who-did-what page.',
-    script: [
-      'We only use the gyroscope to steer. Our two colour sensors are plugged in, ' +
-      'but we don\'t use them. The gyroscope measures yaw: the way the robot ' +
-      'points, like a compass. We use it in three steps. Zero the yaw at the start, ' +
-      'turn with the gyroscope, and check the yaw every 15 milliseconds to drive ' +
-      'straight.',
+      'number.) Here\'s one fix. Our arm was sometimes too high and sometimes too ' +
+      'low. We printed where the motor was after every move, and found the arm ' +
+      'wasn\'t starting in the same place. Two ideas failed. The one that worked: ' +
+      'the arm starts on its stopper every time, and the code counts from there. ' +
+      'We learned to measure first, then fix.',
       'All five of us built something and coded something. (Each person says one ' +
       'sentence: "I built ... and I coded ...") We\'re most proud of ... Thank you. ' +
       'Ask any of us anything.'
     ],
-    check: ['The 5-degree example: drift 5 left, error -5, it steers back right',
+    check: ['The 10-run result for every run, with dates',
             'One "I built ... and I coded ..." line from every member'],
-    questions: ['Why not the colour sensors?', 'What is yaw?',
-                'What are you most proud of?']
+    cue: ['10 runs each: say the real number', 'Arm fix: measured, 2 ideas failed, stopper works', 'Measure first, then fix', 'Everyone: I built ... I coded ...', 'Proud of ... Ask any of us anything']
   }
+];
+
+// The 32 judge questions, from section 7 of robot-design/exceeds-prep.md.
+// Each: [part, number, question, a strong answer, a harder follow-up].
+var QUESTIONS = [
+  ['Robot', 1, 'Why is your robot shaped like that?',
+   'A flat box squares up on a wall, so every run starts the same way.',
+   'What if it starts crooked?'],
+  ['Robot', 2, 'Why those wheels?',
+   'The designs that slipped all used blue SPIKE wheels, so we use grippy ones.',
+   'How did you check yours don\'t slip?'],
+  ['Robot', 3, 'Where is the robot\'s weight?',
+   'Team to measure: say where the heaviest part is, and that you checked for a wobble.',
+   'How did you test it?'],
+  ['Robot', 4, 'How does the BOXOR frame move the arm?',
+   'Two bevel gears turn the movement through 90 degrees.',
+   'What is the gear ratio?'],
+  ['Robot', 5, 'Why gravity mounting?',
+   'One move to swap. Last season, swaps were slow.',
+   'Has one ever fallen off?'],
+  ['Robot', 6, 'How long does a swap take?',
+   'Give the measured time.',
+   'How did you measure it?'],
+  ['Robot', 7, 'Why a push instead of a motor?',
+   'Motors can go wrong. A push can\'t.',
+   'When did you need a motor anyway?'],
+  ['Robot', 8, 'Why is the attachment on the back?',
+   'Team to agree.',
+   'Why do your distances have minus signs?'],
+  ['Robot', 9, 'What would you change with more time?',
+   'Take the play out of the arm gears, maybe with a rubber band.',
+   'How would you know it worked?'],
+  ['Strategy', 10, 'What is the robo taxi?',
+   'One trip carries the attachment and the keystone to the right.',
+   'What if the keystone falls off?'],
+  ['Sensors', 11, 'How does it drive straight?',
+   'It reads the gyro every 15 ms and steers back, harder the further off.',
+   'What stops it wiggling?'],
+  ['Code', 12, 'Why Python?',
+   'Last year\'s Python, more control, and git shows every change.',
+   'What was hard about switching?'],
+  ['Sensors', 13, 'What does face(90) do?',
+   'Turns to point 90 degrees from where we started.',
+   'Why not just turn 90?'],
+  ['Sensors', 14, 'What is PID?',
+   'P pushes harder when far off, I pushes more when stuck, D eases off when closing in fast.',
+   'Which parts does drive_cm use?'],
+  ['Sensors', 15, 'Why not the colour sensors?',
+   'They\'re plugged in, but only the gyroscope steers. It works everywhere on the mat, not just near a line.',
+   'Would a sensor have helped anywhere?'],
+  ['Code', 16, 'What if something goes wrong in a run?',
+   'More than 45 degrees off, it stops. Over 8 seconds, it gives up and goes on.',
+   'Why stop?'],
+  ['Code', 17, 'How are distances accurate?',
+   'We asked for 180 cm and got 179, so we scale by 179/180.',
+   'What if you change the wheels?'],
+  ['Code', 18, 'What did you reuse from last year?',
+   'drive_cm. We changed the wheel size from 88 mm to 62.4 mm.',
+   'Why did that number matter?'],
+  ['Robot', 19, 'How does the arm know where it is?',
+   'It starts on its stopper, and the code calls that zero.',
+   'What if it doesn\'t start there?'],
+  ['Code', 20, 'What\'s the cleverest thing in your code?',
+   'The arm lifts while the robot drives home, by leaving out await.',
+   'How much time does it save?'],
+  ['Strategy', 21, 'Why this order of runs?',
+   'Left first, close first, then the robo taxi.',
+   'What if the first run fails?'],
+  ['Strategy', 22, 'Which mission did you skip?',
+   'Lucky Leaves: far, partly luck, 10 or 20 points.',
+   'What would make it worth doing?'],
+  ['Iteration and team', 23, 'How reliable is your robot?',
+   'Give the 10-run numbers.',
+   'Which run is weakest?'],
+  ['Iteration and team', 24, 'How do you test a change?',
+   'Change one thing, run it 10 times, compare.',
+   'Give an example.'],
+  ['Iteration and team', 25, 'What broke, and how did you fix it?',
+   'One fix story, four parts: problem, how we found out, what we changed, result.',
+   'How did you find the cause?'],
+  ['Iteration and team', 26, 'What didn\'t work?',
+   'Pushing the arm into its stopper lifted the attachment, so we dropped that idea.',
+   'What did you do instead?'],
+  ['Iteration and team', 27, 'How do you know a fix helped?',
+   'A number before and a number after.',
+   'What if it only helped sometimes?'],
+  ['Iteration and team', 28, 'Who built and coded what?',
+   'Each member answers for themselves.',
+   'Explain your teammate\'s part.'],
+  ['Iteration and team', 29, 'How did you share the work?',
+   'Roles, and we swapped so everyone tried each.',
+   'What happened when you disagreed?'],
+  ['Strategy', 30, 'Whose idea was the robo taxi?',
+   'The true answer.',
+   'How did the team decide?'],
+  ['Iteration and team', 31, 'What did you learn?',
+   'One real lesson each.',
+   'How will you use it next season?'],
+  ['Iteration and team', 32, 'What are you most proud of?',
+   'Said like you mean it.',
+   'Why that one?']
 ];
 
 // The handover names in the scripts, in capitals above, become first names.
 function fillNames(text) {
   return text.replace(/\bROBOT\b/g, who('Robot'))
              .replace(/\bCODE\b/g, who('Code'))
-             .replace(/\bTESTING\b/g, who('Testing'))
-             .replace(/\bSENSORS\b/g, who('Sensors and team'));
+             .replace(/\bSENSORS\b/g, who('Sensors'))
+             .replace(/\bITERATION\b/g, who('Iteration and team'));
 }
 
 function createScriptDoc() {
   var doc = DocumentApp.create('FLL BIOGLOW: Robot Design presentation scripts');
   var body = doc.getBody();
   var H = DocumentApp.ParagraphHeading;
+
+  // Print-friendly: normal margins (in points, 72 to an inch), 11 pt text, and
+  // each speaker's part starts on a new page and fits on one page.
+  body.setMarginTop(50).setMarginBottom(50).setMarginLeft(60).setMarginRight(60);
+  var style = {};
+  style[DocumentApp.Attribute.FONT_FAMILY] = 'Arial';
+  style[DocumentApp.Attribute.FONT_SIZE] = 11;
+  body.setAttributes(style);
 
   body.appendParagraph('Robot Design presentation scripts').setHeading(H.TITLE);
   body.appendParagraph(
@@ -190,25 +296,49 @@ function createScriptDoc() {
 
     body.appendParagraph('Starter script').setHeading(H.HEADING2);
     p.script.forEach(function (para) {
-      body.appendParagraph(fillNames(para)).setItalic(true);
+      body.appendParagraph(fillNames(para)).setItalic(true).editAsText().setFontSize(11);
     });
 
     body.appendParagraph('My script, in my own words').setHeading(H.HEADING2);
     var box = body.appendTable([['Write here.']]);
     box.setBorderWidth(1);
-    box.getCell(0, 0).setBackgroundColor('#fdf1ea').setPaddingTop(8)
-       .setPaddingBottom(60);
+    box.getCell(0, 0).setBackgroundColor('#fdf1ea').setPaddingTop(6)
+       .setPaddingBottom(40);
 
     body.appendParagraph('Facts to check before we practise').setHeading(H.HEADING2);
     p.check.forEach(function (c) { body.appendListItem('☐ ' + c); });
 
     body.appendParagraph('Questions a judge might ask me').setHeading(H.HEADING2);
-    p.questions.forEach(function (q) { body.appendListItem(q); });
+    QUESTIONS.filter(function (q) { return q[0] === p.role; }).forEach(function (q) {
+      var para = body.appendParagraph(q[1] + '. ' + q[2]);
+      para.editAsText().setBold(true);
+      body.appendParagraph('Strong answer: ' + q[3]).editAsText().setBold(false);
+      body.appendParagraph('Follow-up: ' + q[4]).editAsText().setBold(false)
+          .setItalic(true);
+    });
 
     body.appendParagraph('Time it').setHeading(H.HEADING2);
     body.appendTable([['Practice', 'Time taken', 'What to cut or fix'],
                       ['1', '', ''], ['2', '', ''], ['3', '', '']]);
+
+    // A cue card to cut out and hold: the key points only, in big type.
+    body.appendParagraph('Cue card: cut out and hold').setHeading(H.HEADING2);
+    var card = body.appendTable([[who(p.role) + ': ' + p.role + '\n\n' +
+      p.cue.map(function (c) { return '• ' + c; }).join('\n')]]);
+    card.setBorderWidth(2).setBorderColor('#16362b');
+    card.getCell(0, 0).setPaddingTop(8).setPaddingBottom(8).setPaddingLeft(10)
+        .editAsText().setFontSize(13).setBold(true);
   });
+
+  // The drill sheet: every question, no answers, for the coach to read out.
+  body.appendPageBreak();
+  body.appendParagraph('Question drill: all 32').setHeading(H.HEADING1);
+  body.appendParagraph('The coach reads a question and points at anyone. Answer in ' +
+    'two or three sentences, then stop. "I don\'t know, but my teammate built ' +
+    'that" is a good answer.');
+  var drill = [['#', 'Question', 'Part']];
+  QUESTIONS.forEach(function (q) { drill.push([String(q[1]), q[2], q[0]]); });
+  body.appendTable(drill);
 
   doc.saveAndClose();
   Logger.log('--- For docs/team-links.md (kept off the public site) ---');

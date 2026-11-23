@@ -890,8 +890,8 @@ save('gyro-steps.svg', 1000, 460, 'Our gyroscope in three steps',
 p = [text(500, 40, 'Our five minutes: who speaks when', 24, INK, weight='bold'),
      text(500, 66, 'About a minute each. End your part by naming who comes next.', 16, MUTE)]
 parts = [(0, 70, 'Strategy', 'missions, robo taxi', GOLD), (70, 135, 'Robot', 'base, attachments', BLUE),
-         (135, 180, 'Code', 'Python, drive_cm', LEAF), (180, 240, 'Testing', 'tests, arm fix', ORANGE),
-         (240, 300, 'Sensors, team', 'gyroscope, who did what', '#6b46c1')]
+         (135, 180, 'Code', 'Python, drive_cm', LEAF), (180, 240, 'Sensors', 'gyroscope, yaw', '#6b46c1'),
+         (240, 300, 'Iteration, team', 'tests, arm fix, team', ORANGE)]
 X0, W = 50, 900
 for a, b, who_, what, col in parts:
     x1, x2 = X0 + W * a / 300, X0 + W * b / 300
@@ -905,8 +905,8 @@ for m in range(6):
 p.append(text(500, 290, 'Then 5 minutes of questions. The judges choose who answers.', 16, INK, weight='bold'))
 save('speaking-order.svg', 1000, 320, 'Our five minutes: who speaks when',
      'A timeline from 0:00 to 5:00. Strategy, missions and the robo taxi, until about 1:10. Robot, the base and '
-     'attachments, until 2:15. Code, Python and drive_cm, until 3:00. Testing, tests and the arm fix, until 4:00. '
-     'Sensors and team, the gyroscope and who did what, until 5:00. Then 5 minutes of questions, and the judges '
-     'choose who answers.', p)
+     'attachments, until 2:15. Code, Python and drive_cm, until 3:00. Sensors, the gyroscope and yaw, until 4:00. '
+     'Iteration and team, the tests, the arm fix and who did what, until 5:00. Then 5 minutes of questions, and the '
+     'judges choose who answers.', p)
 
 print('ok2')
