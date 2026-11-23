@@ -813,4 +813,99 @@ save('one-base.svg', 1000, 500, 'One base, many attachments',
      'the robo taxi, and a next idea using the same pegs, all fit one driving base that never changes. Every change to '
      'the base breaks the attachments built for it, so freeze the base, then build attachments.', p)
 
+
+# R. The ten rubric lines ----------------------------------------------------------
+def gear_icon(cx, cy, r=11, col=LEAF):
+    g = []
+    for i in range(8):
+        a = 2 * math.pi * i / 8
+        g.append(f'<rect x="{cx + (r+2)*math.cos(a) - 3:.1f}" y="{cy + (r+2)*math.sin(a) - 3:.1f}" width="6" height="6" fill="{col}"/>')
+    g.append(f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="#ffffff" stroke="{col}" stroke-width="3"/>')
+    return ''.join(g)
+p = [text(500, 40, 'Robot Design: 5 rows, 10 lines', 24, INK, weight='bold'),
+     text(500, 66, 'Each line scores 1 to 4. A gear means it counts for Core Values too.', 16, MUTE)]
+rows = [('IDENTIFY', GOLD, GOLDP, [('Mission strategy', False), ('Use of resources', True)]),
+        ('DESIGN', BLUE, BLUEP, [('All members had ideas', True), ('Everyone builds and codes', False)]),
+        ('CREATE', LEAF, PALE, [('Attachments and why', False), ('Code and sensors', False)]),
+        ('ITERATE', ORANGE, '#fdebdc', [('Repeated testing', False), ('Improvements from testing', True)]),
+        ('COMMUNICATE', '#6b46c1', '#efe9fb', [('Process and lessons', True), ('Pride and enthusiasm', True)])]
+y = 95
+n = 1
+for name, col, fill, lines in rows:
+    p.append(f'<rect x="40" y="{y}" width="200" height="74" rx="10" fill="{col}"/>')
+    p.append(text(140, y + 45, name, 18, '#ffffff', weight='bold'))
+    for k, (lab, geared) in enumerate(lines):
+        x = 260 + k * 355
+        p.append(f'<rect x="{x}" y="{y}" width="340" height="74" rx="10" fill="{fill}" stroke="{col}" stroke-width="2"/>')
+        p.append(f'<circle cx="{x+30}" cy="{y+37}" r="16" fill="{col}"/>')
+        p.append(text(x + 30, y + 43, str(n), 15, '#ffffff', weight='bold'))
+        p.append(text(x + 58, y + 43, lab, 16, INK, 'start', 'bold'))
+        if geared:
+            p.append(gear_icon(x + 312, y + 37, 11, col))
+        n += 1
+    y += 88
+p.append(gear_icon(390, y + 22, 9, MUTE))
+p.append(text(410, y + 28, '= also counts for Core Values', 15, MUTE, 'start'))
+save('rubric-lines.svg', 1000, y + 50, 'Robot Design: 5 rows, 10 lines',
+     'The Robot Design rubric. IDENTIFY: 1 mission strategy, 2 use of resources (gear). DESIGN: 3 all members had '
+     'ideas (gear), 4 everyone builds and codes. CREATE: 5 attachments and why, 6 code and sensors. ITERATE: 7 '
+     'repeated testing, 8 improvements from testing (gear). COMMUNICATE: 9 process and lessons (gear), 10 pride and '
+     'enthusiasm (gear). Each line scores 1 to 4. A gear means it also counts for Core Values.', p)
+
+# S. The gyroscope in three steps ---------------------------------------------------
+p = [text(500, 40, 'Our gyroscope in three steps', 24, INK, weight='bold'),
+     text(500, 66, 'Yaw is the direction the robot points, in degrees, like a compass.', 16, MUTE)]
+def mini_bot(cx, cy, ang, col=LEAF):
+    return (f'<g transform="rotate({ang} {cx} {cy})">'
+            f'<rect x="{cx-34}" y="{cy-40}" width="68" height="80" rx="6" fill="{PALE}" stroke="{col}" stroke-width="4"/>'
+            f'<polygon points="{cx},{cy-58} {cx-12},{cy-40} {cx+12},{cy-40}" fill="{col}"/></g>')
+steps = [(170, '1. Zero the yaw', 'At the start of every mission,', 'the way it points becomes 0.', GOLD, GOLDP),
+         (500, '2. Turn with the gyro', 'face(90) turns until the yaw', 'reads 90. Mistakes don\'t add up.', BLUE, BLUEP),
+         (830, '3. Drive straight', 'Every 15 ms it checks the yaw', 'and steers back if it drifted.', LEAF, PALE)]
+for cx, head, l1, l2, col, fill in steps:
+    p.append(f'<rect x="{cx-150}" y="95" width="300" height="340" rx="16" fill="{fill}" stroke="{col}" stroke-width="3"/>')
+    p.append(text(cx, 132, head, 19, col, weight='bold'))
+    p.append(text(cx, 392, l1, 15, INK))
+    p.append(text(cx, 414, l2, 15, INK))
+# step 1: robot with a 0 dial
+p.append(mini_bot(170, 255, 0, GOLD))
+p.append(text(170, 330, 'yaw = 0', 18, GOLD, weight='bold'))
+# step 2: robot turned 90
+p.append(f'<path d="M500,175 A80,80 0 0 1 580,255" fill="none" stroke="{BLUE}" stroke-width="3" stroke-dasharray="6 4"/>')
+p.append(mini_bot(500, 255, 90, BLUE))
+p.append(text(500, 330, 'yaw = 90', 18, BLUE, weight='bold'))
+# step 3: wavy path pulled straight
+p.append(f'<path d="M790,350 q30,-40 10,-80 q-25,-40 30,-80" fill="none" stroke="{RED}" stroke-width="3" stroke-dasharray="5 4"/>')
+p.append(f'<line x1="870" y1="350" x2="870" y2="190" stroke="{LEAF}" stroke-width="5"/>')
+p.append(f'<polygon points="858,192 882,192 870,172" fill="{LEAF}"/>')
+p.append(text(790, 368, 'no gyro', 13, RED, weight='bold'))
+p.append(text(870, 368, 'with gyro', 13, LEAF, weight='bold'))
+save('gyro-steps.svg', 1000, 460, 'Our gyroscope in three steps',
+     'Three panels. 1, zero the yaw: at the start of every mission, the way the robot points becomes 0. 2, turn '
+     'with the gyro: face(90) turns until the yaw reads 90, so mistakes do not add up. 3, drive straight: every 15 '
+     'milliseconds it checks the yaw and steers back if it drifted; a wavy path without the gyro, a straight one with '
+     'it. Yaw is the direction the robot points, in degrees, like a compass.', p)
+
+# T. Who speaks when, in the five minutes --------------------------------------------
+p = [text(500, 40, 'Our five minutes: who speaks when', 24, INK, weight='bold'),
+     text(500, 66, 'About a minute each. End your part by naming who comes next.', 16, MUTE)]
+parts = [(0, 70, 'Strategy', 'missions, robo taxi', GOLD), (70, 140, 'Robot', 'base, attachments', BLUE),
+         (140, 205, 'Code', 'Python, gyroscope', LEAF), (205, 265, 'Testing', 'tests, arm fix', ORANGE),
+         (265, 300, 'Team', 'who did what', '#6b46c1')]
+X0, W = 50, 900
+for a, b, who_, what, col in parts:
+    x1, x2 = X0 + W * a / 300, X0 + W * b / 300
+    p.append(f'<rect x="{x1+2}" y="110" width="{x2-x1-4}" height="90" rx="10" fill="{col}"/>')
+    p.append(text((x1 + x2) / 2, 150, who_, 18, '#ffffff', weight='bold'))
+    p.append(text((x1 + x2) / 2, 176, what, 13, '#ffffff'))
+for m in range(6):
+    x = X0 + W * m * 60 / 300
+    p.append(f'<line x1="{x}" y1="208" x2="{x}" y2="222" stroke="{MUTE}" stroke-width="2"/>')
+    p.append(text(x, 242, '%d:00' % m, 14, MUTE, weight='bold'))
+p.append(text(500, 290, 'Then 5 minutes of questions. The judges choose who answers.', 16, INK, weight='bold'))
+save('speaking-order.svg', 1000, 320, 'Our five minutes: who speaks when',
+     'A timeline from 0:00 to 5:00. Strategy, missions and the robo taxi, until about 1:10. Robot, the base and '
+     'attachments, until 2:20. Code, Python and the gyroscope, until 3:25. Testing, tests and the arm fix, until 4:25. '
+     'Team, who did what, until 5:00. Then 5 minutes of questions, and the judges choose who answers.', p)
+
 print('ok2')

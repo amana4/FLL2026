@@ -54,6 +54,10 @@ Fill these in as they exist.
 | Robot Design test form (what the kids fill in) | <https://docs.google.com/forms/d/e/1FAIpQLSdRh4IipvXHXhiSVWmqY-XLN85Sy2JrgbQs10BAixYI_1raFg/viewform> |
 | Robot Design test form, edit the questions | <https://docs.google.com/forms/d/1eteJly-dZSm7b7vIcV7ybCXjvdxN5ORJSrpm8mJl5Co/edit> |
 | Robot Design test responses (Google Sheets) | _paste once created_ |
+| Strategy and design quiz (what the kids fill in) | <https://docs.google.com/forms/d/e/1FAIpQLSczRwS6XJmWiqw3wQVuI8kW_k2h6wy8mVgYcma4z5biLJ9D8A/viewform> |
+| Strategy and design quiz, edit the questions | <https://docs.google.com/forms/d/1NS6NvkmmNy_UfR9hb9DvfD39L_rT4QcmN6UqhB_496k/edit> |
+| Strategy and design quiz responses (Google Sheets) | _paste once created_ |
+| Presentation scripts doc | _paste the link createScriptDoc prints_ |
 | **Bee field log data** (Google Sheets) | _paste the SHEET URL the script printed_ |
 | **Bee field log photos** (Drive folder, private) | _paste the PHOTO FOLDER URL_ |
 | Bee field log — edit the script | <https://script.google.com> — the project is called "Bee data collector" |
