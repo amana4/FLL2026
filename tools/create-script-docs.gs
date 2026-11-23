@@ -25,13 +25,16 @@
  * Going for Exceeds page and the workshop slides are pushed to main.
  */
 
-// Who is in which slot. Fill in first names before running.
+// Who is in which slot, from docs/team-roster.md. Fill in first names in your
+// pasted copy before running. Keep the Kid labels here: this file is public.
 var NAMES = {'Kid 1': 'Kid 1', 'Kid 2': 'Kid 2', 'Kid 3': 'Kid 3',
              'Kid 4': 'Kid 4', 'Kid 5': 'Kid 5'};
 
-// Who leads which part. The same as ROLE_SLOT in tools/make-exceeds-pptx.py.
-var ROLE_SLOT = {'Strategy': 'Kid 4', 'Robot': 'Kid 1', 'Code': 'Kid 5',
-                 'Testing': 'Kid 2', 'Team': 'Kid 3'};
+// Who leads which part, by roster slot. Testing is the ITERATE part. The same
+// as ROLE_SLOT in tools/make-exceeds-pptx.py. Changed 22 November 2026: the
+// gyroscope moved from Code to the last part, Sensors and team.
+var ROLE_SLOT = {'Strategy': 'Kid 5', 'Robot': 'Kid 2', 'Code': 'Kid 1',
+                 'Testing': 'Kid 4', 'Sensors and team': 'Kid 3'};
 
 var SITE = 'https://amana4.github.io/FLL2026/robot-design/';
 var LINKS = [
@@ -69,7 +72,7 @@ var PARTS = [
                 'What would you add with more time?']
   },
   {
-    role: 'Robot', time: '1:10 to 2:20', rows: 'CREATE: attachments. IDENTIFY: resources',
+    role: 'Robot', time: '1:10 to 2:15', rows: 'CREATE: attachments. IDENTIFY: resources',
     show: 'Do a live attachment swap. Hold up an old attachment next to the new one.',
     script: [
       'Before we built anything, we compared six robot designs. The three that ' +
@@ -92,27 +95,23 @@ var PARTS = [
                 'Why push instead of a motor?']
   },
   {
-    role: 'Code', time: '2:20 to 3:25', rows: 'CREATE: code and sensors',
-    show: 'One function on paper or a laptop, and the gyro loop picture.',
+    role: 'Code', time: '2:15 to 3:00', rows: 'CREATE: code',
+    show: 'One function on paper or a laptop, and the code layers picture.',
     script: [
       'We code in Python. Last year\'s team left us Python, so we could reuse it. ' +
       'Our drive command, drive_cm, is from last year. We only changed the wheel ' +
       'size. Python also gives us more control over every number.',
-      'We only use the gyroscope to steer, not the colour sensors. The gyroscope ' +
-      'measures yaw. Yaw is the direction the robot is pointing, like a compass.',
-      'We use it in three steps. One: at the start of every mission we zero the ' +
-      'yaw, so the way the robot points becomes zero. Two: we turn with the ' +
-      'gyroscope, so face 90 always means 90 degrees from the start, and small ' +
-      'mistakes don\'t add up. Three: while it drives, it checks the yaw every 15 ' +
-      'milliseconds. If the robot drifts, it steers back, harder the further off it ' +
-      'is. Now TESTING will tell you how we test.'
+      'Our code is in layers. Each run says what to do, like drive 44 centimetres ' +
+      'and face 90. Our library says how: speed up gently, steer, and stop on the ' +
+      'mark. If the robot ever gets 45 degrees off course, it stops instead of ' +
+      'spinning off the table. Now TESTING will tell you how we test.'
     ],
-    check: ['The 5-degree example: drift 5 left, error -5, it steers back right'],
-    questions: ['How does it drive straight?', 'Why not the colour sensors?',
-                'What is PID?']
+    check: ['What changed in drive_cm from last year: the wheel size, 88 mm to 62.4 mm'],
+    questions: ['Why Python?', 'What does your library do?',
+                'What happens if something goes wrong?']
   },
   {
-    role: 'Testing', time: '3:25 to 4:25', rows: 'ITERATE: testing and improvements',
+    role: 'Testing', time: '3:00 to 4:00', rows: 'ITERATE: testing and improvements',
     show: 'The printed run log table.',
     script: [
       'We test each run ten times and write down how many work. (Say a real ' +
@@ -124,26 +123,30 @@ var PARTS = [
       'second idea, pushing the arm into its stopper, lifted the attachment off. So ' +
       'we used the simplest answer: the arm starts on its stopper every time, and ' +
       'the code counts from there. Now it works even after we put the attachment ' +
-      'back on. We learned to measure first, then fix. Now TEAM will tell you ' +
-      'about our team.'
+      'back on. We learned to measure first, then fix. Now SENSORS will tell you ' +
+      'about our sensors and our team.'
     ],
     check: ['The 10-run result for every run, with dates'],
     questions: ['How do you know it is reliable?', 'What didn\'t work?',
                 'How did you find the cause?']
   },
   {
-    role: 'Team', time: '4:25 to 5:00', rows: 'DESIGN: everyone. COMMUNICATE: lessons and pride',
-    show: 'The who-did-what page. Each person steps forward for their line.',
+    role: 'Sensors and team', time: '4:00 to 5:00',
+    rows: 'CREATE: sensors. DESIGN: everyone. COMMUNICATE: lessons and pride',
+    show: 'The gyro steps picture, then the who-did-what page.',
     script: [
+      'We only use the gyroscope to steer. Our two colour sensors are plugged in, ' +
+      'but we don\'t use them. The gyroscope measures yaw: the way the robot ' +
+      'points, like a compass. We use it in three steps. Zero the yaw at the start, ' +
+      'turn with the gyroscope, and check the yaw every 15 milliseconds to drive ' +
+      'straight.',
       'All five of us built something and coded something. (Each person says one ' +
-      'sentence: "I built ... and I coded ...")',
-      'We shared the work by giving everyone a role and swapping roles, and when we ' +
-      'disagreed, we voted. We\'re most proud of ... Thank you. Ask any of us ' +
-      'anything.'
+      'sentence: "I built ... and I coded ...") We\'re most proud of ... Thank you. ' +
+      'Ask any of us anything.'
     ],
-    check: ['One "I built ... and I coded ..." line from every member',
-            'One lesson from every member'],
-    questions: ['Who built what?', 'What did you learn?',
+    check: ['The 5-degree example: drift 5 left, error -5, it steers back right',
+            'One "I built ... and I coded ..." line from every member'],
+    questions: ['Why not the colour sensors?', 'What is yaw?',
                 'What are you most proud of?']
   }
 ];
@@ -153,7 +156,7 @@ function fillNames(text) {
   return text.replace(/\bROBOT\b/g, who('Robot'))
              .replace(/\bCODE\b/g, who('Code'))
              .replace(/\bTESTING\b/g, who('Testing'))
-             .replace(/\bTEAM\b/g, who('Team'));
+             .replace(/\bSENSORS\b/g, who('Sensors and team'));
 }
 
 function createScriptDoc() {

@@ -687,7 +687,7 @@ wrote it. The rules are on the [Engineering Notebook page](../engineering-notebo
 
 ## 6. The five-minute explanation
 
-![Our five minutes: Strategy, Robot, Code, Testing and Team, about a minute each.](diagrams/speaking-order.svg){ loading=lazy }
+![Our five minutes: Strategy, Robot, Code, Testing, then Sensors and team, about a minute each.](diagrams/speaking-order.svg){ loading=lazy }
 
 - **Official:** 5 minutes to explain, then 5 minutes of questions. Plan to talk
   "without the robot game field."
@@ -721,7 +721,7 @@ wrote it. The rules are on the [Engineering Notebook page](../engineering-notebo
     We skipped Lucky Leaves. It's far away, partly luck, and only 10 or 20 points.
     Now [Robot lead] will show you the robot."
 
-### Robot lead: the robot and attachments (1:10 to 2:20)
+### Robot lead: the robot and attachments (1:10 to 2:15)
 
 - We compared six designs. Blue wheels slip, so ours grip.
 - Flat, so it lines up on the wall and the mat lines.
@@ -746,30 +746,25 @@ wrote it. The rules are on the [Engineering Notebook page](../engineering-notebo
     starts on a stopper, so it starts from the same fixed point every time. Next,
     [Code lead] will explain our code."
 
-### Code lead: programming and sensors (2:20 to 3:25)
+### Code lead: programming (2:15 to 3:00)
 
 - Python, so we reused last year's `drive_cm`. We changed the wheel size.
-- Only the gyroscope steers. Yaw is the way the robot points.
-- Three steps: zero, turn, drive straight.
+- Code in layers: the run says what, the library says how.
+- The safety stop at 45 degrees.
 
-**Show:** one function on paper, and the [gyro steps](diagrams/gyro-steps.svg).
+**Show:** one function on paper, and the [code layers](diagrams/code-layers.svg).
 
 ??? quote "The full starter script"
     "We code in Python. Last year's team left us Python, so we could reuse it. Our
     drive command, drive_cm, is from last year. We only changed the wheel size.
     Python also gives us more control over every number.
 
-    We only use the gyroscope to steer, not the colour sensors. The gyroscope
-    measures yaw. Yaw is the direction the robot is pointing, like a compass.
+    Our code is in layers. Each run says what to do, like drive 44 centimetres and
+    face 90. Our library says how: speed up gently, steer, and stop on the mark. If
+    the robot ever gets 45 degrees off course, it stops instead of spinning off the
+    table. Now [Testing lead] will tell you how we test."
 
-    We use it in three steps. One: at the start of every mission we zero the yaw,
-    so the way the robot points becomes zero. Two: we turn with the gyroscope, so
-    face 90 always means 90 degrees from the start, and small mistakes don't add
-    up. Three: while it drives, it checks the yaw every 15 milliseconds. If the
-    robot drifts, it steers back, harder the further off it is. Now [Testing lead]
-    will tell you how we test."
-
-### Testing lead: testing and a fix story (3:25 to 4:25)
+### Testing lead: testing and a fix story (3:00 to 4:00)
 
 - We test each run 10 times. Say a real number.
 - The arm fix: measured, two fixes failed, the stopper works.
@@ -788,22 +783,27 @@ wrote it. The rules are on the [Engineering Notebook page](../engineering-notebo
     second idea, pushing the arm into its stopper, lifted the attachment off. So we
     used the simplest answer: the arm starts on its stopper every time, and the
     code counts from there. Now it works even after we put the attachment back on.
-    We learned to measure first, then fix. Now [Team lead] will tell you about our
-    team."
+    We learned to measure first, then fix. Now [Sensors and team lead] will tell
+    you about our sensors and our team."
 
-### Team lead: team and lessons (4:25 to 5:00)
+### Sensors and team lead: sensors, then team and lessons (4:00 to 5:00)
 
-- All five of us built and coded. Each says one line.
-- Roles, swapping roles, voting when we disagree.
+- Only the gyroscope steers. The colour sensors are plugged in, not used.
+- Yaw, and the three steps: zero, turn, drive straight.
+- Then the team: all five of us built and coded. Each says one line.
 - What we're proudest of. "Ask any of us anything."
 
-**Show:** the who-did-what page.
+**Show:** the [gyro steps](diagrams/gyro-steps.svg), then the who-did-what page.
 
 ??? quote "The full starter script"
-    "All five of us built something and coded something." *(Each member says one
-    sentence: "I built ... and I coded ...")* "We shared the work by giving
-    everyone a role and swapping roles, and when we disagreed, we voted. We're
-    most proud of ... Thank you. Ask any of us anything."
+    "We only use the gyroscope to steer. Our two colour sensors are plugged in, but
+    we don't use them. The gyroscope measures yaw: the way the robot points, like
+    a compass. We use it in three steps. Zero the yaw at the start, turn with the
+    gyroscope, and check the yaw every 15 milliseconds to drive straight.
+
+    All five of us built something and coded something." *(Each member says one
+    sentence: "I built ... and I coded ...")* "We're most proud of ... Thank you.
+    Ask any of us anything."
 
 ## 7. Judge questions
 
