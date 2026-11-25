@@ -57,18 +57,18 @@ var PARTS = [
       'save time.',
       'First, we do the missions close to our home first. Short trips are quicker ' +
       'and more reliable. Our first runs do Flip the Rock and Exploding Seeds, then ' +
-      'the Drone Survey and Biocentric Architecture. That run is one straight push ' +
-      'and back, so it hardly ever goes wrong.',
+      'Reaching Roots, then the Drone Survey and Biocentric Architecture. That run ' +
+      'is one straight push and back, so it hardly ever goes wrong.',
       'Then comes what we call the robo taxi. Our attachments and the keystone ' +
-      'species wait on the left. The robot does Reaching Roots on the way, then ' +
-      'carries one attachment and the keystone species across to the right. That ' +
-      'one attachment does several missions there, so we don\'t stop to swap.',
+      'species wait on the left. The robot carries one attachment and the keystone ' +
+      'species across to the right. That one attachment does several missions ' +
+      'there, so we don\'t stop to swap.',
       'We skipped Lucky Leaves. It\'s far away, partly luck, and only 10 or 20 ' +
       'points. Now ROBOT will show you the robot.'
     ],
     check: ['Points and seconds for each run, from the scoresheet and a stopwatch',
-            'How many times out of 10 phase2 works'],
-    cue: ['Time is our biggest limit', 'Close missions first', 'phase2: one straight push and back', 'Robo taxi: attachment and keystone to the right', 'Skipped Lucky Leaves: far, luck, 10 or 20 points']
+            'How many times out of 10 Phase 2 works'],
+    cue: ['Time is our biggest limit', 'Close missions first', 'Phase 2: one straight push and back', 'Robo taxi: attachment and keystone to the right', 'Skipped Lucky Leaves: far, luck, 10 or 20 points']
   },
   {
     role: 'Robot', time: '1:10 to 2:15', rows: 'CREATE: attachments. IDENTIFY: resources',

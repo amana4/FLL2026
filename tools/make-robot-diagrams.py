@@ -461,27 +461,36 @@ save('gravity-mount.svg', 900, 490, 'Gravity mounting: pegs line the attachment 
      'lift it straight up. No pins to push in or forget; on or off in one move.', p)
 
 # J. Wheel pattern across the six designs ------------------------------------
-p = [text(450, 40, 'Six designs: three slip, three do not', 24, INK, weight='bold'),
-     text(450, 66, 'Sort them by their wheels, and the slipping stops exactly where the wheels change.', 16, MUTE)]
-groups = [
-    ('Blue SPIKE wheels', RED, REDP, ['HummerOne Pro', 'Xbot', 'YellowBot v1'], 'wheels slip'),
-    ('62.4 mm LEGO wheels', LEAF, PALE, ['YellowBot v2', 'Track-X', 'Boxor'], 'no slipping listed'),
-]
-for gi, (head, col, fill, names, verdict) in enumerate(groups):
-    x0 = 60 + gi * 420
-    p.append(f'<rect x="{x0}" y="100" width="360" height="300" rx="16" fill="{fill}" stroke="{col}" stroke-width="3"/>')
-    p.append(text(x0 + 180, 135, head, 18, col, weight='bold'))
-    for i, n in enumerate(names):
-        y = 175 + i * 62
-        p.append(f'<rect x="{x0+40}" y="{y}" width="280" height="46" rx="10" fill="#ffffff" stroke="{col}" stroke-width="2"/>')
-        p.append(f'<circle cx="{x0+72}" cy="{y+23}" r="14" fill="{INK}"/><circle cx="{x0+72}" cy="{y+23}" r="6" fill="{col}"/>')
-        p.append(text(x0 + 200, y + 29, n, 17, INK, weight='bold'))
-    p.append(text(x0 + 180, 380, verdict, 18, col, weight='bold'))
-p.append(text(450, 440, 'A coach who switched to 62.4 mm wheels says the robot stopped slipping on turns.', 15, MUTE))
-save('wheel-pattern.svg', 900, 470, 'Six designs sorted by their wheels: three slip, three do not',
-     'Left group, blue SPIKE wheels: HummerOne Pro, Xbot and YellowBot v1, which all list wheel slipping. Right group, '
-     '62.4 mm LEGO wheels: YellowBot v2, Track-X and Boxor, which list no slipping. A coach who switched to 62.4 mm '
-     'wheels says the robot stopped slipping on turns.', p)
+# Two copies. wheel-pattern.svg names the designs, for the knowledge base.
+# wheel-pattern-unnamed.svg numbers them instead, for the judging slides: the team
+# decided on 25 November 2026 not to name the designs in front of the judges.
+NAMES_SLIP = ['HummerOne Pro', 'Xbot', 'YellowBot v1']
+NAMES_GRIP = ['YellowBot v2', 'Track-X', 'Boxor']
+for fname, slip, grip in (('wheel-pattern.svg', NAMES_SLIP, NAMES_GRIP),
+                          ('wheel-pattern-unnamed.svg', ['Design 1', 'Design 2', 'Design 3'],
+                           ['Design 4', 'Design 5', 'Design 6'])):
+    p = [text(450, 40, 'Six designs: three slip, three do not', 24, INK, weight='bold'),
+         text(450, 66, 'Sort them by their wheels, and the slipping stops exactly where the wheels change.', 16, MUTE)]
+    groups = [
+        ('Blue SPIKE wheels', RED, REDP, slip, 'wheels slip'),
+        ('62.4 mm LEGO wheels', LEAF, PALE, grip, 'no slipping listed'),
+    ]
+    for gi, (head, col, fill, names, verdict) in enumerate(groups):
+        x0 = 60 + gi * 420
+        p.append(f'<rect x="{x0}" y="100" width="360" height="300" rx="16" fill="{fill}" stroke="{col}" stroke-width="3"/>')
+        p.append(text(x0 + 180, 135, head, 18, col, weight='bold'))
+        for i, n in enumerate(names):
+            y = 175 + i * 62
+            p.append(f'<rect x="{x0+40}" y="{y}" width="280" height="46" rx="10" fill="#ffffff" stroke="{col}" stroke-width="2"/>')
+            p.append(f'<circle cx="{x0+72}" cy="{y+23}" r="14" fill="{INK}"/><circle cx="{x0+72}" cy="{y+23}" r="6" fill="{col}"/>')
+            p.append(text(x0 + 200, y + 29, n, 17, INK, weight='bold'))
+        p.append(text(x0 + 180, 380, verdict, 18, col, weight='bold'))
+    p.append(text(450, 440, 'A coach who switched to 62.4 mm wheels says the robot stopped slipping on turns.', 15, MUTE))
+    save(fname, 900, 470, 'Six designs sorted by their wheels: three slip, three do not',
+         'Left group, blue SPIKE wheels: %s, which all list wheel slipping. Right group, '
+         '62.4 mm LEGO wheels: %s, which list no slipping. A coach who switched to 62.4 mm '
+         'wheels says the robot stopped slipping on turns.'
+         % (', '.join(slip[:2]) + ' and ' + slip[2], ', '.join(grip[:2]) + ' and ' + grip[2]), p)
 
 # K. Mission map and our route -------------------------------------------------
 # Positions are FIRST's wireframe coordinates from robot-game/field-positions.md,
@@ -491,10 +500,11 @@ MS = 4.4                      # px per cm
 MX, MY = 60, 96               # top-left of the mat in the picture
 def mx(x): return MX + x * MS
 def my(y): return MY + (114.3 - y) * MS
-ORANGE = '#dd6b20'; PURPLE = '#6b46c1'
+ORANGE = '#dd6b20'; PURPLE = '#6b46c1'; TEAL = '#0e7c86'; PINK = '#b83280'
 def colour_arrow_defs():
     d = ['<defs>']
-    for name, col in (('arG', LEAF), ('arO', ORANGE), ('arB', BLUE), ('arY', GOLD), ('arP', PURPLE)):
+    for name, col in (('arG', LEAF), ('arO', ORANGE), ('arB', BLUE), ('arY', GOLD), ('arP', PURPLE),
+                      ('arT', TEAL), ('arK', PINK)):
         d.append(f'<marker id="{name}" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" '
                  f'markerWidth="16" markerHeight="16" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{col}"/></marker>')
     d.append('</defs>')
@@ -504,10 +514,11 @@ def route(pts, col, marker, width=5, dash=None):
     da = f' stroke-dasharray="{dash}"' if dash else ''
     return (f'<polyline points="{p_}" fill="none" stroke="{col}" stroke-width="{width}" stroke-linecap="round" '
             f'stroke-linejoin="round"{da} marker-end="url(#{marker})"/>')
-W_, H_ = 1000, 760
+W_, H_ = 1000, 775
 p = [colour_arrow_defs(),
      text(W_/2, 40, 'Our missions and our route', 24, INK, weight='bold'),
-     text(W_/2, 66, 'Start on the left, finish what is close, then carry one attachment and the keystone species to the right.', 16, MUTE)]
+     text(W_/2, 66, 'Seven runs, Phase 0 to Phase 7. We dropped Phase 4. Left side first, then the robo taxi to the right.', 16, MUTE)]
+MAT_START = len(p)            # from here to MAT_END is the mat alone, reused for the slide copy
 # the mat and its 20 cm wireframe
 p.append(f'<rect x="{mx(0)}" y="{my(114.3)}" width="{200*MS}" height="{114.3*MS}" rx="8" fill="#f7faf6" stroke="{LINE}" stroke-width="2"/>')
 for gx_ in range(20, 200, 20):
@@ -529,22 +540,24 @@ p.append(text(mx(185), my(16), 'HOME', 15, BLUE, weight='bold'))
 for nm, x_, y_ in (('Mine dock', 189.1, 102.7), ('Farm dock', 101.2, 64.9), ('City dock', 128.6, 10.2)):
     p.append(f'<rect x="{mx(x_)-17}" y="{my(y_)-17}" width="34" height="34" rx="5" fill="#ffffff" stroke="{MUTE}" stroke-width="2" stroke-dasharray="4 3"/>')
     p.append(text(mx(x_), my(y_) + 32, nm, 12, MUTE, weight='bold'))
-# routes, drawn under the mission dots
-p.append(route([(30, 30), (14, 62)], LEAF, 'arG'))                          # phase0-alt: back into the rock
+# routes, drawn under the mission dots. The phases were confirmed by the coach on
+# 25 November 2026: seven runs, Phase 0 to Phase 7, with no Phase 4.
+p.append(route([(30, 30), (14, 62)], LEAF, 'arG'))                          # Phase 0: back into the rock
 p.append(route([(16, 66), (58, 55)], LEAF, 'arG'))                          # then the seeds
-p.append(route([(46, 13), (122, 13)], PURPLE, 'arP', 6))                   # phase2: one straight push, drone and City dock
+p.append(route([(34, 38), (39, 98)], TEAL, 'arT', 7))                       # Phase 1: up to the roots
+p.append(route([(46, 13), (122, 13)], PURPLE, 'arP', 6))                   # Phase 2: one straight push, drone and City dock
 p.append(route([(118, 5), (46, 5)], PURPLE, 'arP', 3, '8 6'))              # and straight back
-p.append(route([(36, 40), (40, 98)], ORANGE, 'arO', 7))                     # phase3: up to the roots
-p.append(route([(44, 96), (90, 90), (125, 83), (160, 70), (182, 46)], ORANGE, 'arO', 7, '14 8'))  # robo taxi to the right
+p.append(route([(46, 42), (66, 76), (100, 88), (130, 82), (160, 70), (182, 46)],
+               ORANGE, 'arO', 7, '14 8'))                                   # Phase 3: robo taxi to the right
 p.append(route([(166, 24), (146, 54)], BLUE, 'arB'))                        # Phase 5: window
 p.append(route([(150, 64), (152, 100)], BLUE, 'arB'))                       # leafcutters, fungus
 p.append(route([(168, 100), (188, 82)], BLUE, 'arB'))                       # forest elder
 p.append(route([(178, 40), (184, 92)], GOLD, 'arY', 6))                    # Phase 6: keystone to the Mine dock
-# missions: (label, x, y, status). done / part / skip / not
-# (label, x, y, status, colour of the run that does it)
+p.append(route([(158, 18), (136, 13)], PINK, 'arK', 6))                    # Phase 7: M15 canopy and hatch
+# missions: (label, x, y, status, colour of the run that does it). done / part / skip / not
 missions = [('M01', 88.0, 9.2, 'done', PURPLE), ('M15', 128.6, 10.2, 'done', PURPLE),
             ('M02', 63.8, 55.1, 'done', LEAF), ('M03', 9.7, 68.0, 'done', LEAF),
-            ('M04', 15.7, 99.0, 'skip', None), ('M05', 40.1, 106.1, 'done', ORANGE),
+            ('M04', 15.7, 99.0, 'skip', None), ('M05', 40.1, 106.1, 'done', TEAL),
             ('M06', 151.3, 106.2, 'done', BLUE), ('M07', 163.7, 106.2, 'done', BLUE),
             ('M08', 54.3, 106.1, 'not', None), ('M09', 65.9, 106.1, 'not', None),
             ('M10', 78.3, 102.3, 'not', None), ('M10', 109.2, 77.3, 'not', None),
@@ -552,6 +565,9 @@ missions = [('M01', 88.0, 9.2, 'done', PURPLE), ('M15', 128.6, 10.2, 'done', PUR
             ('M13', 189.1, 102.7, 'done', GOLD)]
 for lab, x_, y_, st, rc in missions:
     cx_, cy_ = mx(x_), my(y_)
+    if lab == 'M15':
+        # Two runs share M15: Phase 2 the skylight, Phase 7 the canopy and the hatch.
+        p.append(f'<circle cx="{cx_}" cy="{cy_}" r="21" fill="{PINK}" stroke="#ffffff" stroke-width="2"/>')
     if st == 'done':
         p.append(f'<circle cx="{cx_}" cy="{cy_}" r="17" fill="{rc}" stroke="#ffffff" stroke-width="3"/>')
         p.append(text(cx_, cy_ + 5, lab[1:], 13, '#ffffff', weight='bold'))
@@ -569,6 +585,15 @@ for lab, x_, y_, st, rc in missions:
 p.append(f'<rect x="{mx(112)-34}" y="{my(86)-15}" width="68" height="30" rx="15" fill="{GOLDP}" stroke="{GOLD}" stroke-width="2.5"/>')
 p.append(text(mx(112), my(86) + 5, 'keystone', 13, GOLD, weight='bold'))
 p.append(text(mx(112), my(86) - 24, 'ROBO TAXI', 14, ORANGE, weight='bold'))
+MAT_END = len(p)
+# a tag on every route, so each phase can be found on the map
+def phase_tag(num, x_, y_, col, w=76, h=26, size=14):
+    cx_, cy_ = mx(x_), my(y_)
+    return (f'<rect x="{cx_-w/2}" y="{cy_-h/2}" width="{w}" height="{h}" rx="{h/2}" fill="{col}" stroke="#ffffff" stroke-width="2"/>'
+            + text(cx_, cy_ + size * 0.36, 'Phase %d' % num, size, '#ffffff', weight='bold'))
+for num, x_, y_, col in ((0, 10, 50, LEAF), (1, 28, 82, TEAL), (2, 70, 19, PURPLE), (3, 60, 76, ORANGE),
+                         (5, 138, 42, BLUE), (6, 191, 61, GOLD), (7, 150, 24, PINK)):
+    p.append(phase_tag(num, x_, y_, col))
 # legend
 ly0 = my(0) + 38
 items = [(INK, 'done', 'Done: coloured by its run'), (BLUE, 'part', 'Part of it (M12)'),
@@ -585,23 +610,44 @@ for i, (col, st, lab) in enumerate(items):
         for k, c_ in enumerate((LEAF, PURPLE, ORANGE)):
             p.append(f'<circle cx="{lx_-22+k*11}" cy="{ly0}" r="7" fill="{c_}" stroke="#ffffff" stroke-width="1.5"/>')
     p.append(text(lx_ + 18, ly0 + 5, lab, 14, INK, 'start'))
-ly1 = ly0 + 34
-for i, (col, lab) in enumerate(((LEAF, 'phase0-alt: rock, seeds'), (PURPLE, 'phase2: drone, M15'),
-                                (ORANGE, 'phase3: roots, robo taxi'), (BLUE, 'Phase 5: right side'),
-                                (GOLD, 'Phase 6: keystone'))):
-    lx_ = 40 + i * 190
-    p.append(f'<line x1="{lx_}" y1="{ly1}" x2="{lx_+30}" y2="{ly1}" stroke="{col}" stroke-width="6" stroke-linecap="round"/>')
-    p.append(text(lx_ + 40, ly1 + 5, lab, 14, INK, 'start'))
-p.append(text(W_/2, ly1 + 36, 'Routes are a sketch of our runs, not measured paths. Mission spots are from FIRST\'s wireframe.', 13, MUTE))
+PHASES = ((LEAF, 'Phase 0: rock, seeds'), (TEAL, 'Phase 1: roots'),
+          (PURPLE, 'Phase 2: drone, skylight'), (ORANGE, 'Phase 3: robo taxi'),
+          (None, 'Phase 4: dropped'), (BLUE, 'Phase 5: right side'),
+          (GOLD, 'Phase 6: keystone'), (PINK, 'Phase 7: canopy, hatch'))
+for i, (col, lab) in enumerate(PHASES):
+    lx_ = 60 + (i % 4) * 235
+    ly_ = ly0 + 34 + (i // 4) * 30
+    if col:
+        p.append(f'<line x1="{lx_}" y1="{ly_}" x2="{lx_+30}" y2="{ly_}" stroke="{col}" stroke-width="6" stroke-linecap="round"/>')
+    else:
+        p.append(f'<line x1="{lx_}" y1="{ly_}" x2="{lx_+30}" y2="{ly_}" stroke="{LINE}" stroke-width="3" stroke-dasharray="4 4"/>')
+    p.append(text(lx_ + 40, ly_ + 5, lab, 14, INK if col else MUTE, 'start'))
+p.append(text(W_/2, ly0 + 34 + 30 + 36, 'Routes are a sketch of our runs, not measured paths. Mission spots are from FIRST\'s wireframe.', 13, MUTE))
 open(os.path.join(out, 'mission-route.svg'), 'w').write(svg(W_, H_,
     'Our missions and our route across the mat',
     'A map of the mat from above. The left home is bottom left and the right home is bottom right. '
-    'From the left home, phase0-alt does M03 Flip the Rock and M02 Exploding Seeds. phase2 does M01 Drone Survey and '
-    'M15 Biocentric Architecture on the City dock with one straight push, and comes straight back. phase3 does M05 Reaching Roots, '
-    'then drives to the right side as a robo taxi, carrying one attachment and the keystone species. From the right, '
-    'Phase 5 does M11, M06, M07 and part of M12, and Phase 6 takes the keystone species to the Mine dock for M13. '
+    'There are seven runs, Phase 0 to Phase 7, and no Phase 4. From the left home, Phase 0 does M03 Flip the Rock '
+    'and M02 Exploding Seeds. Phase 1 does M05 Reaching Roots. Phase 2 does M01 Drone Survey and the garden skylight '
+    'of M15 Biocentric Architecture on the City dock with one straight push, and comes straight back. Phase 3 is the '
+    'robo taxi: it drives to the right side carrying one attachment and the keystone species. From the right, '
+    'Phase 5 does M11, M06, M07 and part of M12, Phase 6 takes the keystone species to the Mine dock for M13, and '
+    'Phase 7 does the nesting canopy and the compost hatch of M15. '
     'M04 Lucky Leaves is skipped on purpose. M08, M09, M10 and M14 are not in our runs. '
     'Routes are a sketch, not measured paths.', ''.join(p)))
+
+# The slide copy, for the judging slides: the mat alone, cropped, with bigger
+# phase tags. The slide lists the phases next to it, so there is no legend.
+CROP_X, CROP_Y = mx(0) - 20, my(114.3) - 20
+body = [colour_arrow_defs(), f'<g transform="translate({-CROP_X},{-CROP_Y})">'] + p[MAT_START:MAT_END]
+for num, x_, y_, col in ((0, 10, 44, LEAF), (1, 26, 82, TEAL), (2, 66, 19, PURPLE), (3, 50, 74, ORANGE),
+                         (5, 136, 40, BLUE), (6, 192, 56, GOLD), (7, 150, 26, PINK)):
+    body.append(phase_tag(num, x_, y_, col, w=92, h=32, size=18))
+body.append('</g>')
+open(os.path.join(out, 'mission-route-slide.svg'), 'w').write(svg(
+    round(200 * MS + 40), round(114.3 * MS + 40),
+    'Our seven runs on the mat',
+    'The mat from above, with a tag on each run: Phase 0 to Phase 7, with no Phase 4. The same routes as the '
+    'mission map, without its title and legend.', ''.join(body)))
 
 # L. HummerOne Pro against our robot -------------------------------------------
 # Facts for HummerOne Pro come from robot-design/chassis-designs-slides.html.
@@ -908,5 +954,30 @@ save('speaking-order.svg', 1000, 320, 'Our five minutes: who speaks when',
      'attachments, until 2:15. Code, Python and drive_cm, until 3:00. Sensors, the gyroscope and yaw, until 4:00. '
      'Iteration and team, the tests, the arm fix and who did what, until 5:00. Then 5 minutes of questions, and the '
      'judges choose who answers.', p)
+
+# U. drive_cm, the simple version, for the Code slide and cue card -------------------
+# The full flowchart is C above. This one keeps only the steps the Code lead talks
+# about, in one row, with big text so it still reads on a printed cue card.
+p = []
+Y = 200
+p.append(node('start', 100, Y, 170, 64, ['drive_cm(-44)'], 21))
+p.append(node('step', 300, Y, 170, 84, ['Speed up', 'gently'], 21))
+p.append(node('ask', 520, Y, 230, 130, ['More than', '45 degrees off?'], 19))
+p.append(node('stop', 520, 50, 250, 64, ['Stop. Too far', 'off course.'], 19))
+p.append(node('step', 760, Y, 180, 84, ['Steer back', 'to straight'], 21))
+p.append(node('ask', 975, Y, 190, 130, ['At the', 'mark?'], 21))
+p.append(node('end', 1170, Y, 140, 64, ['Brake.', 'Done.'], 21))
+p.append(arrow([(185, Y), (213, Y)]))
+p.append(arrow([(385, Y), (403, Y)]))
+p.append(arrow([(520, Y - 65), (520, 84)], 'yes', 548, 118, RED))
+p.append(arrow([(635, Y), (668, Y)], 'no', 652, Y - 12, LEAF))
+p.append(arrow([(850, Y), (878, Y)]))
+p.append(arrow([(1070, Y), (1098, Y)], 'yes', 1084, Y - 12, LEAF))
+p.append(arrow([(975, Y + 65), (975, 320), (520, 320), (520, Y + 67)], 'no: check again in 15 ms',
+               748, 345, LEAF))
+save('drive-simple.svg', 1260, 360, 'Flowchart: drive_cm, the simple version',
+     'drive_cm(-44) speeds up gently. Then it asks: more than 45 degrees off? If yes, it stops, too far off course. '
+     'If no, it steers back to straight and asks: at the mark? If yes, it brakes and is done. If no, it checks '
+     'again in 15 milliseconds.', p)
 
 print('ok2')

@@ -117,6 +117,8 @@ RUN_PURPLE = RGBColor(0x6B, 0x46, 0xC1)
 RUN_ORANGE = RGBColor(0xDD, 0x6B, 0x20)
 RUN_BLUE = RGBColor(0x2B, 0x6C, 0xB0)
 RUN_GOLD = RGBColor(0xB7, 0x79, 0x1F)
+RUN_TEAL = RGBColor(0x0E, 0x7C, 0x86)
+RUN_PINK = RGBColor(0xB8, 0x32, 0x80)
 
 FONT = "Trebuchet MS"
 
@@ -481,7 +483,7 @@ for i, (num, head, body) in enumerate(choices):
     text(s, body, cx + 0.25, cy + 1.1, 3.4, 1.2, size=14, color=MUTED)
 notes(s, "Each choice is a reason a judge can write down. Ask a different kid "
          "to explain each one, with an example from our robot. For choice 3: "
-         "phase2 does M01 Drone Survey and M15 Biocentric Architecture with one "
+         "Phase 2 does M01 Drone Survey and the M15 garden skylight with one "
          "straight push and back, which is why it is so reliable. Measure it: "
          "how many out of 10?")
 
@@ -491,11 +493,12 @@ title(s, "Left first, then the robo taxi to the right")
 image(s, png("mission-route"), 0.7, 1.5, h=5.5)
 card(s, 8.55, 1.6, 4.05, 5.5, "Why this order",
      "Everything we need waits on the left: the attachments and the keystone "
-     "species.\n\nphase0-alt does the rock and the seeds, close to home. "
-     "phase2 does the drone and M15 with one straight push and back.\n\n"
-     "phase3 does the roots, then drives right as a robo taxi, carrying one "
-     "attachment and the keystone.\n\nFrom the right: Phase 5, then Phase 6 "
-     "puts the keystone on the Mine dock.", size=13)
+     "species.\n\nPhase 0 does the rock and the seeds, and Phase 1 the roots, "
+     "close to home. Phase 2 does the drone and the M15 skylight with one "
+     "straight push and back.\n\nPhase 3 is the robo taxi: it carries one "
+     "attachment and the keystone to the right.\n\nFrom the right: Phase 5, "
+     "Phase 6 puts the keystone on the Mine dock, and Phase 7 does the rest of "
+     "M15. We dropped Phase 4.", size=13)
 notes(s, "The routes are a sketch, not measured paths. Check each run's "
          "missions with the team: the Phase 5 numbers (M07, M11, M06, M12) "
          "came from one teammate's answer. M12 is partly done: we skipped the "
@@ -506,7 +509,7 @@ eyebrow(s, "IDENTIFY  ·  the robo taxi")
 title(s, "One trip carries everything to the right")
 for i, (head, body) in enumerate((
         ("Load up", "On the left: the attachment and the keystone species go on the robot."),
-        ("Work on the way", "phase3 does M05 Reaching Roots, then drives across the mat."),
+        ("One trip", "Phase 3 drives across the mat. It does not come back for anything."),
         ("Drop off", "On the right, the same attachment does the right-side missions, and the keystone goes to the Mine dock."))):
     cx = 0.7 + i * 2.85
     rect(s, cx, 1.9, 2.65, 2.6, fill=PALE if i < 2 else TINT, line=GREY)
@@ -527,14 +530,15 @@ s = slide()
 eyebrow(s, "IDENTIFY gap  ·  activity: fill this in together")
 title(s, "Our missions, one list we all agree on")
 table(s, [["Program", "Missions", "Points", "Seconds", "Works /10", "Why this one"],
-          ["phase0-alt.py", "M03 Flip the Rock, M02 Exploding Seeds", "", "", "", ""],
-          ["phase2.py", "M01 Drone Survey, M15 Biocentric Architecture (City dock)", "", "", "", "One straight push and back"],
-          ["phase3.py", "M05 Reaching Roots", "", "", "", ""],
-          ["Phase 5.py", "Pull, open door, ant, Tree support: M07, M11, M06, M12?", "", "", "", ""],
-          ["Phase 6.py", "M13 Keystone Species", "", "", "", ""],
-          ["Phase 7.py", "Mission N (18 November)", "", "", "", ""],
+          ["Phase 0", "M03 Flip the Rock, M02 Exploding Seeds", "", "", "", ""],
+          ["Phase 1", "M05 Reaching Roots", "", "", "", ""],
+          ["Phase 2", "M01 Drone Survey, M15 garden skylight (City dock)", "", "", "", "One straight push and back"],
+          ["Phase 3", "Robo taxi: attachment and keystone to the right", "", "", "", ""],
+          ["Phase 5", "Pull, open door, ant, Tree support: M07, M11, M06, M12?", "", "", "", ""],
+          ["Phase 6", "M13 Keystone Species", "", "", "", ""],
+          ["Phase 7", "M15 nesting canopy and compost hatch", "", "", "", ""],
           ["Skipped", "M04 Lucky Leaves, M12 ring on the Elder tree", "", "", "", ""]],
-      0.7, 1.8, 11.9, [1.8, 4.3, 1.1, 1.2, 1.3, 2.2], row_h=0.52, size=13)
+      0.7, 1.8, 11.9, [1.8, 4.3, 1.1, 1.2, 1.3, 2.2], row_h=0.43, size=13)
 text(s, "One of us thinks Phase 5 is M07, M11, M06 and M12. Check it together. "
         "One answer said we do 11 missions: count them.", 0.7, 6.25, 11.9,
      0.8, size=14, color=ACCENT, bold=True)
@@ -792,17 +796,19 @@ s = template("T2", lead("Strategy"), "IDENTIFY", "How we chose our missions", 35
              ["Each phase and its missions", "Left first, close first", "Reused attachments",
               "Robo taxi: why we carry the keystone", "Points, seconds, works /10",
               "One skipped mission, with numbers"])
-image(s, png("mission-route"), 0.7, 1.6, w=4.5)
-your_turn(s, 5.4, 1.6, 3.7, 3.35,
+image(s, png("mission-route"), 0.7, 1.6, w=3.8)
+your_turn(s, 5.4, 1.6, 3.7, 2.9,
           "Skipped: M__ was only __ points, took __ seconds, worked __ out of 10.", size=13)
 table(s, [["Phase", "Missions", "Points", "Seconds", "Works /10"],
-          ["phase0-alt", "M03, M02", "", "", ""],
-          ["phase2", "M01, M15 (City dock)", "", "", ""],
-          ["phase3", "M05, then robo taxi", "", "", ""],
+          ["Phase 0", "M03, M02", "", "", ""],
+          ["Phase 1", "M05", "", "", ""],
+          ["Phase 2", "M01, M15 skylight (City dock)", "", "", ""],
+          ["Phase 3", "Robo taxi", "", "", ""],
           ["Phase 5", "M06, M07, M11, part of M12", "", "", ""],
-          ["Phase 6", "M13 (Mine dock)", "", "", ""]],
-      0.7, 5.1, 8.4, [1.45, 3.35, 1.1, 1.2, 1.3], row_h=0.3, size=11,
-      first_col=[RUN_GREEN, RUN_PURPLE, RUN_ORANGE, RUN_BLUE, RUN_GOLD])
+          ["Phase 6", "M13 (Mine dock)", "", "", ""],
+          ["Phase 7", "M15 canopy and hatch", "", "", ""]],
+      0.7, 4.65, 8.4, [1.45, 3.35, 1.1, 1.2, 1.3], row_h=0.27, size=10,
+      first_col=[RUN_GREEN, RUN_TEAL, RUN_PURPLE, RUN_ORANGE, RUN_BLUE, RUN_GOLD, RUN_PINK])
 
 s = template("T3", lead("Strategy"), "IDENTIFY", "Where our ideas came from", 25,
              "We compared six designs and spotted the wheel pattern. Then "

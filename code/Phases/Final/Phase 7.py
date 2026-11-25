@@ -3,7 +3,7 @@
 # The part above the marker is a copy of code/library/advanced.py. Refresh it
 # with:
 #
-#     python3 tools/build-mission.py 'code/Phases/Final/Phase 7.py'
+#    python3 tools/build-mission.py 'code/Phases/Final/Phase 7.py'
 #
 # Edit below the marker. That is where the ports and the mission live.
 
@@ -36,10 +36,10 @@ LEFT_DRIVE = port.F
 RIGHT_DRIVE = port.A
 
 attachment1 = port.C
-attachment2 = port.E           # confirmed on the robot, see Phase 5.py
+attachment2 = port.D        # not confirmed
 
-WHEEL_D_MM = 62.4              # measure this. Everything depends on it
-TRACK_W_MM = 130.0             # only arc_turn uses this one
+WHEEL_D_MM = 62.4            # measure this. Everything depends on it
+TRACK_W_MM = 130.0            # only arc_turn uses this one
 ACCEL = 1000
 DECEL = 1000
 
@@ -68,10 +68,10 @@ YAW_SIGN = -1
 MAX_DEG_S = 1050
 
 TOP_SPEED = 630                # blocks: 60 percent
-TOP_SPEED_SHORT = 315          # blocks: 30 percent, for moves under 30 cm
-START_SPEED = 262              # blocks: 25 percent, where a ramp starts
-TURN_MAX = 630                 # how hard a gyro turn is allowed to push
-TURN_MIN = 126                 # below this the wheels buzz and do not move
+TOP_SPEED_SHORT = 315        # blocks: 30 percent, for moves under 30 cm
+START_SPEED = 262            # blocks: 25 percent, where a ramp starts
+TURN_MAX = 630                # how hard a gyro turn is allowed to push
+TURN_MIN = 126                # below this the wheels buzz and do not move
 
 # How hard to push back when the robot drifts off straight.
 # These came from the blocks as 1.8 and 0.5 percent per degree. Multiplied by
@@ -80,11 +80,11 @@ KP_STRAIGHT = 18.9
 KD_STRAIGHT = 5.25
 
 KP_BACK = 15.75                # blocks: 1.5
-KD_BACK = 10.5                 # blocks: 1.0
+KD_BACK = 10.5                # blocks: 1.0
 
-KP_TURN = 7.35                 # blocks: 0.7
-KI_TURN = 0.0105               # blocks: 0.001
-KD_TURN = 1.05                 # blocks: 0.1
+KP_TURN = 7.35                # blocks: 0.7
+KI_TURN = 0.0105            # blocks: 0.001
+KD_TURN = 1.05                # blocks: 0.1
 
 # How far the robot rolls after the brakes go on. We take this off the target so
 # the rolling lands us on the mark. Measure it: the mission log prints it.
@@ -103,7 +103,7 @@ MAX_SENSIBLE_CM = 200.0
 
 # Give up after this long rather than getting stuck forever.
 DEFAULT_TIMEOUT_MS = 8000
-LOOP_MS = 15                   # one trip round a correction loop
+LOOP_MS = 15                # one trip round a correction loop
 
 # How far off straight a "straight" drive may get before it gives up.
 #
@@ -286,7 +286,7 @@ def _tank(left_deg_s, right_deg_s):
 # What is plugged in where
 # -----------------------------
 ALL_PORTS = (("A", port.A), ("B", port.B), ("C", port.C),
-             ("D", port.D), ("E", port.E), ("F", port.F))
+            ("D", port.D), ("E", port.E), ("F", port.F))
 
 
 def port_label(which_port):
@@ -378,14 +378,14 @@ def calibrate_wheel_diameter(commanded_cm, measured_cm):
 # Driving straight
 # -----------------------------
 async def _drive_ramp_cm(cm,
-                         top_speed=TOP_SPEED,
-                         start_speed=START_SPEED,
-                         ramp_cm=RAMP_MIN_CM,
-                         stop_comp_cm=None,
-                         kp=KP_STRAIGHT,
-                         kd=KD_STRAIGHT,
-                         stop_mode=motor.BRAKE,
-                         timeout_ms=DEFAULT_TIMEOUT_MS):
+                        top_speed=TOP_SPEED,
+                        start_speed=START_SPEED,
+                        ramp_cm=RAMP_MIN_CM,
+                        stop_comp_cm=None,
+                        kp=KP_STRAIGHT,
+                        kd=KD_STRAIGHT,
+                        stop_mode=motor.BRAKE,
+                        timeout_ms=DEFAULT_TIMEOUT_MS):
     """Drive straight, speeding up and slowing down, held straight by the gyro.
 
     Three parts: speed up over the first ramp_cm, hold, slow down over the last
@@ -417,7 +417,7 @@ async def _drive_ramp_cm(cm,
 
     dist_deg = _cm_to_deg(target_cm)
     ramp_deg = max(1, _cm_to_deg(abs(ramp_cm)))
-    if ramp_deg * 2 > dist_deg:              # two ramps cannot be longer than the move
+    if ramp_deg * 2 > dist_deg:            # two ramps cannot be longer than the move
         ramp_deg = max(1, dist_deg // 2)
 
     motor.reset_relative_position(LEFT_DRIVE, 0)
@@ -470,7 +470,7 @@ async def _drive_ramp_cm(cm,
 
         if DEBUG:
             print("deg:", travelled, "of", dist_deg,
-                  "speed:", int(speed), "yaw:", round(error, 2))
+                "speed:", int(speed), "yaw:", round(error, 2))
 
         await runloop.sleep_ms(LOOP_MS)
 
@@ -501,12 +501,12 @@ def _check_sensible(cm):
 
 
 async def drive_cm(cm,
-                   velocity=None,
-                   stop_mode=motor.BRAKE,
-                   start_velocity=None,
-                   ramp_cm=None,
-                   kp=KP_STRAIGHT,
-                   kd=KD_STRAIGHT):
+                velocity=None,
+                stop_mode=motor.BRAKE,
+                start_velocity=None,
+                ramp_cm=None,
+                kp=KP_STRAIGHT,
+                kd=KD_STRAIGHT):
     """Drive straight. Positive is forwards, negative is backwards.
 
     Unlike the toolkit's drive_cm, this one holds its heading with the gyro.
@@ -532,17 +532,17 @@ async def drive_cm(cm,
         ramp_cm = _auto_ramp_cm(distance)
 
     await _drive_ramp_cm(distance if cm > 0 else -distance,
-                         top_speed=top_speed,
-                         start_speed=start_speed,
-                         ramp_cm=ramp_cm,
-                         kp=kp, kd=kd, stop_mode=stop_mode)
+                        top_speed=top_speed,
+                        start_speed=start_speed,
+                        ramp_cm=ramp_cm,
+                        kp=kp, kd=kd, stop_mode=stop_mode)
 
 
 async def drive_cm_gyro(cm, velocity=None, kp=KP_STRAIGHT, kd=KD_STRAIGHT,
                         stop_mode=motor.BRAKE, **kwargs):
     """The same thing as drive_cm. Both names work, both use the gyro."""
     await drive_cm(cm, velocity=velocity, kp=kp, kd=kd,
-                   stop_mode=stop_mode, **kwargs)
+                stop_mode=stop_mode, **kwargs)
 
 
 async def gyro_backward_deg(speed, degrees,
@@ -562,7 +562,7 @@ async def gyro_backward_deg(speed, degrees,
     await _settle()
     _reset_yaw(0)
 
-    last_error = 0.0           # the block forgot this, and used stale data
+    last_error = 0.0        # the block forgot this, and used stale data
     steps = 0
     max_steps = int(timeout_ms / LOOP_MS)
 
@@ -596,15 +596,15 @@ async def gyro_backward_deg(speed, degrees,
 # Turning
 # -----------------------------
 async def _turn_to_bearing(target,
-                           velocity=TURN_MAX,
-                           kp=KP_TURN, ki=KI_TURN, kd=KD_TURN,
-                           tolerance=1.0,
-                           stop_mode=motor.BRAKE,
-                           min_speed=TURN_MIN,
-                           integral_limit=500.0,
-                           settle_ms=150,
-                           settle_passes=2,
-                           timeout_ms=DEFAULT_TIMEOUT_MS):
+                        velocity=TURN_MAX,
+                        kp=KP_TURN, ki=KI_TURN, kd=KD_TURN,
+                        tolerance=1.0,
+                        stop_mode=motor.BRAKE,
+                        min_speed=TURN_MIN,
+                        integral_limit=500.0,
+                        settle_ms=150,
+                        settle_passes=2,
+                        timeout_ms=DEFAULT_TIMEOUT_MS):
     """Spin until bearing() reaches target. Both turns share this loop.
 
     After braking it waits, looks again, and goes round once more if the robot
@@ -652,7 +652,7 @@ async def _turn_to_bearing(target,
             previous_error = error
 
             speed = _clamp(kp * error + ki * integral + kd * derivative,
-                           -max_speed, max_speed)
+                        -max_speed, max_speed)
             # Too slow to move at all, so give it the minimum push instead.
             if 0 < abs(speed) < min_speed:
                 speed = min_speed if speed > 0 else -min_speed
@@ -696,7 +696,7 @@ async def turn_deg(angle_deg, stop_early_deg=0.0, **kwargs):
         return
     await _settle()
     await _turn_to_bearing(bearing() + _shorten(angle_deg, stop_early_deg),
-                           **kwargs)
+                        **kwargs)
 
 
 async def turn_deg_gyro(angle_deg, stop_early_deg=0.0, **kwargs):
@@ -741,8 +741,8 @@ async def face(bearing_deg, shortest=True, stop_early_deg=0.0, **kwargs):
 
 
 async def arc_turn(radius_cm, angle_deg, velocity=400, reverse=False,
-                   stop_mode=motor.BRAKE, kp=KP_STRAIGHT, kd=KD_STRAIGHT,
-                   timeout_ms=DEFAULT_TIMEOUT_MS):
+                stop_mode=motor.BRAKE, kp=KP_STRAIGHT, kd=KD_STRAIGHT,
+                timeout_ms=DEFAULT_TIMEOUT_MS):
     """Drive a curve instead of turning on the spot, steered by the gyro.
 
     radius_cm is measured to the middle of the robot, halfway between the
@@ -757,7 +757,7 @@ async def arc_turn(radius_cm, angle_deg, velocity=400, reverse=False,
     steers back onto the curve. That is why the radius comes out right even
     when TRACK_W_MM is a little off.
     """
-    smallest = TRACK_W_MM / 20.0          # half the track, in cm
+    smallest = TRACK_W_MM / 20.0        # half the track, in cm
     if radius_cm < smallest:
         raise ValueError(
             "arc_turn needs a radius of at least %.1f cm, half the track "
@@ -819,7 +819,7 @@ async def arc_turn(radius_cm, angle_deg, velocity=400, reverse=False,
 
         if DEBUG:
             print("arc cm:", round(travelled_cm, 1), "bearing:", round(now, 2),
-                  "off curve:", round(error, 2))
+                "off curve:", round(error, 2))
         await runloop.sleep_ms(LOOP_MS)
 
     motor_pair.stop(PAIR, stop=stop_mode)
@@ -850,7 +850,7 @@ def _attachment_args(degrees, velocity):
 
 
 async def run_attachment_deg(which_port, degrees, velocity=300,
-                             stop_mode=motor.BRAKE):
+                            stop_mode=motor.BRAKE):
     """Turn an attachment motor. Refuses anything over 200 degrees."""
     if abs(degrees) > 200:
         return
@@ -878,7 +878,7 @@ async def bench_check_yaw_sign():
     await runloop.sleep_ms(300)
 
     before = _yaw_deg()
-    _tank(157, -157)                  # right, because that is what _tank means
+    _tank(157, -157)                # right, because that is what _tank means
     await runloop.sleep_ms(1200)
     motor_pair.stop(PAIR, stop=motor.BRAKE)
     await runloop.sleep_ms(400)
@@ -948,7 +948,7 @@ async def arm_to(target, speed=800, decel=1000):
         return motor.READY
     turns, signed_speed = _attachment_args(move, speed)
     return await motor.run_for_degrees(port.C, turns, signed_speed,
-                                       stop=motor.HOLD, deceleration=decel)
+                                    stop=motor.HOLD, deceleration=decel)
 
 
 def arm_status_name(status):
@@ -984,30 +984,32 @@ async def main():
     #
     # rel is measured from the stopper, so after arm_to(300) it should read
     # 300 every run.
-    print("start:             rel", motor.relative_position(port.C),
-          "abs", motor.absolute_position(port.C))
+    print("start:            rel", motor.relative_position(port.C),
+        "abs", motor.absolute_position(port.C))
     # decel=300 slows the arm down gently at the end of the move (default 1000).
-    status = await arm_to(300, speed=500, decel=300)    # 280 was a little too high
+    status = await arm_to(-100, speed=500, decel=300)    # 285 was a little too high
     print("after arm_to(300): rel", motor.relative_position(port.C),
-          "abs", motor.absolute_position(port.C),
-          "status", arm_status_name(status),
-          "power", motor.get_duty_cycle(port.C))
+        "abs", motor.absolute_position(port.C),
+        "status", arm_status_name(status),
+        "power", motor.get_duty_cycle(port.C))
     await runloop.sleep_ms(300)
-    print("300 ms later:      rel", motor.relative_position(port.C),
-          "abs", motor.absolute_position(port.C),
-          "power", motor.get_duty_cycle(port.C))
+    print("300 ms later:    rel", motor.relative_position(port.C),
+        "abs", motor.absolute_position(port.C),
+        "power", motor.get_duty_cycle(port.C))
     await drive_cm(-15)
     await face(-5)
     await runloop.sleep_ms(300)
     await face(0)
     await drive_cm(2)
-    print("after drives:     ", motor.relative_position(port.C))
+    await runloop.sleep_ms(300)
+    await drive_cm(-1)
+    print("after drives:    ", motor.relative_position(port.C))
     await arm_to(360)
     print("after arm_to(360):", motor.relative_position(port.C))
 
     # #Mission N Nov 18
     await drive_cm(20,velocity=1100)
-    print("at the end:       ", motor.relative_position(port.C))
+    print("at the end:    ", motor.relative_position(port.C))
 
 
 # Run the main loop

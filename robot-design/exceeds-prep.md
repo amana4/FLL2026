@@ -98,13 +98,17 @@ pictures first. Open a box when you want more.
       more reliable.
     - We do several missions with the same attachment, so we stop to swap less
       often.
+    - **Seven runs:** Phase 0 to Phase 7. We dropped Phase 4. From the left home,
+      Phase 0 does M03 Flip the Rock and M02 Exploding Seeds, and Phase 1 does M05
+      Reaching Roots.
     - **The robo taxi:** the attachments and the keystone species wait on the
-      left. phase3 does a mission on the way across the mat, M05 Reaching Roots,
-      then carries one attachment and the keystone species to the right side. The
-      keystone species goes on the Mine dock for M13. The rulebook gives M13 30
-      points.
-    - phase2 does M01 Drone Survey and M15 Biocentric Architecture with one
-      straight push and back, so it is very reliable.
+      left. Phase 3 carries one attachment and the keystone species to the right
+      side. The keystone species goes on the Mine dock for M13. The rulebook gives
+      M13 30 points.
+    - Phase 2 does M01 Drone Survey and the garden skylight of M15 Biocentric
+      Architecture with one straight push and back, so it is very reliable.
+      Phase 7 does the other two parts of M15, the nesting canopy and the compost
+      hatch, from the right home.
     - We skipped M04 Lucky Leaves: far away, partly luck, and only 10 or 20 points.
 
     **The robot**
@@ -594,11 +598,13 @@ Run each program 10 times and fill in this table.
 
 | Run | Missions | Tries | Worked | Date |
 | --- | --- | --- | --- | --- |
-| phase0-alt | M03, M02 | 10 | __ | __ |
-| phase2 | M01, M15 | 10 | __ | __ |
-| phase3 | M05, robo taxi | 10 | __ | __ |
+| Phase 0 | M03, M02 | 10 | __ | __ |
+| Phase 1 | M05 | 10 | __ | __ |
+| Phase 2 | M01, M15 skylight | 10 | __ | __ |
+| Phase 3 | robo taxi | 10 | __ | __ |
 | Phase 5 | M06, M07, M11, M12 | 10 | __ | __ |
 | Phase 6 | M13 | 10 | __ | __ |
+| Phase 7 | M15 canopy and hatch | 10 | __ | __ |
 
 ### Heading accuracy
 
@@ -709,14 +715,14 @@ wrote it. The rules are on the [Engineering Notebook page](../engineering-notebo
     time.
 
     First, we do the missions close to our home first. Short trips are quicker and
-    more reliable. Our first runs do Flip the Rock and Exploding Seeds, then the
-    Drone Survey and Biocentric Architecture. That run is one straight push and
-    back, so it hardly ever goes wrong.
+    more reliable. Our first runs do Flip the Rock and Exploding Seeds, then
+    Reaching Roots, then the Drone Survey and Biocentric Architecture. That run is
+    one straight push and back, so it hardly ever goes wrong.
 
     Then comes what we call the robo taxi. Our attachments and the keystone species
-    wait on the left. The robot does Reaching Roots on the way, then carries one
-    attachment and the keystone species across to the right. That one attachment
-    does several missions there, so we don't stop to swap.
+    wait on the left. The robot carries one attachment and the keystone species
+    across to the right. That one attachment does several missions there, so we
+    don't stop to swap.
 
     We skipped Lucky Leaves. It's far away, partly luck, and only 10 or 20 points.
     Now [Robot lead] will show you the robot."

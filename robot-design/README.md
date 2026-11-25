@@ -14,7 +14,8 @@ to explain it to the judges.
    [class lesson slides](robot-lesson-slides.html).
 3. Then take the [Robot Design test](robot-design-test.md).
 4. Then practise with [Presentation and Q&A](presentation.md): the 5-minute
-   explanation, the [slides](presentation-slides.html), and the questions judges ask.
+   explanation, the [judging slides](judging-deck.html), the [cue cards](cue-cards.html),
+   and the [judge questions](judge-questions.html).
 5. Going for Exceeds: the workshop has the gap lesson from the Robot Design
    test, the homework slides each of us fills in, and how we put them together.
    [Show it in class](exceeds-workshop.html), or upload the
@@ -37,6 +38,7 @@ fill in, so read Our Robot, Explained first.
 | [When something breaks](troubleshooting.md) | Fixes for common problems |
 | [Class lesson slides](robot-lesson-slides.html) | 68 slides that teach the whole robot, with check questions after each part |
 | [Exceeds workshop](exceeds-workshop.html), also as [PowerPoint](exceeds-workshop.pptx) | 41 slides: the gap lesson, why this robot, the mission map and robo taxi, why Python, how drive_cm works, the gyro correction, the homework templates, and the rehearsal plan. `python3 tools/make-exceeds-pptx.py` rebuilds it, and `--named` makes a private copy with names |
+| [Judging deck](judging-deck.html), also as [PowerPoint](judging-deck.pptx) | 11 slides for the 5-minute explanation, in speaking order, with each cue card in the speaker notes. Printable [cue cards](cue-cards.html) and [judge questions](judge-questions.html) come with it. `python3 tools/make-judging-pack.py` rebuilds all four, and `--named` makes a private copy with names |
 | [Six chassis designs](chassis-designs-slides.html) | Ten slides comparing other teams' driving bases. Also in `robot-design/chassis-designs.pptx`; `python3 tools/make-design-pptx.py` rebuilds it |
 
 ## Design principles

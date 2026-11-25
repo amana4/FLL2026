@@ -62,13 +62,13 @@ var MISSION_QUIZ = [
   },
   {
     title: 'What is the robo taxi?',
-    choices: ['A run that does a mission on the way across the mat and carries an ' +
-                'attachment and the keystone species to the right side',
+    choices: ['A run that carries an attachment and the keystone species to the ' +
+                'right side in one trip',
               'A second robot that carries the first one',
               'A run that only drives across the mat and back',
               'A remote-controlled robot'],
-    why: 'phase3 does M05 Reaching Roots on the way, then carries the attachment ' +
-         'and the keystone species to the right.'
+    why: 'Phase 3 carries the attachment and the keystone species to the right. ' +
+         'M05 Reaching Roots is its own run, Phase 1.'
   },
   {
     title: 'Why does the robot carry the keystone species across instead of ' +
@@ -91,13 +91,14 @@ var MISSION_QUIZ = [
          'young trees raised scores 30.'
   },
   {
-    title: 'Which missions does phase2 do, and why is it so reliable?',
-    choices: ['M01 Drone Survey and M15 Biocentric Architecture, with one straight ' +
+    title: 'Which missions does Phase 2 do, and why is it so reliable?',
+    choices: ['M01 Drone Survey and the M15 garden skylight, with one straight ' +
                 'push and back',
               'M03 Flip the Rock and M02 Exploding Seeds, with lots of turns',
               'M13 Keystone Species, with the colour sensor',
               'M04 Lucky Leaves, with a motor arm'],
-    why: 'One straight push and back has very little that can go wrong.'
+    why: 'One straight push and back has very little that can go wrong. Phase 7 ' +
+         'does the other two parts of M15 from the right.'
   },
   {
     title: 'Why did we skip M04 Lucky Leaves?',

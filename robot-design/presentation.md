@@ -5,8 +5,13 @@ This page is for the Robot Design part of judging. It has the plan for our
 with answers taken from [Our Robot, Explained](our-robot-explained.md) and
 [How Our Code Is Designed](how-our-code-works.md).
 
-The short slides for the judges are here: [Robot Design slides](presentation-slides.html). Open them
-on a laptop, or print them. Each slide is one page when printed.
+The slides for the judges are the [judging deck](judging-deck.html), also as
+[PowerPoint](judging-deck.pptx). They follow our speaking order: Strategy, Robot,
+Code, Sensors, then Iteration and team. Press F for full screen and N for the
+speaker notes. Print the [cue cards](cue-cards.html) to hold while you talk, and
+the [judge questions](judge-questions.html) to practise with. All four come from
+`python3 tools/make-judging-pack.py`. Orange "fill in" boxes are facts only we
+can give, such as the swap time and the 10-run results.
 
 To build the slides together, use the [Exceeds workshop deck](exceeds-workshop.pptx).
 It has a template for each slide below, with an Exceeds checklist and speaker notes.
@@ -55,52 +60,54 @@ Important: these are talking points, not a script. Do not learn the words by
 heart. Know the points, and say them your way. A learned speech sounds learned,
 and it falls apart when a judge interrupts.
 
-| Time | Slide | Who | Rubric row | What to say |
-| --- | --- | --- | --- | --- |
-| 0:00 to 0:20 | 1 | Kid 1 | | Who we are. "Our robot is one base with attachments we swap. We'll each explain one part." |
-| 0:20 to 1:00 | 2 and 3 | Kid 1 | IDENTIFY | We compared six robot designs before building. The three that slipped all used the blue SPIKE wheels. We took the good ideas from all six. Then: which missions each run does, and why those. |
-| 1:00 to 2:00 | 4 and 5 | Kid 2 | CREATE (attachments) | The box shape: push it against a wall and it sits square. Wheels inside the frame. The BOXOR frame and its bevel gears. Gravity mounting: pegs line it up, its weight holds it, on or off in one move. One thing we changed from the BOXOR design. |
-| 2:00 to 3:00 | 6 and 7 | Kid 3 | CREATE (code) | Code in three layers. `face` measures every turn from base, so a square ends about 1 degree off, not 17. The gyro turn was faster and more accurate than the old turn: 1.18 s and 0.58 degrees against 1.54 s and 4.26 degrees. The arm lifts while the robot drives home. |
-| 3:00 to 4:00 | 8 and 9 | Kid 4 | ITERATE | How we test: pretend robot, 34 automatic checks, real mat, save in git. One real story: the rock bump knocked the robot crooked, so we added `face(0)`. Every `#was` note in our code is a test that changed a number. Our reliability number. |
-| 4:00 to 5:00 | 10 and 11 | Kid 5 | DESIGN and COMMUNICATE | Who built and coded what, and that all five of us did both. What we learned. What we are most proud of. "Ask any of us anything." |
+The slide numbers are for the [judging deck](judging-deck.html). Each speaker's
+[cue card](cue-cards.html) has the same points.
 
-**Handovers.** Each person ends by saying the next person's topic: "Now Kid 3
-will tell you about the code." It sounds planned, and it gives the next person
-a second to start. Practise the handovers more than the parts.
+| Time | Slides | Part | Who | Rubric row | What to say |
+| --- | --- | --- | --- | --- | --- |
+| 0:00 to 1:10 | 1 and 2 | Strategy | Kid 5 | IDENTIFY: mission strategy | Who we are. Time is our biggest limit. Seven runs, Phase 0 to Phase 7, with no Phase 4. Close missions first. Phase 2 is one straight push and back. Phase 3 is the robo taxi. We skipped Lucky Leaves, with the reason. |
+| 1:10 to 2:15 | 3 to 5 | Robot | Kid 2 | CREATE: attachments. IDENTIFY: resources | We studied six designs, and the ones that slipped all had blue SPIKE wheels. The flat box lines up on walls and mat lines. Gravity mounting: one move, so do a live swap. Push before motors, and the arm starts on a stopper. |
+| 2:15 to 3:00 | 6 and 7 | Code | Kid 1 | CREATE: code | Python, so we reused last year's `drive_cm` and changed the wheel size. Code in layers: the run says what, the library says how. The flowchart: more than 45 degrees off, it stops. |
+| 3:00 to 4:00 | 8 and 9 | Sensors | Kid 3 | CREATE: code and sensors | Only the gyroscope steers. Yaw is the way the robot points. Zero, turn, drive straight. Drifts 5 degrees left, steers back right. |
+| 4:00 to 5:00 | 10 to 12 | Iteration and team | Kid 4 | ITERATE. DESIGN and COMMUNICATE | Every run tested 10 times, with the real numbers. The arm fix: measured, two ideas failed, the stopper works. Then each of us says one line: "I built ... and I coded ...". What we are proud of. "Ask any of us anything." |
+
+**Handovers.** Each person ends by saying the next person's topic: "Now Kid 1
+will explain our code." It sounds planned, and it gives the next person a second
+to start. Practise the handovers more than the parts.
 
 **If someone is away.** Every part has a backup person. Write them here:
 
 | Part | Lead | Backup |
 | --- | --- | --- |
-| IDENTIFY: designs and missions | Kid 1 | _TODO_ |
-| Driving base and attachments | Kid 2 | _TODO_ |
-| Code | Kid 3 | _TODO_ |
-| Testing and changes | Kid 4 | _TODO_ |
-| Teamwork and lessons | Kid 5 | _TODO_ |
+| Strategy | Kid 5 | _TODO_ |
+| Robot | Kid 2 | _TODO_ |
+| Code | Kid 1 | _TODO_ |
+| Sensors | Kid 3 | _TODO_ |
+| Iteration and team | Kid 4 | _TODO_ |
 
 ## Gaps to fill before we practise
 
-The slides have boxes marked **Team to fill in**. These are facts only we know,
+The slides have orange boxes marked **fill in**. These are facts only we know,
 and the knowledge base does not have them. Do not leave a box empty on the day,
 and do not make a number up. If we don't know, we measure it.
 
-To fill a box, open `robot-design/presentation-slides.html` and search for
-`TEAM:`. Each comment sits just above the text to replace. Important: the slides
-are on the public website, so keep the Kid 1 to Kid 5 labels and never type a
-name into them.
+To fill a box, put the fact in `FILL` at the top of `tools/make-judging-pack.py`,
+then run `python3 tools/make-judging-pack.py`. The slides, the cue cards and the
+judge questions all update together. Important: the public copy is on the
+website, so never type a name into `FILL`. Names come only from the private
+roster, with `--named`.
 
-| Gap | Slide | How to find it |
+| Gap | Where it shows | How to find it |
 | --- | --- | --- |
-| Which mission numbers "Pull", "open door", "ant" and "Tree support" are in `Phase 5.py` | 3 | Read the code with the mission list next to it. |
-| Does `phase0.py` also do M01 Drone Survey? | 3 | Run it and watch. |
-| One mission we skipped, with its points and time | 3 | Use the [scoresheet](../robot-game/scoresheet.md). |
-| One thing we changed from the BOXOR design | 5 | Ask the builders. Compare with the instructions. |
-| How long a swap takes | 5 | Time five swaps with a stopwatch. Use the middle one. |
-| How much time the arm-lift trick saves | 7 | Time the end of `phase0-alt.py` with and without `await`. |
-| How often each run works, for example "8 out of 10" | 9 | Run each program 10 times. Write it in a run log. |
-| Best practice score | 9 | From the [points tracker](../robot-game/scoring-tracker.md). |
-| Who built what, and who coded what | 10 | [Who did what](../docs/who-did-what.md). |
-| What we learned, and what we are proud of | 11 | Each person writes one sentence. |
+| How long a swap takes | Slide 5, question 6 | Time five swaps with a stopwatch. Use the middle one. |
+| How often each run works, for example "8 out of 10" | Slide 10, question 23 | Run each phase 10 times. Write it in a run log. |
+| The arm fix, before and after | Slide 11 | How often the arm was right before the stopper fix, and after. |
+| Who built what, and who coded what | Slide 12, question 28 | [Who did what](../docs/who-did-what.md). |
+| What we are proud of | Slide 12, question 32 | Each person writes one sentence. |
+| Which mission numbers "Pull", "open door", "ant" and "Tree support" are in `Phase 5.py` | Questions | Read the code with the mission list next to it. |
+| One thing we changed from the BOXOR design | Questions | Ask the builders. Compare with the instructions. |
+| How much time the arm-lift trick saves | Question 20 | Time the end of `phase0-alt.py` with and without `await`. |
+| Best practice score | Questions | From the [points tracker](../robot-game/scoring-tracker.md). |
 
 ## Q&A: questions judges ask
 
@@ -125,13 +132,16 @@ Three rules for the room:
 **Walk us through your robot.**
 "It's one driving base, a box with flat walls, and we swap attachments onto
 the back. The gyro keeps it straight and the motor encoders measure how far it
-goes. Each run starts in base, does a few missions, and comes home."
-Team to answer: how many runs do we use in a match?
+goes. Each run starts in base, does a few missions, and comes home. We use
+seven runs, Phase 0 to Phase 7. We dropped Phase 4."
 
 **Which missions did you choose, and why those?**
-Team to answer. Start from the runs: `phase0-alt.py` does M03 Flip the Rock and
-M02 Exploding Seeds. `phase3.py` does M05 Reaching Roots. `Phase 5.py` does four
-jobs. `Phase 6.py` does M13 Keystone Species. Then give the reason. FIRST's
+Team to answer. Start from the runs, as on the [mission map](diagrams/mission-route.svg).
+Phase 0 does M03 Flip the Rock and M02 Exploding Seeds. Phase 1 does M05 Reaching
+Roots. Phase 2 does M01 Drone Survey and the M15 garden skylight. Phase 3 is the
+robo taxi. Phase 5 does four jobs on the right side. Phase 6 does M13 Keystone
+Species. Phase 7 does the M15 nesting canopy and compost hatch. Then give the
+reason. FIRST's
 advice is to pick missions with simple moves like push, pull or lift, close to
 base, and easy to get home from. Say which of those fit our missions.
 
